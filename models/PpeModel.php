@@ -12,7 +12,7 @@ class PpeModel extends Model
             SELECT pr.*, CONCAT(s.FirstName, ' ', s.LastName) AS StaffName
             FROM {$this->table} pr
             LEFT JOIN staff s ON pr.StaffID = s.StaffID
-            ORDER BY pr.IssueDate DESC
+            ORDER BY pr.DateIssued DESC
         ";
         return $this->query($sql);
     }
