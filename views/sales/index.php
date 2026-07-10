@@ -1,7 +1,7 @@
 <?php $pageTitle = 'Sales Orders'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h5 class="fw-bold mb-0"><i class="bi bi-cart me-2"></i><?= $pageTitle ?></h5>
-    <a href="?route=sales/form" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> New Order</a>
+    <a href="?route=sales/create" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> New Order</a>
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">

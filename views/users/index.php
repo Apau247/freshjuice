@@ -1,7 +1,7 @@
 <?php $pageTitle = 'Users'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h5 class="fw-bold mb-0"><i class="bi bi-shield-lock me-2"></i><?= $pageTitle ?></h5>
-    <a href="?route=users/form" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> New User</a>
+    <a href="?route=users/create" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> New User</a>
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">

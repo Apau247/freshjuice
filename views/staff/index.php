@@ -4,7 +4,7 @@
     <div>
         <a href="?route=staff/attendance" class="btn btn-outline-primary btn-sm me-1"><i class="bi bi-calendar-check"></i> Attendance</a>
         <a href="?route=staff/shifts" class="btn btn-outline-primary btn-sm me-1"><i class="bi bi-clock"></i> Shifts</a>
-        <a href="?route=staff/form" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> New Staff</a>
+        <a href="?route=staff/create" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> New Staff</a>
     </div>
 </div>
 <div class="card border-0 shadow-sm">
@@ -12,7 +12,7 @@
         <table id="dataTable" class="table table-hover align-middle">
             <thead class="table-light"><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Department</th><th>Position</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody>
-                <?php foreach ($staffList as $s): ?>
+                <?php foreach ($staff as $s): ?>
                 <tr>
                     <td><?= sanitize($s['StaffID']) ?></td>
                     <td class="fw-semibold"><?= sanitize(($s['FirstName'] ?? '') . ' ' . ($s['LastName'] ?? '')) ?></td>

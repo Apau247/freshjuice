@@ -2,7 +2,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4><i class="fas fa-certificate me-2"></i>Permits & Licenses</h4>
-        <a href="?route=permits/form" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Add Permit</a>
+        <a href="?route=permits/create" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Add Permit</a>
     </div>
 
     <div class="row mb-4">
@@ -76,7 +76,7 @@
                                     <span class="badge bg-<?php echo $statusBadge; ?>"><?php echo $status; ?></span>
                                 </td>
                                 <td>
-                                    <a href="?route=permits/form&id=<?php echo sanitize($row['PermitID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                    <a href="?route=permits/create&id=<?php echo sanitize($row['PermitID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
                                     <a href="?route=permits/delete&id=<?php echo sanitize($row['PermitID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this permit?')"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>

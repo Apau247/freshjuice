@@ -2,7 +2,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4><i class="fas fa-hard-hat me-2"></i>PPE Tracking</h4>
-        <a href="?route=ppe/form" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Issue PPE</a>
+        <a href="?route=ppe/create" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Issue PPE</a>
     </div>
 
     <div class="row mb-4">
@@ -74,7 +74,7 @@
                                     <span class="badge bg-<?php echo $cBadge; ?>"><?php echo $condition; ?></span>
                                 </td>
                                 <td>
-                                    <a href="?route=ppe/form&id=<?php echo sanitize($row['PPE_ID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                    <a href="?route=ppe/create&id=<?php echo sanitize($row['PPE_ID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
                                     <a href="?route=ppe/delete&id=<?php echo sanitize($row['PPE_ID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this PPE record?')"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>
