@@ -1,0 +1,266 @@
+<?php
+declare(strict_types=1);
+
+/*
+ * RBAC Permission Matrix
+ * Access levels: 'full' (CRUD), 'view' (read-only index), 'own' (view own records only),
+ *               'participate' (view + create), 'report' (view + create), 'no' (blocked)
+ * Write operations (create/edit/delete) require 'full'.
+ * 'participate' and 'report' allow create but not edit/delete.
+ */
+
+$MODULE_ROUTES = [
+    'dashboard'           => 'dashboard',
+    'suppliers'           => 'suppliers',
+    'suppliers/create'    => 'suppliers',
+    'suppliers/edit'      => 'suppliers',
+    'suppliers/delete'    => 'suppliers',
+    'suppliers/deliveries'          => 'suppliers',
+    'suppliers/delivery/create'     => 'suppliers',
+    'suppliers/delivery/edit'       => 'suppliers',
+    'suppliers/delivery/delete'     => 'suppliers',
+    'materials/raw'                 => 'materials',
+    'materials/raw/create'          => 'materials',
+    'materials/raw/edit'            => 'materials',
+    'materials/raw/delete'          => 'materials',
+    'materials/packaging'           => 'materials',
+    'materials/packaging/create'    => 'materials',
+    'materials/packaging/edit'      => 'materials',
+    'materials/packaging/delete'    => 'materials',
+    'production'                    => 'production',
+    'production/create'             => 'production',
+    'production/edit'               => 'production',
+    'production/delete'             => 'production',
+    'finished-goods'                => 'finished_goods',
+    'finished-goods/edit'           => 'finished_goods',
+    'finished-goods/delete'         => 'finished_goods',
+    'quality'                       => 'quality',
+    'quality/create'                => 'quality',
+    'quality/edit'                  => 'quality',
+    'quality/delete'                => 'quality',
+    'certifications'                => 'certifications',
+    'certifications/create'         => 'certifications',
+    'certifications/edit'           => 'certifications',
+    'certifications/delete'         => 'certifications',
+    'customers'                     => 'customers',
+    'customers/create'              => 'customers',
+    'customers/edit'                => 'customers',
+    'customers/delete'              => 'customers',
+    'sales'                         => 'sales',
+    'sales/create'                  => 'sales',
+    'sales/edit'                    => 'sales',
+    'sales/delete'                  => 'sales',
+    'invoicing'                     => 'invoicing',
+    'invoicing/create'              => 'invoicing',
+    'invoicing/edit'                => 'invoicing',
+    'invoicing/delete'              => 'invoicing',
+    'safety'                        => 'safety',
+    'safety/create'                 => 'safety',
+    'safety/edit'                   => 'safety',
+    'safety/delete'                 => 'safety',
+    'safety/hazards'                => 'hazards',
+    'safety/hazards/create'         => 'hazards',
+    'safety/hazards/edit'           => 'hazards',
+    'safety/hazards/delete'         => 'hazards',
+    'safety/accidents'              => 'accidents',
+    'safety/accidents/create'       => 'accidents',
+    'safety/accidents/edit'         => 'accidents',
+    'safety/accidents/delete'       => 'accidents',
+    'safety/drills'                 => 'drills',
+    'safety/drills/create'          => 'drills',
+    'safety/drills/edit'            => 'drills',
+    'safety/drills/delete'          => 'drills',
+    'permits'                       => 'permits',
+    'permits/create'                => 'permits',
+    'permits/edit'                  => 'permits',
+    'permits/delete'                => 'permits',
+    'documents'                     => 'documents',
+    'documents/create'              => 'documents',
+    'documents/edit'                => 'documents',
+    'documents/delete'              => 'documents',
+    'staff'                         => 'staff',
+    'staff/create'                  => 'staff',
+    'staff/edit'                    => 'staff',
+    'staff/delete'                  => 'staff',
+    'staff/shifts'                  => 'staff',
+    'staff/attendance'              => 'staff',
+    'training'                      => 'training',
+    'training/create'               => 'training',
+    'training/edit'                 => 'training',
+    'training/delete'               => 'training',
+    'ppe'                           => 'ppe',
+    'ppe/create'                    => 'ppe',
+    'ppe/edit'                      => 'ppe',
+    'ppe/delete'                    => 'ppe',
+    'machines'                      => 'machines',
+    'machines/create'               => 'machines',
+    'machines/edit'                 => 'machines',
+    'machines/delete'               => 'machines',
+    'maintenance'                   => 'maintenance',
+    'maintenance/create'            => 'maintenance',
+    'maintenance/edit'              => 'maintenance',
+    'maintenance/delete'            => 'maintenance',
+    'fat'                           => 'fat',
+    'fat/create'                    => 'fat',
+    'fat/edit'                      => 'fat',
+    'fat/delete'                    => 'fat',
+    'waste'                         => 'waste',
+    'waste/create'                  => 'waste',
+    'waste/delete'                  => 'waste',
+    'water'                         => 'water',
+    'water/usage/create'            => 'water',
+    'water/test/create'             => 'water',
+    'power'                         => 'power',
+    'power/usage/create'            => 'power',
+    'power/generator/create'        => 'power',
+    'improvement'                   => 'improvement',
+    'improvement/create'            => 'improvement',
+    'improvement/edit'              => 'improvement',
+    'improvement/delete'            => 'improvement',
+    'supplier-evaluations'          => 'supplier_eval',
+    'supplier-evaluations/create'   => 'supplier_eval',
+    'supplier-evaluations/edit'     => 'supplier_eval',
+    'supplier-evaluations/delete'   => 'supplier_eval',
+    'efficiency'                    => 'efficiency',
+    'efficiency/create'             => 'efficiency',
+    'efficiency/edit'               => 'efficiency',
+    'efficiency/delete'             => 'efficiency',
+    'sops'                          => 'sops',
+    'sops/template/create'          => 'sops',
+    'sops/template/edit'            => 'sops',
+    'sops/template/delete'          => 'sops',
+    'sops/checklist/create'         => 'sops',
+    'sops/checklist/edit'           => 'sops',
+    'users'                         => 'users',
+    'users/create'                  => 'users',
+    'users/edit'                    => 'users',
+    'users/delete'                  => 'users',
+];
+
+$ROLE_PERMISSIONS = [
+    'ROLE-001' => [
+        'dashboard'       => 'full', 'suppliers'     => 'full', 'materials'     => 'full',
+        'production'      => 'full', 'finished_goods'=> 'full', 'quality'       => 'full',
+        'certifications'  => 'full', 'customers'     => 'full', 'sales'         => 'full',
+        'invoicing'       => 'full', 'safety'        => 'full', 'hazards'       => 'full',
+        'accidents'       => 'full', 'drills'        => 'full', 'permits'       => 'full',
+        'documents'       => 'full', 'staff'         => 'full', 'training'      => 'full',
+        'ppe'             => 'full', 'machines'      => 'full', 'maintenance'   => 'full',
+        'fat'             => 'full', 'waste'         => 'full', 'water'         => 'full',
+        'power'           => 'full', 'improvement'   => 'full', 'supplier_eval' => 'full',
+        'efficiency'      => 'full', 'sops'          => 'full', 'users'         => 'full',
+    ],
+    'ROLE-002' => [
+        'dashboard'       => 'full', 'suppliers'     => 'full', 'materials'     => 'full',
+        'production'      => 'full', 'finished_goods'=> 'full', 'quality'       => 'full',
+        'certifications'  => 'full', 'customers'     => 'full', 'sales'         => 'full',
+        'invoicing'       => 'no',   'safety'        => 'full', 'hazards'       => 'full',
+        'accidents'       => 'full', 'drills'        => 'full', 'permits'       => 'full',
+        'documents'       => 'full', 'staff'         => 'full', 'training'      => 'full',
+        'ppe'             => 'full', 'machines'      => 'full', 'maintenance'   => 'full',
+        'fat'             => 'no',   'waste'         => 'full', 'water'         => 'full',
+        'power'           => 'full', 'improvement'   => 'full', 'supplier_eval' => 'full',
+        'efficiency'      => 'full', 'sops'          => 'no',   'users'         => 'no',
+    ],
+    'ROLE-003' => [
+        'dashboard'       => 'full', 'suppliers'     => 'view', 'materials'     => 'full',
+        'production'      => 'full', 'finished_goods'=> 'full', 'quality'       => 'view',
+        'certifications'  => 'no',   'customers'     => 'no',   'sales'         => 'no',
+        'invoicing'       => 'no',   'safety'        => 'full', 'hazards'       => 'full',
+        'accidents'       => 'full', 'drills'        => 'full', 'permits'       => 'view',
+        'documents'       => 'view', 'staff'         => 'full', 'training'      => 'full',
+        'ppe'             => 'full', 'machines'      => 'view', 'maintenance'   => 'report',
+        'fat'             => 'no',   'waste'         => 'view', 'water'         => 'view',
+        'power'           => 'view', 'improvement'   => 'participate', 'supplier_eval' => 'no',
+        'efficiency'      => 'full', 'sops'          => 'no',   'users'         => 'no',
+    ],
+    'ROLE-004' => [
+        'dashboard'       => 'full', 'suppliers'     => 'full', 'materials'     => 'full',
+        'production'      => 'view', 'finished_goods'=> 'full', 'quality'       => 'no',
+        'certifications'  => 'no',   'customers'     => 'no',   'sales'         => 'no',
+        'invoicing'       => 'no',   'safety'        => 'full', 'hazards'       => 'full',
+        'accidents'       => 'full', 'drills'        => 'full', 'permits'       => 'no',
+        'documents'       => 'view', 'staff'         => 'view', 'training'      => 'own',
+        'ppe'             => 'view', 'machines'      => 'no',   'maintenance'   => 'no',
+        'fat'             => 'no',   'waste'         => 'view', 'water'         => 'view',
+        'power'           => 'view', 'improvement'   => 'no',   'supplier_eval' => 'full',
+        'efficiency'      => 'view', 'sops'          => 'no',   'users'         => 'no',
+    ],
+    'ROLE-005' => [
+        'dashboard'       => 'full', 'suppliers'     => 'view', 'materials'     => 'no',
+        'production'      => 'view', 'finished_goods'=> 'view', 'quality'       => 'full',
+        'certifications'  => 'full', 'customers'     => 'no',   'sales'         => 'no',
+        'invoicing'       => 'no',   'safety'        => 'full', 'hazards'       => 'full',
+        'accidents'       => 'full', 'drills'        => 'full', 'permits'       => 'full',
+        'documents'       => 'full', 'staff'         => 'view', 'training'      => 'full',
+        'ppe'             => 'full', 'machines'      => 'no',   'maintenance'   => 'no',
+        'fat'             => 'no',   'waste'         => 'view', 'water'         => 'view',
+        'power'           => 'view', 'improvement'   => 'full', 'supplier_eval' => 'no',
+        'efficiency'      => 'full', 'sops'          => 'no',   'users'         => 'no',
+    ],
+    'ROLE-006' => [
+        'dashboard'       => 'full', 'suppliers'     => 'no',   'materials'     => 'no',
+        'production'      => 'no',   'finished_goods'=> 'view', 'quality'       => 'no',
+        'certifications'  => 'no',   'customers'     => 'full', 'sales'         => 'full',
+        'invoicing'       => 'full', 'safety'        => 'full', 'hazards'       => 'full',
+        'accidents'       => 'full', 'drills'        => 'full', 'permits'       => 'no',
+        'documents'       => 'view', 'staff'         => 'own',  'training'      => 'own',
+        'ppe'             => 'own',  'machines'      => 'no',   'maintenance'   => 'no',
+        'fat'             => 'no',   'waste'         => 'no',   'water'         => 'no',
+        'power'           => 'no',   'improvement'   => 'no',   'supplier_eval' => 'no',
+        'efficiency'      => 'no',   'sops'          => 'no',   'users'         => 'no',
+    ],
+    'ROLE-007' => [
+        'dashboard'       => 'full', 'suppliers'     => 'view', 'materials'     => 'view',
+        'production'      => 'no',   'finished_goods'=> 'view', 'quality'       => 'no',
+        'certifications'  => 'no',   'customers'     => 'view', 'sales'         => 'view',
+        'invoicing'       => 'full', 'safety'        => 'full', 'hazards'       => 'view',
+        'accidents'       => 'view', 'drills'        => 'view', 'permits'       => 'no',
+        'documents'       => 'view', 'staff'         => 'view', 'training'      => 'view',
+        'ppe'             => 'view', 'machines'      => 'no',   'maintenance'   => 'no',
+        'fat'             => 'no',   'waste'         => 'view', 'water'         => 'view',
+        'power'           => 'view', 'improvement'   => 'no',   'supplier_eval' => 'no',
+        'efficiency'      => 'view', 'sops'          => 'no',   'users'         => 'no',
+    ],
+    'ROLE-008' => [
+        'dashboard'       => 'full', 'suppliers'     => 'no',   'materials'     => 'no',
+        'production'      => 'view', 'finished_goods'=> 'no',   'quality'       => 'no',
+        'certifications'  => 'no',   'customers'     => 'no',   'sales'         => 'no',
+        'invoicing'       => 'no',   'safety'        => 'full', 'hazards'       => 'full',
+        'accidents'       => 'full', 'drills'        => 'full', 'permits'       => 'view',
+        'documents'       => 'view', 'staff'         => 'own',  'training'      => 'own',
+        'ppe'             => 'full', 'machines'      => 'full', 'maintenance'   => 'full',
+        'fat'             => 'full', 'waste'         => 'full', 'water'         => 'full',
+        'power'           => 'full', 'improvement'   => 'participate', 'supplier_eval' => 'no',
+        'efficiency'      => 'full', 'sops'          => 'no',   'users'         => 'no',
+    ],
+];
+
+function getModuleForRoute(string $route): ?string {
+    global $MODULE_ROUTES;
+    return $MODULE_ROUTES[$route] ?? null;
+}
+
+function getAccess(string $roleId, string $module): string {
+    global $ROLE_PERMISSIONS;
+    return $ROLE_PERMISSIONS[$roleId][$module] ?? 'no';
+}
+
+function can(string $module): bool {
+    $u = currentUser();
+    if (!$u) return false;
+    return getAccess($u['role_id'], $module) !== 'no';
+}
+
+function canEdit(string $module): bool {
+    $u = currentUser();
+    if (!$u) return false;
+    return getAccess($u['role_id'], $module) === 'full';
+}
+
+function canCreate(string $module): bool {
+    $u = currentUser();
+    if (!$u) return false;
+    $level = getAccess($u['role_id'], $module);
+    return in_array($level, ['full', 'participate', 'report'], true);
+}
