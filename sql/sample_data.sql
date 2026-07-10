@@ -16,14 +16,14 @@ INSERT INTO roles (RoleID, RoleName) VALUES
 
 -- USERS (password = 'password123')
 INSERT INTO users (UserID, RoleID, Name, password) VALUES
-('USR-001','ROLE-001','Kwame Admin',      '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
-('USR-002','ROLE-002','Ama Manager',      '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
-('USR-003','ROLE-003','Kofi Production',  '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
-('USR-004','ROLE-004','Akosua Inventory', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
-('USR-005','ROLE-005','Yaw QA',           '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
-('USR-006','ROLE-006','Esi Sales',        '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
-('USR-007','ROLE-007','Kojo Accountant',  '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
-('USR-008','ROLE-008','Nana Maintenance', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
+('USR-001','ROLE-001','Kwame Admin',      '$2y$10$nEizFLqRNolHOmidlgMOV.UOUrREJxxiaKpXgIrboR1MPG78oasPK'),
+('USR-002','ROLE-002','Ama Manager',      '$2y$10$nEizFLqRNolHOmidlgMOV.UOUrREJxxiaKpXgIrboR1MPG78oasPK'),
+('USR-003','ROLE-003','Kofi Production',  '$2y$10$nEizFLqRNolHOmidlgMOV.UOUrREJxxiaKpXgIrboR1MPG78oasPK'),
+('USR-004','ROLE-004','Akosua Inventory', '$2y$10$nEizFLqRNolHOmidlgMOV.UOUrREJxxiaKpXgIrboR1MPG78oasPK'),
+('USR-005','ROLE-005','Yaw QA',           '$2y$10$nEizFLqRNolHOmidlgMOV.UOUrREJxxiaKpXgIrboR1MPG78oasPK'),
+('USR-006','ROLE-006','Esi Sales',        '$2y$10$nEizFLqRNolHOmidlgMOV.UOUrREJxxiaKpXgIrboR1MPG78oasPK'),
+('USR-007','ROLE-007','Kojo Accountant',  '$2y$10$nEizFLqRNolHOmidlgMOV.UOUrREJxxiaKpXgIrboR1MPG78oasPK'),
+('USR-008','ROLE-008','Nana Maintenance', '$2y$10$nEizFLqRNolHOmidlgMOV.UOUrREJxxiaKpXgIrboR1MPG78oasPK');
 
 -- STAFF
 INSERT INTO staff (StaffID, UserID, FirstName, LastName, Email, Phone, Department, Position, DateHired) VALUES
