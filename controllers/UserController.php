@@ -24,12 +24,12 @@ class UserController extends Controller {
                 return;
             }
             $this->model->create([
-                'UserID' => $this->getInput('UserID'),
-                'Name' => $this->getInput('Name'),
-                'RoleID' => $this->getInput('RoleID'),
+                'UserID' => $this->getInput('user_id'),
+                'Name' => $this->getInput('name'),
+                'RoleID' => $this->getInput('role_id'),
                 'password' => password_hash($pass, PASSWORD_DEFAULT),
             ]);
-            logAudit($_SESSION['user_id'], 'CREATE', 'Users', $this->getInput('UserID'), 'Created user');
+            logAudit($_SESSION['user_id'], 'CREATE', 'Users', $this->getInput('user_id'), 'Created user');
             setFlash('success', 'User created.');
             $this->redirect('users');
             return;
@@ -43,9 +43,9 @@ class UserController extends Controller {
         if (!$user) { setFlash('error', 'Not found.'); $this->redirect('users'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
-                'Name' => $this->getInput('Name'),
-                'RoleID' => $this->getInput('RoleID'),
-                'Status' => $this->getInput('Status', 'Active'),
+                'Name' => $this->getInput('name'),
+                'RoleID' => $this->getInput('role_id'),
+                'Status' => $this->getInput('status', 'Active'),
             ];
             $pass = $_POST['password'] ?? '';
             if (!empty($pass)) {

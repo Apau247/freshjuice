@@ -17,10 +17,10 @@ class PackagingMaterialController extends Controller {
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->create([
-                'PackageID' => $this->getInput('PackageID'), 'Name' => $this->getInput('Name'),
-                'Type' => $this->getInput('Type'), 'Unit' => $this->getInput('Unit', 'pcs'),
-                'CurrentStock' => (float)$this->getInput('CurrentStock', '0'),
-                'MinStock' => (float)$this->getInput('MinStock', '0'),
+                'PackageID' => $this->getInput('PackageID'), 'Name' => $this->getInput('name'),
+                'Type' => $this->getInput('type'), 'Unit' => $this->getInput('unit', 'pcs'),
+                'CurrentStock' => (float)$this->getInput('current_stock', '0'),
+                'MinStock' => (float)$this->getInput('min_stock', '0'),
             ]);
             setFlash('success', 'Packaging material created.');
             $this->redirect('materials/packaging');
@@ -35,10 +35,10 @@ class PackagingMaterialController extends Controller {
         if (!$item) { setFlash('error', 'Not found.'); $this->redirect('materials/packaging'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->update($id, [
-                'Name' => $this->getInput('Name'), 'Type' => $this->getInput('Type'),
-                'Unit' => $this->getInput('Unit'),
-                'CurrentStock' => (float)$this->getInput('CurrentStock', '0'),
-                'MinStock' => (float)$this->getInput('MinStock', '0'),
+                'Name' => $this->getInput('name'), 'Type' => $this->getInput('type'),
+                'Unit' => $this->getInput('unit'),
+                'CurrentStock' => (float)$this->getInput('current_stock', '0'),
+                'MinStock' => (float)$this->getInput('min_stock', '0'),
             ]);
             setFlash('success', 'Packaging material updated.');
             $this->redirect('materials/packaging');

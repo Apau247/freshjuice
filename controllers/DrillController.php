@@ -31,11 +31,11 @@ class DrillController extends Controller
             'DrillType' => sanitize($this->getInput('DrillType')),
             'DrillDate' => $this->getInput('DrillDate'),
             'Location' => sanitize($this->getInput('Location')),
-            'Participants' => (int) $this->getInput('Participants'),
-            'Duration' => $this->getInput('Duration'),
+            'Participants' => (int) $this->getInput('ParticipantsCount'),
+            'Duration' => $this->getInput('DurationMinutes'),
             'Outcome' => sanitize($this->getInput('Outcome')),
             'IssuesFound' => sanitize($this->getInput('IssuesFound')),
-            'CorrectiveActions' => sanitize($this->getInput('CorrectiveActions')),
+            'CorrectiveActions' => sanitize($this->getInput('CorrectiveAction')),
             'ConductedBy' => sanitize($this->getInput('ConductedBy')),
         ]);
 
@@ -58,11 +58,11 @@ class DrillController extends Controller
             'DrillType' => sanitize($this->getInput('DrillType')),
             'DrillDate' => $this->getInput('DrillDate'),
             'Location' => sanitize($this->getInput('Location')),
-            'Participants' => (int) $this->getInput('Participants'),
-            'Duration' => $this->getInput('Duration'),
+            'Participants' => (int) $this->getInput('ParticipantsCount'),
+            'Duration' => $this->getInput('DurationMinutes'),
             'Outcome' => sanitize($this->getInput('Outcome')),
             'IssuesFound' => sanitize($this->getInput('IssuesFound')),
-            'CorrectiveActions' => sanitize($this->getInput('CorrectiveActions')),
+            'CorrectiveActions' => sanitize($this->getInput('CorrectiveAction')),
             'ConductedBy' => sanitize($this->getInput('ConductedBy')),
         ]);
 

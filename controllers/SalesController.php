@@ -19,22 +19,22 @@ class SalesController extends Controller {
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $this->getInput('OrderID');
-            $status = $this->getInput('Status', 'Pending');
-            $fgId = $this->getInput('FG_ID');
-            $qty = (float)$this->getInput('Quantity', '0');
+            $status = $this->getInput('status', 'Pending');
+            $fgId = $this->getInput('fg_id');
+            $qty = (float)$this->getInput('quantity', '0');
 
             if ($status === 'Completed' && $fgId && $qty > 0) {
                 (new FinishedGoodModel())->reduceStock($fgId, $qty);
             }
 
             $this->model->create([
-                'OrderID' => $id, 'OrderDate' => $this->getInput('OrderDate'),
-                'TotalAmount' => (float)$this->getInput('TotalAmount', '0'),
+                'OrderID' => $id, 'OrderDate' => $this->getInput('order_date'),
+                'TotalAmount' => (float)$this->getInput('total_amount', '0'),
                 'Quantity' => $qty, 'Status' => $status,
-                'CustomerID' => $this->getInput('CustomerID'),
+                'CustomerID' => $this->getInput('customer_id'),
                 'FG_ID' => $fgId ?: null,
                 'CreatedBy' => $_SESSION['user_id'] ?? null,
-                'Notes' => $this->getInput('Notes'),
+                'Notes' => $this->getInput('notes'),
             ]);
             logAudit($_SESSION['user_id'], 'CREATE', 'Sales', $id, 'Created sales order');
             setFlash('success', 'Order created.');
@@ -53,12 +53,12 @@ class SalesController extends Controller {
         if (!$order) { setFlash('error', 'Not found.'); $this->redirect('sales'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->update($id, [
-                'OrderDate' => $this->getInput('OrderDate'),
-                'TotalAmount' => (float)$this->getInput('TotalAmount', '0'),
-                'Status' => $this->getInput('Status'),
-                'CustomerID' => $this->getInput('CustomerID'),
-                'FG_ID' => $this->getInput('FG_ID') ?: null,
-                'Notes' => $this->getInput('Notes'),
+                'OrderDate' => $this->getInput('order_date'),
+                'TotalAmount' => (float)$this->getInput('total_amount', '0'),
+                'Status' => $this->getInput('status'),
+                'CustomerID' => $this->getInput('customer_id'),
+                'FG_ID' => $this->getInput('fg_id') ?: null,
+                'Notes' => $this->getInput('notes'),
             ]);
             setFlash('success', 'Order updated.');
             $this->redirect('sales');

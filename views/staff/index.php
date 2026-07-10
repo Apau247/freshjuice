@@ -4,7 +4,9 @@
     <div>
         <a href="?route=staff/attendance" class="btn btn-outline-primary btn-sm me-1"><i class="bi bi-calendar-check"></i> Attendance</a>
         <a href="?route=staff/shifts" class="btn btn-outline-primary btn-sm me-1"><i class="bi bi-clock"></i> Shifts</a>
+        <?php if (canCreate('staff')): ?>
         <a href="?route=staff/create" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> New Staff</a>
+        <?php endif; ?>
     </div>
 </div>
 <div class="card border-0 shadow-sm">

@@ -17,18 +17,19 @@ class SupplierController extends Controller {
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $this->getInput('SupplierID');
-            if (empty($id) || empty($this->getInput('Name'))) {
+            $name = $this->getInput('name');
+            if (empty($id) || empty($name)) {
                 setFlash('error', 'Supplier ID and Name are required.');
                 $this->redirect('suppliers');
                 return;
             }
             $this->model->create([
-                'SupplierID' => $id, 'Name' => $this->getInput('Name'),
-                'Contact' => $this->getInput('Contact'), 'Email' => $this->getInput('Email'),
-                'Phone' => $this->getInput('Phone'), 'Address' => $this->getInput('Address'),
-                'Type' => $this->getInput('Type', 'Fruit Supplier'),
+                'SupplierID' => $id, 'Name' => $name,
+                'Contact' => $this->getInput('contact_person'), 'Email' => $this->getInput('email'),
+                'Phone' => $this->getInput('phone'), 'Address' => $this->getInput('address'),
+                'Type' => $this->getInput('category', 'Fruit Supplier'),
             ]);
-            logAudit($_SESSION['user_id'], 'CREATE', 'Suppliers', $id, 'Created supplier: ' . $this->getInput('Name'));
+            logAudit($_SESSION['user_id'], 'CREATE', 'Suppliers', $id, 'Created supplier: ' . $name);
             setFlash('success', 'Supplier created successfully.');
             $this->redirect('suppliers');
             return;
@@ -42,10 +43,10 @@ class SupplierController extends Controller {
         if (!$supplier) { setFlash('error', 'Not found.'); $this->redirect('suppliers'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->update($id, [
-                'Name' => $this->getInput('Name'), 'Contact' => $this->getInput('Contact'),
-                'Email' => $this->getInput('Email'), 'Phone' => $this->getInput('Phone'),
-                'Address' => $this->getInput('Address'), 'Type' => $this->getInput('Type'),
-                'Status' => $this->getInput('Status'),
+                'Name' => $this->getInput('name'), 'Contact' => $this->getInput('contact_person'),
+                'Email' => $this->getInput('email'), 'Phone' => $this->getInput('phone'),
+                'Address' => $this->getInput('address'), 'Type' => $this->getInput('category'),
+                'Status' => $this->getInput('status'),
             ]);
             logAudit($_SESSION['user_id'], 'UPDATE', 'Suppliers', $id, 'Updated supplier');
             setFlash('success', 'Supplier updated.');
@@ -74,14 +75,14 @@ class SupplierController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $this->getInput('DeliveryID');
             $this->model->create([
-                'DeliveryID' => $id, 'SupplierID' => $this->getInput('SupplierID'),
-                'DeliveryDate' => $this->getInput('DeliveryDate'),
-                'ItemName' => $this->getInput('ItemName'),
-                'Quantity' => (float)$this->getInput('Quantity', '0'),
-                'Unit' => $this->getInput('Unit', 'kg'),
-                'QualityGrade' => $this->getInput('QualityGrade', 'Grade A'),
+                'DeliveryID' => $id, 'SupplierID' => $this->getInput('supplier_id'),
+                'DeliveryDate' => $this->getInput('delivery_date'),
+                'ItemName' => $this->getInput('item_name'),
+                'Quantity' => (float)$this->getInput('quantity', '0'),
+                'Unit' => $this->getInput('unit', 'kg'),
+                'QualityGrade' => $this->getInput('quality_grade', 'Grade A'),
                 'ReceivedBy' => $_SESSION['user_id'] ?? null,
-                'Notes' => $this->getInput('Notes'), 'Status' => $this->getInput('Status', 'Received'),
+                'Notes' => $this->getInput('notes'), 'Status' => $this->getInput('status', 'Received'),
             ]);
             logAudit($_SESSION['user_id'], 'CREATE', 'Deliveries', $id, 'Recorded delivery');
             setFlash('success', 'Delivery recorded.');
@@ -95,12 +96,12 @@ class SupplierController extends Controller {
         $id = $this->getInput('id');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->update($id, [
-                'SupplierID' => $this->getInput('SupplierID'),
-                'DeliveryDate' => $this->getInput('DeliveryDate'),
-                'ItemName' => $this->getInput('ItemName'),
-                'Quantity' => (float)$this->getInput('Quantity', '0'),
-                'Unit' => $this->getInput('Unit'), 'QualityGrade' => $this->getInput('QualityGrade'),
-                'Notes' => $this->getInput('Notes'), 'Status' => $this->getInput('Status'),
+                'SupplierID' => $this->getInput('supplier_id'),
+                'DeliveryDate' => $this->getInput('delivery_date'),
+                'ItemName' => $this->getInput('item_name'),
+                'Quantity' => (float)$this->getInput('quantity', '0'),
+                'Unit' => $this->getInput('unit'), 'QualityGrade' => $this->getInput('quality_grade'),
+                'Notes' => $this->getInput('notes'), 'Status' => $this->getInput('status'),
             ]);
             setFlash('success', 'Delivery updated.');
             $this->redirect('suppliers/deliveries');

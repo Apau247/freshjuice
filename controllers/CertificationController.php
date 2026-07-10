@@ -17,13 +17,13 @@ class CertificationController extends Controller {
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->create([
-                'CertID' => $this->getInput('CertID'), 'CertName' => $this->getInput('CertName'),
-                'CertType' => $this->getInput('CertType'),
-                'IssuingAuthority' => $this->getInput('IssuingAuthority'),
-                'IssueDate' => $this->getInput('IssueDate'), 'ExpiryDate' => $this->getInput('ExpiryDate'),
-                'DocumentPath' => $this->getInput('DocumentPath'),
-                'Status' => $this->getInput('Status', 'Active'),
-                'Notes' => $this->getInput('Notes'),
+                'CertID' => $this->getInput('CertID'), 'CertName' => $this->getInput('cert_name'),
+                'CertType' => $this->getInput('cert_type'),
+                'IssuingAuthority' => $this->getInput('issuing_authority'),
+                'IssueDate' => $this->getInput('issue_date'), 'ExpiryDate' => $this->getInput('expiry_date'),
+                'DocumentPath' => $this->getInput('document_path'),
+                'Status' => $this->getInput('status', 'Active'),
+                'Notes' => $this->getInput('notes'),
             ]);
             setFlash('success', 'Certification added.');
             $this->redirect('certifications');
@@ -38,10 +38,10 @@ class CertificationController extends Controller {
         if (!$cert) { setFlash('error', 'Not found.'); $this->redirect('certifications'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->update($id, [
-                'CertName' => $this->getInput('CertName'), 'CertType' => $this->getInput('CertType'),
-                'IssuingAuthority' => $this->getInput('IssuingAuthority'),
-                'IssueDate' => $this->getInput('IssueDate'), 'ExpiryDate' => $this->getInput('ExpiryDate'),
-                'Status' => $this->getInput('Status'), 'Notes' => $this->getInput('Notes'),
+                'CertName' => $this->getInput('cert_name'), 'CertType' => $this->getInput('cert_type'),
+                'IssuingAuthority' => $this->getInput('issuing_authority'),
+                'IssueDate' => $this->getInput('issue_date'), 'ExpiryDate' => $this->getInput('expiry_date'),
+                'Status' => $this->getInput('status'), 'Notes' => $this->getInput('notes'),
             ]);
             setFlash('success', 'Certification updated.');
             $this->redirect('certifications');

@@ -9,7 +9,7 @@ class EfficiencyModel extends Model
     public function getAllDetailed(): array
     {
         $sql = "
-            SELECT pe.*, m.MachineName
+            SELECT pe.*, m.Name AS MachineName
             FROM {$this->table} pe
             LEFT JOIN machines m ON pe.MachineID = m.MachineID
             ORDER BY pe.Date DESC
@@ -43,11 +43,11 @@ class EfficiencyModel extends Model
     public function getDailyOEE(string $date): array
     {
         $sql = "
-            SELECT pe.*, m.MachineName
+            SELECT pe.*, m.Name AS MachineName
             FROM {$this->table} pe
             LEFT JOIN machines m ON pe.MachineID = m.MachineID
             WHERE pe.Date = :date
-            ORDER BY m.MachineName
+            ORDER BY m.Name
         ";
         return $this->query($sql, ['date' => $date]);
     }
@@ -58,9 +58,9 @@ class EfficiencyModel extends Model
             SELECT
                 DATE_FORMAT(Date, '%Y-%m') AS Month,
                 AVG(OEE) AS avgOEE,
-                AVG(Availability) AS avgAvailability,
-                AVG(Performance) AS avgPerformance,
-                AVG(Quality) AS avgQuality
+                AVG(AvailabilityRate) AS avgAvailability,
+                AVG(PerformanceRate) AS avgPerformance,
+                AVG(QualityRate) AS avgQuality
             FROM {$this->table}
             GROUP BY DATE_FORMAT(Date, '%Y-%m')
             ORDER BY Month DESC

@@ -20,10 +20,10 @@ class ProductionController extends Controller {
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $this->getInput('BatchID');
-            $batchNum = $this->getInput('BatchNumber');
-            $qty = (float)$this->getInput('Quantity', '0');
-            $rawMat = $this->getInput('RawMaterialID');
-            $pkgMat = $this->getInput('PackagingMaterialID');
+            $batchNum = $this->getInput('batch_number');
+            $qty = (float)$this->getInput('quantity', '0');
+            $rawMat = $this->getInput('raw_material_id');
+            $pkgMat = $this->getInput('packaging_material_id');
 
             if ($rawMat && $qty > 0) {
                 (new RawMaterialModel())->updateStock($rawMat, -$qty);
@@ -34,15 +34,15 @@ class ProductionController extends Controller {
 
             $this->model->create([
                 'BatchID' => $id, 'BatchNumber' => $batchNum,
-                'ProductionDate' => $this->getInput('ProductionDate'),
-                'Flavour' => $this->getInput('Flavour'), 'Quantity' => $qty,
-                'Unit' => $this->getInput('Unit', 'litres'),
-                'Status' => $this->getInput('Status', 'Pending'),
-                'UserID' => $_SESSION['user_id'] ?? null,
+                'ProductionDate' => $this->getInput('production_date'),
+                'Flavour' => $this->getInput('flavour'), 'Quantity' => $qty,
+                'Unit' => $this->getInput('unit', 'litres'),
+                'Status' => $this->getInput('status', 'Pending'),
+                'UserID' => $this->getInput('user_id') ?: ($_SESSION['user_id'] ?? null),
                 'RawMaterialID' => $rawMat ?: null,
                 'PackagingMaterialID' => $pkgMat ?: null,
-                'MachineID' => $this->getInput('MachineID') ?: null,
-                'Notes' => $this->getInput('Notes'),
+                'MachineID' => $this->getInput('machine_id') ?: null,
+                'Notes' => $this->getInput('notes'),
             ]);
             logAudit($_SESSION['user_id'], 'CREATE', 'Production', $id, "Created batch $batchNum");
             setFlash('success', 'Batch created.');
@@ -62,13 +62,13 @@ class ProductionController extends Controller {
         if (!$batch) { setFlash('error', 'Not found.'); $this->redirect('production'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->update($id, [
-                'Flavour' => $this->getInput('Flavour'),
-                'Quantity' => (float)$this->getInput('Quantity', '0'),
-                'Status' => $this->getInput('Status'),
-                'RawMaterialID' => $this->getInput('RawMaterialID') ?: null,
-                'PackagingMaterialID' => $this->getInput('PackagingMaterialID') ?: null,
-                'MachineID' => $this->getInput('MachineID') ?: null,
-                'Notes' => $this->getInput('Notes'),
+                'Flavour' => $this->getInput('flavour'),
+                'Quantity' => (float)$this->getInput('quantity', '0'),
+                'Status' => $this->getInput('status'),
+                'RawMaterialID' => $this->getInput('raw_material_id') ?: null,
+                'PackagingMaterialID' => $this->getInput('packaging_material_id') ?: null,
+                'MachineID' => $this->getInput('machine_id') ?: null,
+                'Notes' => $this->getInput('notes'),
             ]);
             logAudit($_SESSION['user_id'], 'UPDATE', 'Production', $id, 'Updated batch');
             setFlash('success', 'Batch updated.');

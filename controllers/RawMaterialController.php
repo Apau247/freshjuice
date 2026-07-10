@@ -19,11 +19,11 @@ class RawMaterialController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $this->getInput('MaterialID');
             $this->model->create([
-                'MaterialID' => $id, 'Name' => $this->getInput('Name'),
-                'Type' => $this->getInput('Type'), 'Unit' => $this->getInput('Unit', 'kg'),
-                'CurrentStock' => (float)$this->getInput('CurrentStock', '0'),
-                'MinStock' => (float)$this->getInput('MinStock', '0'),
-                'SupplierID' => $this->getInput('SupplierID') ?: null,
+                'MaterialID' => $id, 'Name' => $this->getInput('name'),
+                'Type' => $this->getInput('type'), 'Unit' => $this->getInput('unit', 'kg'),
+                'CurrentStock' => (float)$this->getInput('current_stock', '0'),
+                'MinStock' => (float)$this->getInput('min_stock', '0'),
+                'SupplierID' => $this->getInput('supplier_id') ?: null,
             ]);
             logAudit($_SESSION['user_id'], 'CREATE', 'Raw Materials', $id, 'Created material');
             setFlash('success', 'Raw material created.');
@@ -39,11 +39,11 @@ class RawMaterialController extends Controller {
         if (!$item) { setFlash('error', 'Not found.'); $this->redirect('materials/raw'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->update($id, [
-                'Name' => $this->getInput('Name'), 'Type' => $this->getInput('Type'),
-                'Unit' => $this->getInput('Unit'),
-                'CurrentStock' => (float)$this->getInput('CurrentStock', '0'),
-                'MinStock' => (float)$this->getInput('MinStock', '0'),
-                'SupplierID' => $this->getInput('SupplierID') ?: null,
+                'Name' => $this->getInput('name'), 'Type' => $this->getInput('type'),
+                'Unit' => $this->getInput('unit'),
+                'CurrentStock' => (float)$this->getInput('current_stock', '0'),
+                'MinStock' => (float)$this->getInput('min_stock', '0'),
+                'SupplierID' => $this->getInput('supplier_id') ?: null,
             ]);
             logAudit($_SESSION['user_id'], 'UPDATE', 'Raw Materials', $id, 'Updated material');
             setFlash('success', 'Raw material updated.');

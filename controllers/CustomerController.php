@@ -18,12 +18,12 @@ class CustomerController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->create([
                 'CustomerID' => $this->getInput('CustomerID'),
-                'Name' => $this->getInput('Name'),
-                'Contact' => $this->getInput('Contact'),
-                'Email' => $this->getInput('Email'),
-                'Phone' => $this->getInput('Phone'),
-                'Address' => $this->getInput('Address'),
-                'Type' => $this->getInput('Type', 'Retailer'),
+                'Name' => $this->getInput('name'),
+                'Contact' => $this->getInput('contact'),
+                'Email' => $this->getInput('email'),
+                'Phone' => $this->getInput('phone'),
+                'Address' => $this->getInput('address'),
+                'Type' => $this->getInput('type', 'Retailer'),
             ]);
             setFlash('success', 'Customer created.');
             $this->redirect('customers');
@@ -38,9 +38,9 @@ class CustomerController extends Controller {
         if (!$cust) { setFlash('error', 'Not found.'); $this->redirect('customers'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->update($id, [
-                'Name' => $this->getInput('Name'), 'Contact' => $this->getInput('Contact'),
-                'Email' => $this->getInput('Email'), 'Phone' => $this->getInput('Phone'),
-                'Address' => $this->getInput('Address'), 'Type' => $this->getInput('Type'),
+                'Name' => $this->getInput('name'), 'Contact' => $this->getInput('contact'),
+                'Email' => $this->getInput('email'), 'Phone' => $this->getInput('phone'),
+                'Address' => $this->getInput('address'), 'Type' => $this->getInput('type'),
             ]);
             setFlash('success', 'Customer updated.');
             $this->redirect('customers');

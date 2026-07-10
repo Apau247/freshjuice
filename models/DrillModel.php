@@ -9,7 +9,7 @@ class DrillModel extends Model
     public function getAllDetailed(): array
     {
         $sql = "
-            SELECT ed.*, u.FullName AS ConductedByName
+            SELECT ed.*, u.Name AS ConductedByName
             FROM {$this->table} ed
             LEFT JOIN users u ON ed.ConductedBy = u.UserID
             ORDER BY ed.DrillDate DESC
@@ -20,7 +20,7 @@ class DrillModel extends Model
     public function getUpcoming(): array
     {
         $sql = "
-            SELECT ed.*, u.FullName AS ConductedByName
+            SELECT ed.*, u.Name AS ConductedByName
             FROM {$this->table} ed
             LEFT JOIN users u ON ed.ConductedBy = u.UserID
             WHERE ed.DrillDate >= CURDATE()

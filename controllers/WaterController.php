@@ -23,9 +23,9 @@ class WaterController extends Controller {
             $this->model->db->prepare(
                 "INSERT INTO water_usage (WaterUsageID, Date, UsageType, Quantity, Unit, Purpose, RecordedBy) VALUES (?,?,?,?,?,?,?)"
             )->execute([
-                $this->getInput('WaterUsageID'), $this->getInput('Date'),
-                $this->getInput('UsageType'), (float)$this->getInput('Quantity', '0'),
-                $this->getInput('Unit', 'litres'), $this->getInput('Purpose'),
+                $this->getInput('WaterUsageID'), $this->getInput('date'),
+                $this->getInput('usage_type'), (float)$this->getInput('quantity', '0'),
+                $this->getInput('unit', 'litres'), $this->getInput('purpose'),
                 $_SESSION['user_id'] ?? null,
             ]);
             setFlash('success', 'Water usage recorded.');
@@ -40,13 +40,13 @@ class WaterController extends Controller {
             $this->model->db->prepare(
                 "INSERT INTO water_quality_tests (WaterTestID, TestDate, TestType, pH_Level, Turbidity, TDS, Chlorine, BacteriaCount, Result, Notes, TestedBy) VALUES (?,?,?,?,?,?,?,?,?,?,?)"
             )->execute([
-                $this->getInput('WaterTestID'), $this->getInput('TestDate'),
-                $this->getInput('TestType'),
-                $this->getInput('pH_Level') ?: null, $this->getInput('Turbidity') ?: null,
-                $this->getInput('TDS') ?: null, $this->getInput('Chlorine') ?: null,
-                $this->getInput('BacteriaCount') ?: null,
-                $this->getInput('Result', 'Pending'), $this->getInput('Notes'),
-                $_SESSION['user_id'] ?? null,
+                $this->getInput('WaterTestID'), $this->getInput('test_date'),
+                $this->getInput('test_type'),
+                $this->getInput('ph_level') ?: null, $this->getInput('turbidity') ?: null,
+                $this->getInput('tds') ?: null, $this->getInput('chlorine') ?: null,
+                $this->getInput('bacteria_count') ?: null,
+                $this->getInput('result', 'Pending'), $this->getInput('notes'),
+                $this->getInput('tested_by') ?: ($_SESSION['user_id'] ?? null),
             ]);
             setFlash('success', 'Water quality test recorded.');
             $this->redirect('water');

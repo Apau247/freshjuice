@@ -1,7 +1,9 @@
 <?php $pageTitle = 'Production Batches'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h5 class="fw-bold mb-0"><i class="bi bi-gear me-2"></i><?= $pageTitle ?></h5>
+    <?php if (canCreate('production')): ?>
     <a href="?route=production/create" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> New Batch</a>
+    <?php endif; ?>
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">

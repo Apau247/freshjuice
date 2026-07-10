@@ -11,7 +11,7 @@ class PpeController extends Controller
     public function index()
     {
         $data = [
-            'records' => $this->model->getAllDetailed(),
+            'ppeItems' => $this->model->getAllDetailed(),
             'expiringSoon' => $this->model->getExpiringSoon(),
         ];
         $this->render('index', $data);
@@ -29,12 +29,12 @@ class PpeController extends Controller
         $id = generateId('PPE');
         $this->model->create([
             'PpeID' => $id,
-            'EquipmentType' => sanitize($this->getInput('EquipmentType')),
-            'EmployeeName' => sanitize($this->getInput('EmployeeName')),
-            'IssueDate' => $this->getInput('IssueDate'),
+            'EquipmentType' => sanitize($this->getInput('PPESource')),
+            'EmployeeName' => sanitize($this->getInput('StaffID')),
+            'IssueDate' => $this->getInput('DateIssued'),
             'ExpiryDate' => $this->getInput('ExpiryDate'),
             'Condition' => sanitize($this->getInput('Condition')),
-            'Status' => sanitize($this->getInput('Status')),
+            'Status' => sanitize($this->getInput('Status', 'Active')),
             'Notes' => sanitize($this->getInput('Notes')),
         ]);
 

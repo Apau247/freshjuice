@@ -9,10 +9,10 @@ class AccidentModel extends Model
     public function getAllDetailed(): array
     {
         $sql = "
-            SELECT ar.*, u.FullName AS ReportedByName
+            SELECT ar.*, u.Name AS ReportedByName
             FROM {$this->table} ar
             LEFT JOIN users u ON ar.ReportedBy = u.UserID
-            ORDER BY ar.CreatedAt DESC
+            ORDER BY ar.created_at DESC
         ";
         return $this->query($sql);
     }

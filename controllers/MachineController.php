@@ -17,10 +17,10 @@ class MachineController extends Controller {
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->create([
-                'MachineID' => $this->getInput('MachineID'), 'Name' => $this->getInput('Name'),
-                'Type' => $this->getInput('Type'), 'Location' => $this->getInput('Location'),
-                'Status' => $this->getInput('Status', 'Operational'),
-                'InstallDate' => $this->getInput('InstallDate'),
+                'MachineID' => $this->getInput('MachineID'), 'Name' => $this->getInput('name'),
+                'Type' => $this->getInput('type'), 'Location' => $this->getInput('location'),
+                'Status' => $this->getInput('status', 'Operational'),
+                'InstallDate' => $this->getInput('install_date'),
             ]);
             setFlash('success', 'Machine created.');
             $this->redirect('machines');
@@ -35,10 +35,10 @@ class MachineController extends Controller {
         if (!$machine) { setFlash('error', 'Not found.'); $this->redirect('machines'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->update($id, [
-                'Name' => $this->getInput('Name'), 'Type' => $this->getInput('Type'),
-                'Location' => $this->getInput('Location'),
-                'Status' => $this->getInput('Status'),
-                'LastService' => $this->getInput('LastService'),
+                'Name' => $this->getInput('name'), 'Type' => $this->getInput('type'),
+                'Location' => $this->getInput('location'),
+                'Status' => $this->getInput('status'),
+                'LastService' => $this->getInput('last_service'),
             ]);
             setFlash('success', 'Machine updated.');
             $this->redirect('machines');

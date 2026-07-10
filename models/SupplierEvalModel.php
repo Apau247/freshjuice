@@ -9,7 +9,7 @@ class SupplierEvalModel extends Model
     public function getAllDetailed(): array
     {
         $sql = "
-            SELECT se.*, s.SupplierName, u.FullName AS EvaluatedByName
+            SELECT se.*, s.Name AS SupplierName, u.Name AS EvaluatedByName
             FROM {$this->table} se
             LEFT JOIN suppliers s ON se.SupplierID = s.SupplierID
             LEFT JOIN users u ON se.EvaluatedBy = u.UserID
@@ -21,7 +21,7 @@ class SupplierEvalModel extends Model
     public function getLatestBySupplier(int $supplierId): ?array
     {
         $sql = "
-            SELECT se.*, s.SupplierName, u.FullName AS EvaluatedByName
+            SELECT se.*, s.Name AS SupplierName, u.Name AS EvaluatedByName
             FROM {$this->table} se
             LEFT JOIN suppliers s ON se.SupplierID = s.SupplierID
             LEFT JOIN users u ON se.EvaluatedBy = u.UserID

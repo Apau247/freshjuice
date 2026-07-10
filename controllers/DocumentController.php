@@ -30,14 +30,14 @@ class DocumentController extends Controller
         $this->model->create([
             'DocumentID' => $id,
             'Title' => sanitize($this->getInput('Title')),
-            'DocumentType' => sanitize($this->getInput('DocumentType')),
+            'DocumentType' => sanitize($this->getInput('DocType')),
             'Version' => sanitize($this->getInput('Version')),
-            'Author' => sanitize($this->getInput('Author')),
-            'CreatedDate' => $this->getInput('CreatedDate'),
+            'Author' => sanitize($this->getInput('Department')),
+            'CreatedDate' => $this->getInput('EffectiveDate'),
             'ReviewDate' => $this->getInput('ReviewDate'),
             'Status' => sanitize($this->getInput('Status')),
             'FilePath' => sanitize($this->getInput('FilePath')),
-            'Notes' => sanitize($this->getInput('Notes')),
+            'Notes' => sanitize($this->getInput('Description')),
         ]);
 
         logAudit($_SESSION['user_id'], 'create', 'document', $id, 'Created document record');
@@ -57,14 +57,14 @@ class DocumentController extends Controller
 
         $this->model->update($id, [
             'Title' => sanitize($this->getInput('Title')),
-            'DocumentType' => sanitize($this->getInput('DocumentType')),
+            'DocumentType' => sanitize($this->getInput('DocType')),
             'Version' => sanitize($this->getInput('Version')),
-            'Author' => sanitize($this->getInput('Author')),
-            'CreatedDate' => $this->getInput('CreatedDate'),
+            'Author' => sanitize($this->getInput('Department')),
+            'CreatedDate' => $this->getInput('EffectiveDate'),
             'ReviewDate' => $this->getInput('ReviewDate'),
             'Status' => sanitize($this->getInput('Status')),
             'FilePath' => sanitize($this->getInput('FilePath')),
-            'Notes' => sanitize($this->getInput('Notes')),
+            'Notes' => sanitize($this->getInput('Description')),
         ]);
 
         logAudit($_SESSION['user_id'], 'update', 'document', $id, 'Updated document record');

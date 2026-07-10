@@ -11,7 +11,7 @@ class TrainingController extends Controller
     public function index()
     {
         $data = [
-            'records' => $this->model->getAllDetailed(),
+            'trainings' => $this->model->getAllDetailed(),
             'completionStats' => $this->model->getCompletionStats(),
         ];
         $this->render('index', $data);
@@ -29,12 +29,12 @@ class TrainingController extends Controller
         $id = generateId('TRN');
         $this->model->create([
             'TrainingID' => $id,
-            'EmployeeName' => sanitize($this->getInput('EmployeeName')),
+            'EmployeeName' => sanitize($this->getInput('StaffID')),
             'TrainingType' => sanitize($this->getInput('TrainingType')),
             'TrainingDate' => $this->getInput('TrainingDate'),
-            'CompletionStatus' => sanitize($this->getInput('CompletionStatus')),
-            'Score' => $this->getInput('Score'),
-            'CertificationExpiry' => $this->getInput('CertificationExpiry'),
+            'CompletionStatus' => sanitize($this->getInput('Status')),
+            'Score' => $this->getInput('Duration'),
+            'CertificationExpiry' => $this->getInput('ExpiryDate'),
             'Notes' => sanitize($this->getInput('Notes')),
         ]);
 
@@ -54,12 +54,12 @@ class TrainingController extends Controller
         $id = $this->getInput('TrainingID');
 
         $this->model->update($id, [
-            'EmployeeName' => sanitize($this->getInput('EmployeeName')),
+            'EmployeeName' => sanitize($this->getInput('StaffID')),
             'TrainingType' => sanitize($this->getInput('TrainingType')),
             'TrainingDate' => $this->getInput('TrainingDate'),
-            'CompletionStatus' => sanitize($this->getInput('CompletionStatus')),
-            'Score' => $this->getInput('Score'),
-            'CertificationExpiry' => $this->getInput('CertificationExpiry'),
+            'CompletionStatus' => sanitize($this->getInput('Status')),
+            'Score' => $this->getInput('Duration'),
+            'CertificationExpiry' => $this->getInput('ExpiryDate'),
             'Notes' => sanitize($this->getInput('Notes')),
         ]);
 

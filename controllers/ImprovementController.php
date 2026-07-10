@@ -11,7 +11,7 @@ class ImprovementController extends Controller
     public function index()
     {
         $data = [
-            'improvements' => $this->model->getAllDetailed(),
+            'initiatives' => $this->model->getAllDetailed(),
             'statusCounts' => $this->model->getStatusCounts(),
             'overdue' => $this->model->getOverdue(),
         ];
@@ -33,11 +33,11 @@ class ImprovementController extends Controller
             'Title' => sanitize($this->getInput('Title')),
             'Description' => sanitize($this->getInput('Description')),
             'Category' => sanitize($this->getInput('Category')),
-            'Priority' => sanitize($this->getInput('Priority')),
-            'AssignedTo' => sanitize($this->getInput('AssignedTo')),
+            'Priority' => sanitize($this->getInput('Status')),
+            'AssignedTo' => sanitize($this->getInput('ResponsiblePerson')),
             'TargetDate' => $this->getInput('TargetDate'),
             'Status' => sanitize($this->getInput('Status')),
-            'Progress' => $this->getInput('Progress'),
+            'Progress' => $this->getInput('Effectiveness'),
         ]);
 
         logAudit($_SESSION['user_id'], 'create', 'improvement', $id, 'Created improvement record');
@@ -59,11 +59,11 @@ class ImprovementController extends Controller
             'Title' => sanitize($this->getInput('Title')),
             'Description' => sanitize($this->getInput('Description')),
             'Category' => sanitize($this->getInput('Category')),
-            'Priority' => sanitize($this->getInput('Priority')),
-            'AssignedTo' => sanitize($this->getInput('AssignedTo')),
+            'Priority' => sanitize($this->getInput('Status')),
+            'AssignedTo' => sanitize($this->getInput('ResponsiblePerson')),
             'TargetDate' => $this->getInput('TargetDate'),
             'Status' => sanitize($this->getInput('Status')),
-            'Progress' => $this->getInput('Progress'),
+            'Progress' => $this->getInput('Effectiveness'),
         ]);
 
         logAudit($_SESSION['user_id'], 'update', 'improvement', $id, 'Updated improvement record');

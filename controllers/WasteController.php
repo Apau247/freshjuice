@@ -19,13 +19,13 @@ class WasteController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->create([
                 'WasteID' => $this->getInput('WasteID'),
-                'Date' => $this->getInput('Date'),
-                'WasteType' => $this->getInput('WasteType', 'Production'),
-                'Quantity' => (float)$this->getInput('Quantity', '0'),
-                'Unit' => $this->getInput('Unit', 'kg'),
-                'DisposalMethod' => $this->getInput('DisposalMethod', 'Landfill'),
-                'BatchID' => $this->getInput('BatchID') ?: null,
-                'EnvironmentalImpact' => $this->getInput('EnvironmentalImpact'),
+                'Date' => $this->getInput('date'),
+                'WasteType' => $this->getInput('waste_type', 'Production'),
+                'Quantity' => (float)$this->getInput('quantity', '0'),
+                'Unit' => $this->getInput('unit', 'kg'),
+                'DisposalMethod' => $this->getInput('disposal_method', 'Landfill'),
+                'BatchID' => $this->getInput('batch_id') ?: null,
+                'EnvironmentalImpact' => $this->getInput('environmental_impact'),
                 'RecordedBy' => $_SESSION['user_id'] ?? null,
             ]);
             setFlash('success', 'Waste record created.');

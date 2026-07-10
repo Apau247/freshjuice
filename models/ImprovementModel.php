@@ -9,10 +9,10 @@ class ImprovementModel extends Model
     public function getAllDetailed(): array
     {
         $sql = "
-            SELECT ii.*, u.FullName AS CreatedByName, ii.ResponsiblePerson
+            SELECT ii.*, u.Name AS CreatedByName, ii.ResponsiblePerson
             FROM {$this->table} ii
             LEFT JOIN users u ON ii.CreatedBy = u.UserID
-            ORDER BY ii.CreatedAt DESC
+            ORDER BY ii.created_at DESC
         ";
         return $this->query($sql);
     }
@@ -36,7 +36,7 @@ class ImprovementModel extends Model
     public function getOverdue(): array
     {
         $sql = "
-            SELECT ii.*, u.FullName AS CreatedByName
+            SELECT ii.*, u.Name AS CreatedByName
             FROM {$this->table} ii
             LEFT JOIN users u ON ii.CreatedBy = u.UserID
             WHERE ii.TargetDate < CURDATE()

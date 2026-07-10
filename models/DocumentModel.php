@@ -9,7 +9,7 @@ class DocumentModel extends Model
     public function getAllDetailed(): array
     {
         $sql = "
-            SELECT d.*, u.FullName AS ApprovedByName
+            SELECT d.*, u.Name AS ApprovedByName
             FROM {$this->table} d
             LEFT JOIN users u ON d.ApprovedBy = u.UserID
             ORDER BY d.created_at DESC
@@ -20,7 +20,7 @@ class DocumentModel extends Model
     public function getRecent(int $limit = 10): array
     {
         $sql = "
-            SELECT d.*, u.FullName AS ApprovedByName
+            SELECT d.*, u.Name AS ApprovedByName
             FROM {$this->table} d
             LEFT JOIN users u ON d.ApprovedBy = u.UserID
             ORDER BY d.created_at DESC
@@ -32,7 +32,7 @@ class DocumentModel extends Model
     public function getUnderReview(): array
     {
         $sql = "
-            SELECT d.*, u.FullName AS ApprovedByName
+            SELECT d.*, u.Name AS ApprovedByName
             FROM {$this->table} d
             LEFT JOIN users u ON d.ApprovedBy = u.UserID
             WHERE d.Status = 'Under Review'

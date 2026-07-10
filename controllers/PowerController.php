@@ -22,10 +22,10 @@ class PowerController extends Controller {
             $this->model->db->prepare(
                 "INSERT INTO power_usage (PowerUsageID, Date, Source, ConsumptionKWh, Cost, Notes) VALUES (?,?,?,?,?,?)"
             )->execute([
-                $this->getInput('PowerUsageID'), $this->getInput('Date'),
-                $this->getInput('Source', 'Grid'),
-                (float)$this->getInput('ConsumptionKWh', '0'),
-                (float)$this->getInput('Cost', '0'), $this->getInput('Notes'),
+                $this->getInput('PowerUsageID'), $this->getInput('date'),
+                $this->getInput('source', 'Grid'),
+                (float)$this->getInput('consumption_kwh', '0'),
+                (float)$this->getInput('cost', '0'), $this->getInput('notes'),
             ]);
             setFlash('success', 'Power usage recorded.');
             $this->redirect('power');
@@ -39,12 +39,12 @@ class PowerController extends Controller {
             $this->model->db->prepare(
                 "INSERT INTO generator_log (LogID, Date, StartTime, EndTime, RuntimeHrs, FuelUsed, FuelUnit, Reason, Notes) VALUES (?,?,?,?,?,?,?,?,?)"
             )->execute([
-                $this->getInput('LogID'), $this->getInput('Date'),
-                $this->getInput('StartTime'), $this->getInput('EndTime'),
-                (float)$this->getInput('RuntimeHrs', '0'),
-                (float)$this->getInput('FuelUsed', '0'),
-                $this->getInput('FuelUnit', 'litres'),
-                $this->getInput('Reason'), $this->getInput('Notes'),
+                $this->getInput('LogID'), $this->getInput('date'),
+                $this->getInput('start_time'), $this->getInput('end_time'),
+                (float)$this->getInput('runtime_hrs', '0'),
+                (float)$this->getInput('fuel_used', '0'),
+                $this->getInput('fuel_unit', 'litres'),
+                $this->getInput('reason'), $this->getInput('notes'),
             ]);
             setFlash('success', 'Generator log recorded.');
             $this->redirect('power');

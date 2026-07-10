@@ -19,18 +19,18 @@ class QualityController extends Controller {
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $this->getInput('InspectionID');
-            $result = $this->getInput('Result', 'Pending');
-            $batchId = $this->getInput('BatchID');
+            $result = $this->getInput('result', 'Pending');
+            $batchId = $this->getInput('batch_id');
 
             $this->model->create([
                 'InspectionID' => $id,
-                'InspectionType' => $this->getInput('InspectionType'),
+                'InspectionType' => $this->getInput('inspection_type'),
                 'BatchID' => $batchId ?: null,
-                'InspectionDate' => $this->getInput('InspectionDate'),
+                'InspectionDate' => $this->getInput('inspection_date'),
                 'Result' => $result,
-                'DefectsFound' => $this->getInput('DefectsFound'),
-                'TestResults' => $this->getInput('TestResults'),
-                'CAPA' => $this->getInput('CAPA'),
+                'DefectsFound' => $this->getInput('defects_found'),
+                'TestResults' => $this->getInput('test_results'),
+                'CAPA' => $this->getInput('capa'),
                 'InspectorID' => $_SESSION['user_id'] ?? null,
                 'Status' => $result === 'Pass' ? 'Closed' : 'Open',
             ]);
@@ -69,12 +69,12 @@ class QualityController extends Controller {
         $item = $this->model->find($id);
         if (!$item) { setFlash('error', 'Not found.'); $this->redirect('quality'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $result = $this->getInput('Result');
+            $result = $this->getInput('result');
             $this->model->update($id, [
-                'InspectionType' => $this->getInput('InspectionType'),
-                'Result' => $result, 'DefectsFound' => $this->getInput('DefectsFound'),
-                'TestResults' => $this->getInput('TestResults'),
-                'CAPA' => $this->getInput('CAPA'),
+                'InspectionType' => $this->getInput('inspection_type'),
+                'Result' => $result, 'DefectsFound' => $this->getInput('defects_found'),
+                'TestResults' => $this->getInput('test_results'),
+                'CAPA' => $this->getInput('capa'),
                 'Status' => $result === 'Pass' ? 'Closed' : 'Open',
             ]);
 

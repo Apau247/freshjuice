@@ -17,21 +17,21 @@ class MaintenanceController extends Controller {
 
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $machineId = $this->getInput('MachineID');
+            $machineId = $this->getInput('machine_id');
             $this->model->create([
                 'MaintenanceID' => $this->getInput('MaintenanceID'),
-                'MaintenanceType' => $this->getInput('MaintenanceType', 'Preventive'),
-                'MaintenanceDate' => $this->getInput('MaintenanceDate'),
-                'Downtime' => (float)$this->getInput('Downtime', '0'),
-                'Cost' => (float)$this->getInput('Cost', '0'),
+                'MaintenanceType' => $this->getInput('maintenance_type', 'Preventive'),
+                'MaintenanceDate' => $this->getInput('maintenance_date'),
+                'Downtime' => (float)$this->getInput('downtime', '0'),
+                'Cost' => (float)$this->getInput('cost', '0'),
                 'MachineID' => $machineId,
-                'TechnicianID' => $_SESSION['user_id'] ?? null,
-                'Description' => $this->getInput('Description'),
-                'SpareParts' => $this->getInput('SpareParts'),
-                'Status' => $this->getInput('Status', 'Scheduled'),
-                'NextServiceDate' => $this->getInput('NextServiceDate'),
+                'TechnicianID' => $this->getInput('technician_id') ?: ($_SESSION['user_id'] ?? null),
+                'Description' => $this->getInput('description'),
+                'SpareParts' => $this->getInput('spare_parts'),
+                'Status' => $this->getInput('status', 'Scheduled'),
+                'NextServiceDate' => $this->getInput('next_service_date'),
             ]);
-            if ($machineId && $this->getInput('Status') === 'In Progress') {
+            if ($machineId && $this->getInput('status') === 'In Progress') {
                 (new MachineModel())->update($machineId, ['Status' => 'Maintenance']);
             }
             setFlash('success', 'Maintenance record created.');
@@ -47,15 +47,15 @@ class MaintenanceController extends Controller {
         if (!$rec) { setFlash('error', 'Not found.'); $this->redirect('maintenance'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->update($id, [
-                'MaintenanceType' => $this->getInput('MaintenanceType'),
-                'MaintenanceDate' => $this->getInput('MaintenanceDate'),
-                'Downtime' => (float)$this->getInput('Downtime', '0'),
-                'Cost' => (float)$this->getInput('Cost', '0'),
-                'MachineID' => $this->getInput('MachineID'),
-                'Description' => $this->getInput('Description'),
-                'SpareParts' => $this->getInput('SpareParts'),
-                'Status' => $this->getInput('Status'),
-                'NextServiceDate' => $this->getInput('NextServiceDate'),
+                'MaintenanceType' => $this->getInput('maintenance_type'),
+                'MaintenanceDate' => $this->getInput('maintenance_date'),
+                'Downtime' => (float)$this->getInput('downtime', '0'),
+                'Cost' => (float)$this->getInput('cost', '0'),
+                'MachineID' => $this->getInput('machine_id'),
+                'Description' => $this->getInput('description'),
+                'SpareParts' => $this->getInput('spare_parts'),
+                'Status' => $this->getInput('status'),
+                'NextServiceDate' => $this->getInput('next_service_date'),
             ]);
             setFlash('success', 'Maintenance record updated.');
             $this->redirect('maintenance');

@@ -28,14 +28,14 @@ class AccidentController extends Controller
         $id = generateId('ACC');
         $this->model->create([
             'AccidentID' => $id,
-            'AccidentDate' => $this->getInput('AccidentDate'),
+            'AccidentDate' => $this->getInput('IncidentDate'),
             'Location' => sanitize($this->getInput('Location')),
             'Description' => sanitize($this->getInput('Description')),
-            'InjurySeverity' => sanitize($this->getInput('InjurySeverity')),
+            'InjurySeverity' => sanitize($this->getInput('Injuries')),
             'InjuredPerson' => sanitize($this->getInput('InjuredPerson')),
             'Witnesses' => sanitize($this->getInput('Witnesses')),
             'RootCause' => sanitize($this->getInput('RootCause')),
-            'CorrectiveActions' => sanitize($this->getInput('CorrectiveActions')),
+            'CorrectiveActions' => sanitize($this->getInput('CorrectiveAction')),
             'Status' => sanitize($this->getInput('Status')),
         ]);
 
@@ -55,14 +55,14 @@ class AccidentController extends Controller
         $id = $this->getInput('AccidentID');
 
         $this->model->update($id, [
-            'AccidentDate' => $this->getInput('AccidentDate'),
+            'AccidentDate' => $this->getInput('IncidentDate'),
             'Location' => sanitize($this->getInput('Location')),
             'Description' => sanitize($this->getInput('Description')),
-            'InjurySeverity' => sanitize($this->getInput('InjurySeverity')),
+            'InjurySeverity' => sanitize($this->getInput('Injuries')),
             'InjuredPerson' => sanitize($this->getInput('InjuredPerson')),
             'Witnesses' => sanitize($this->getInput('Witnesses')),
             'RootCause' => sanitize($this->getInput('RootCause')),
-            'CorrectiveActions' => sanitize($this->getInput('CorrectiveActions')),
+            'CorrectiveActions' => sanitize($this->getInput('CorrectiveAction')),
             'Status' => sanitize($this->getInput('Status')),
         ]);
 

@@ -23,7 +23,7 @@ class FatController extends Controller
             $data = [
                 'machines' => $machineModel->all(),
             ];
-            $this->render('create', $data);
+            $this->render('fat_form', $data);
             return;
         }
 
@@ -36,7 +36,7 @@ class FatController extends Controller
             'TestDate' => $this->getInput('TestDate'),
             'TestType' => sanitize($this->getInput('TestType')),
             'Result' => sanitize($this->getInput('Result')),
-            'PerformedBy' => sanitize($this->getInput('PerformedBy')),
+            'PerformedBy' => sanitize($_SESSION['user_id'] ?? ''),
             'Notes' => sanitize($this->getInput('Notes')),
             'Status' => sanitize($this->getInput('Status')),
         ]);
@@ -61,7 +61,7 @@ class FatController extends Controller
             'TestDate' => $this->getInput('TestDate'),
             'TestType' => sanitize($this->getInput('TestType')),
             'Result' => sanitize($this->getInput('Result')),
-            'PerformedBy' => sanitize($this->getInput('PerformedBy')),
+            'PerformedBy' => sanitize($_SESSION['user_id'] ?? ''),
             'Notes' => sanitize($this->getInput('Notes')),
             'Status' => sanitize($this->getInput('Status')),
         ]);

@@ -9,11 +9,11 @@ class FatModel extends Model
     public function getAllDetailed(): array
     {
         $sql = "
-            SELECT fr.*, m.MachineName, u.FullName AS RecordedByName
+            SELECT fr.*, m.Name AS MachineName, u.Name AS TestedByName
             FROM {$this->table} fr
             LEFT JOIN machines m ON fr.MachineID = m.MachineID
-            LEFT JOIN users u ON fr.RecordedBy = u.UserID
-            ORDER BY fr.CreatedAt DESC
+            LEFT JOIN users u ON fr.TestedBy = u.UserID
+            ORDER BY fr.created_at DESC
         ";
         return $this->query($sql);
     }
@@ -21,12 +21,12 @@ class FatModel extends Model
     public function getPending(): array
     {
         $sql = "
-            SELECT fr.*, m.MachineName, u.FullName AS RecordedByName
+            SELECT fr.*, m.Name AS MachineName, u.Name AS TestedByName
             FROM {$this->table} fr
             LEFT JOIN machines m ON fr.MachineID = m.MachineID
-            LEFT JOIN users u ON fr.RecordedBy = u.UserID
+            LEFT JOIN users u ON fr.TestedBy = u.UserID
             WHERE fr.Status IN ('Pending', 'In Progress')
-            ORDER BY fr.CreatedAt DESC
+            ORDER BY fr.created_at DESC
         ";
         return $this->query($sql);
     }

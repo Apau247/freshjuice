@@ -23,27 +23,37 @@ class SupplierEvalController extends Controller
             $data = [
                 'suppliers' => $supplierModel->all(),
             ];
-            $this->render('create', $data);
+            $this->render('evaluation_form', $data);
             return;
         }
 
         $this->requireRole('admin', 'manager');
 
         $id = generateId('SLE');
+        $strengths = $this->getInput('Strengths');
+        $weaknesses = $this->getInput('Weaknesses');
+        $recommendations = $this->getInput('Recommendations');
+        $comments = trim($strengths . "\n" . $weaknesses . "\n" . $recommendations);
+
+        $q = (int)$this->getInput('QualityScore');
+        $d = (int)$this->getInput('DeliveryScore');
+        $p = (int)$this->getInput('PriceScore');
+        $overall = ($q + $d + $p) / 3;
+
         $this->model->create([
             'EvalID' => $id,
             'SupplierID' => sanitize($this->getInput('SupplierID')),
             'EvaluationDate' => $this->getInput('EvaluationDate'),
-            'QualityScore' => $this->getInput('QualityScore'),
-            'DeliveryScore' => $this->getInput('DeliveryScore'),
-            'PriceScore' => $this->getInput('PriceScore'),
-            'OverallScore' => $this->getInput('OverallScore'),
-            'Comments' => sanitize($this->getInput('Comments')),
-            'Evaluator' => sanitize($this->getInput('Evaluator')),
+            'QualityScore' => $q,
+            'DeliveryScore' => $d,
+            'PriceScore' => $p,
+            'OverallScore' => round($overall, 1),
+            'Comments' => sanitize($comments),
+            'Evaluator' => $_SESSION['user_id'] ?? null,
         ]);
 
         logAudit($_SESSION['user_id'], 'create', 'supplier_eval', $id, 'Created supplier evaluation');
         setFlash('success', 'Supplier evaluation created successfully.');
-        $this->redirect('suppliers');
+        $this->redirect('suppliers/evaluations');
     }
 }

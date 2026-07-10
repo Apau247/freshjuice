@@ -21,9 +21,9 @@ class FinishedGoodsController extends Controller {
         if (!$item) { setFlash('error', 'Not found.'); $this->redirect('finished-goods'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->update($id, [
-                'ExpiryDate' => $this->getInput('ExpiryDate'),
-                'QuantityAvailable' => (float)$this->getInput('QuantityAvailable', '0'),
-                'StorageLocation' => $this->getInput('StorageLocation'),
+                'ExpiryDate' => $this->getInput('expiry_date'),
+                'QuantityAvailable' => (float)$this->getInput('quantity_available', '0'),
+                'StorageLocation' => $this->getInput('storage_location'),
             ]);
             setFlash('success', 'Finished good updated.');
             $this->redirect('finished-goods');

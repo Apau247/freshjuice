@@ -2,8 +2,10 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h5 class="fw-bold mb-0"><i class="bi bi-file-text me-2"></i><?= $pageTitle ?></h5>
     <div>
+        <?php if (canCreate('sops')): ?>
         <a href="?route=sops/template/form" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> New Template</a>
         <a href="?route=sops/checklist/form" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-lg"></i> New Checklist</a>
+        <?php endif; ?>
     </div>
 </div>
 

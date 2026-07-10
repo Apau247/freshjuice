@@ -19,13 +19,13 @@ class StaffController extends Controller {
             $this->model->create([
                 'StaffID' => $this->getInput('StaffID'),
                 'UserID' => $this->getInput('UserID') ?: null,
-                'FirstName' => $this->getInput('FirstName'),
-                'LastName' => $this->getInput('LastName'),
-                'Email' => $this->getInput('Email'),
-                'Phone' => $this->getInput('Phone'),
-                'Department' => $this->getInput('Department'),
-                'Position' => $this->getInput('Position'),
-                'DateHired' => $this->getInput('DateHired'),
+                'FirstName' => $this->getInput('first_name'),
+                'LastName' => $this->getInput('last_name'),
+                'Email' => $this->getInput('email'),
+                'Phone' => $this->getInput('phone'),
+                'Department' => $this->getInput('department'),
+                'Position' => $this->getInput('position'),
+                'DateHired' => $this->getInput('date_hired'),
             ]);
             setFlash('success', 'Staff created.');
             $this->redirect('staff');
@@ -40,13 +40,13 @@ class StaffController extends Controller {
         if (!$person) { setFlash('error', 'Not found.'); $this->redirect('staff'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->update($id, [
-                'FirstName' => $this->getInput('FirstName'),
-                'LastName' => $this->getInput('LastName'),
-                'Email' => $this->getInput('Email'),
-                'Phone' => $this->getInput('Phone'),
-                'Department' => $this->getInput('Department'),
-                'Position' => $this->getInput('Position'),
-                'Status' => $this->getInput('Status'),
+                'FirstName' => $this->getInput('first_name'),
+                'LastName' => $this->getInput('last_name'),
+                'Email' => $this->getInput('email'),
+                'Phone' => $this->getInput('phone'),
+                'Department' => $this->getInput('department'),
+                'Position' => $this->getInput('position'),
+                'Status' => $this->getInput('status'),
             ]);
             setFlash('success', 'Staff updated.');
             $this->redirect('staff');

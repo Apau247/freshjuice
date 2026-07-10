@@ -11,7 +11,7 @@ class EfficiencyController extends Controller
     public function index()
     {
         $data = [
-            'records' => $this->model->getAllDetailed(),
+            'efficiencies' => $this->model->getAllDetailed(),
             'monthlyOEE' => $this->model->getMonthlyOEE(),
         ];
         $this->render('index', $data);

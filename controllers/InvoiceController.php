@@ -19,13 +19,13 @@ class InvoiceController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->create([
                 'InvoiceID' => $this->getInput('InvoiceID'),
-                'InvoiceDate' => $this->getInput('InvoiceDate'),
-                'Amount' => (float)$this->getInput('Amount', '0'),
-                'Tax' => (float)$this->getInput('Tax', '0'),
-                'TotalDue' => (float)$this->getInput('TotalDue', '0'),
-                'PaymentStatus' => $this->getInput('PaymentStatus', 'Unpaid'),
-                'DueDate' => $this->getInput('DueDate'),
-                'OrderID' => $this->getInput('OrderID'),
+                'InvoiceDate' => $this->getInput('invoice_date'),
+                'Amount' => (float)$this->getInput('amount', '0'),
+                'Tax' => (float)$this->getInput('tax', '0'),
+                'TotalDue' => (float)$this->getInput('total_due', '0'),
+                'PaymentStatus' => $this->getInput('payment_status', 'Unpaid'),
+                'DueDate' => $this->getInput('due_date'),
+                'OrderID' => $this->getInput('order_id'),
             ]);
             setFlash('success', 'Invoice created.');
             $this->redirect('invoicing');
@@ -40,13 +40,13 @@ class InvoiceController extends Controller {
         if (!$inv) { setFlash('error', 'Not found.'); $this->redirect('invoicing'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->update($id, [
-                'InvoiceDate' => $this->getInput('InvoiceDate'),
-                'Amount' => (float)$this->getInput('Amount', '0'),
-                'Tax' => (float)$this->getInput('Tax', '0'),
-                'TotalDue' => (float)$this->getInput('TotalDue', '0'),
-                'PaymentStatus' => $this->getInput('PaymentStatus'),
-                'DueDate' => $this->getInput('DueDate'),
-                'OrderID' => $this->getInput('OrderID'),
+                'InvoiceDate' => $this->getInput('invoice_date'),
+                'Amount' => (float)$this->getInput('amount', '0'),
+                'Tax' => (float)$this->getInput('tax', '0'),
+                'TotalDue' => (float)$this->getInput('total_due', '0'),
+                'PaymentStatus' => $this->getInput('payment_status'),
+                'DueDate' => $this->getInput('due_date'),
+                'OrderID' => $this->getInput('order_id'),
             ]);
             setFlash('success', 'Invoice updated.');
             $this->redirect('invoicing');

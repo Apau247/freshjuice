@@ -30,11 +30,11 @@ class HazardController extends Controller
         $this->model->create([
             'HazardID' => $id,
             'HazardDescription' => sanitize($this->getInput('HazardDescription')),
-            'RiskLevel' => sanitize($this->getInput('RiskLevel')),
+            'RiskLevel' => sanitize($this->getInput('RiskCategory')),
             'Location' => sanitize($this->getInput('Location')),
             'IdentifiedDate' => $this->getInput('IdentifiedDate'),
             'Status' => sanitize($this->getInput('Status')),
-            'MitigationPlan' => sanitize($this->getInput('MitigationPlan')),
+            'MitigationPlan' => sanitize($this->getInput('ControlMeasures')),
         ]);
 
         logAudit($_SESSION['user_id'], 'create', 'hazard', $id, 'Created hazard record');
@@ -54,11 +54,11 @@ class HazardController extends Controller
 
         $this->model->update($id, [
             'HazardDescription' => sanitize($this->getInput('HazardDescription')),
-            'RiskLevel' => sanitize($this->getInput('RiskLevel')),
+            'RiskLevel' => sanitize($this->getInput('RiskCategory')),
             'Location' => sanitize($this->getInput('Location')),
             'IdentifiedDate' => $this->getInput('IdentifiedDate'),
             'Status' => sanitize($this->getInput('Status')),
-            'MitigationPlan' => sanitize($this->getInput('MitigationPlan')),
+            'MitigationPlan' => sanitize($this->getInput('ControlMeasures')),
         ]);
 
         logAudit($_SESSION['user_id'], 'update', 'hazard', $id, 'Updated hazard record');

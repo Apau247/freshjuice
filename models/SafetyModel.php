@@ -9,7 +9,7 @@ class SafetyModel extends Model
     public function getAllDetailed(): array
     {
         $sql = "
-            SELECT si.*, u.FullName AS InspectorName
+            SELECT si.*, u.Name AS InspectorName
             FROM {$this->table} si
             LEFT JOIN users u ON si.InspectorID = u.UserID
             ORDER BY si.InspectionDate DESC
