@@ -50,3 +50,8 @@
 
 .expiry-warning { color: #dc3545; font-weight: 600; }
 .expiry-ok { color: #28a745; }
+
+/* Dashboard fullscreen mode */
+.dashboard-fullscreen #sidebar { display: none !important; }
+.dashboard-fullscreen #page-content-wrapper { margin-left: 0 !important; width: 100% !important; }
+.dashboard-fullscreen .navbar { display: none !important; }

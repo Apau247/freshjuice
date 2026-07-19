@@ -1,72 +1,58 @@
-<?php $pageTitle = isset($_GET['id']) ? 'Edit Document' : 'Add Document'; ?>
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4><i class="fas fa-file-alt me-2"></i><?php echo $pageTitle; ?></h4>
-        <a href="?route=documents/index" class="btn btn-secondary"><i class="fas fa-arrow-left me-1"></i>Back to Documents</a>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
-            <form method="POST" action="?route=documents/save">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="DocID" class="form-label">Document ID <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="DocID" name="DocID" value="<?php echo sanitize($document['DocID'] ?? ''); ?>" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="Title" class="form-label">Title <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="Title" name="Title" value="<?php echo sanitize($document['Title'] ?? ''); ?>" required>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label for="DocType" class="form-label">Document Type <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="DocType" name="DocType" value="<?php echo sanitize($document['DocType'] ?? ''); ?>" required>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="Version" class="form-label">Version <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="Version" name="Version" value="<?php echo sanitize($document['Version'] ?? '1.0'); ?>" required>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="Department" class="form-label">Department</label>
-                        <input type="text" class="form-control" id="Department" name="Department" value="<?php echo sanitize($document['Department'] ?? ''); ?>">
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="FilePath" class="form-label">File Path</label>
-                    <input type="text" class="form-control" id="FilePath" name="FilePath" value="<?php echo sanitize($document['FilePath'] ?? ''); ?>">
-                </div>
-
-                <div class="mb-3">
-                    <label for="Description" class="form-label">Description</label>
-                    <textarea class="form-control" id="Description" name="Description" rows="3"><?php echo sanitize($document['Description'] ?? ''); ?></textarea>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label for="EffectiveDate" class="form-label">Effective Date</label>
-                        <input type="date" class="form-control" id="EffectiveDate" name="EffectiveDate" value="<?php echo sanitize($document['EffectiveDate'] ?? ''); ?>">
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="ReviewDate" class="form-label">Review Date</label>
-                        <input type="date" class="form-control" id="ReviewDate" name="ReviewDate" value="<?php echo sanitize($document['ReviewDate'] ?? ''); ?>">
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="Status" class="form-label">Status <span class="text-danger">*</span></label>
-                        <select class="form-select" id="Status" name="Status" required>
-                            <option value="Draft" <?php echo (isset($document['Status']) && $document['Status'] === 'Draft') ? 'selected' : ''; ?>>Draft</option>
-                            <option value="Under Review" <?php echo (isset($document['Status']) && $document['Status'] === 'Under Review') ? 'selected' : ''; ?>>Under Review</option>
-                            <option value="Approved" <?php echo (isset($document['Status']) && $document['Status'] === 'Approved') ? 'selected' : ''; ?>>Approved</option>
-                            <option value="Obsolete" <?php echo (isset($document['Status']) && $document['Status'] === 'Obsolete') ? 'selected' : ''; ?>>Obsolete</option>
-                        </select>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Save Document</button>
-                <a href="?route=documents/index" class="btn btn-secondary ms-2">Cancel</a>
-            </form>
-        </div>
+<?php $pageTitle = isset($document) ? 'Edit Document' : 'New Document'; ?>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold mb-0"><i class="bi bi-folder2-open me-2"></i><?= $pageTitle ?></h5>
+    <a href="?route=documents" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
+</div>
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <form method="POST" action="?route=<?= isset($document) ? 'documents/edit&id=' . urlencode($document['DocID']) : 'documents/create' ?>" class="row g-3">
+            <?= csrfField() ?>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Title <span class="text-danger">*</span></label>
+                <input type="text" name="title" class="form-control" value="<?= sanitize($document['Title'] ?? '') ?>" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Document Type <span class="text-danger">*</span></label>
+                <input type="text" name="doc_type" class="form-control" value="<?= sanitize($document['DocType'] ?? '') ?>" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Version</label>
+                <input type="text" name="version" class="form-control" value="<?= sanitize($document['Version'] ?? '1.0') ?>">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Department</label>
+                <input type="text" name="department" class="form-control" value="<?= sanitize($document['Department'] ?? '') ?>">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">File Path</label>
+                <input type="text" name="file_path" class="form-control" value="<?= sanitize($document['FilePath'] ?? '') ?>">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Status</label>
+                <select name="status" class="form-select">
+                    <?php $st = $document['Status'] ?? 'Draft'; ?>
+                    <option value="Draft" <?= $st === 'Draft' ? 'selected' : '' ?>>Draft</option>
+                    <option value="Under Review" <?= $st === 'Under Review' ? 'selected' : '' ?>>Under Review</option>
+                    <option value="Approved" <?= $st === 'Approved' ? 'selected' : '' ?>>Approved</option>
+                    <option value="Obsolete" <?= $st === 'Obsolete' ? 'selected' : '' ?>>Obsolete</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <label class="form-label fw-semibold">Description</label>
+                <textarea name="description" class="form-control" rows="3"><?= sanitize($document['Description'] ?? '') ?></textarea>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Effective Date</label>
+                <input type="date" name="effective_date" class="form-control" value="<?= sanitize($document['EffectiveDate'] ?? '') ?>">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Review Date</label>
+                <input type="date" name="review_date" class="form-control" value="<?= sanitize($document['ReviewDate'] ?? '') ?>">
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-success"><i class="bi bi-check-lg"></i> <?= isset($document) ? 'Update' : 'Create' ?> Document</button>
+                <a href="?route=documents" class="btn btn-outline-secondary ms-2">Cancel</a>
+            </div>
+        </form>
     </div>
 </div>

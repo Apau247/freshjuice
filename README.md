@@ -6,10 +6,10 @@ A comprehensive **web-based Factory Management System** for a Fresh Fruit Juice 
 
 | # | Module | Description |
 |---|--------|-------------|
-| 1 | **Supplier Management** | Supplier CRUD, fruit/ingredient delivery tracking |
+| 1 | **Supplier Management** | Supplier CRUD, fruit/ingredient delivery tracking, supplier evaluations |
 | 2 | **Raw Material Inventory** | Fruits, sugar, additives — stock in/out, low-stock alerts |
 | 3 | **Packaging Inventory** | Bottles, caps, labels, cartons, PVC wrappers |
-| 4 | **Production Management** | Batch creation, auto-numbering (FJ-20250710-001), stock deduction |
+| 4 | **Production Management** | Batch creation, auto-numbering, transactional stock deduction |
 | 5 | **Quality Assurance/QC** | Incoming, In-process, Finished inspections — Pass/Fail/CAPA |
 | 6 | **Finished Goods** | Auto-generated from approved batches, expiry tracking |
 | 7 | **Sales & Invoicing** | Customer management, orders, stock deduction, invoices |
@@ -21,7 +21,31 @@ A comprehensive **web-based Factory Management System** for a Fresh Fruit Juice 
 | 13 | **Certification Management** | FDA, HACCP, ISO 22000, GSA — expiry reminders |
 | 14 | **SOP Checklists** | Digital SOPs, checklist items, supervisor approval |
 
-Plus: **Audit Trail**, **RBAC** (8 roles), **Dashboard with Charts**, **DataTables**, **SweetAlert2**.
+### Additional Modules
+
+| Module | Description |
+|--------|-------------|
+| **Hazard Register** | Risk assessment with likelihood/consequence matrix and risk rating |
+| **Accident Reports** | Incident tracking with root cause analysis and corrective actions |
+| **Emergency Drills** | Drill scheduling, participants, outcomes, and issues |
+| **Permits & Licenses** | Permit tracking with expiry reminders |
+| **Training Records** | Staff training with certification expiry tracking |
+| **PPE Tracking** | Personal protective equipment issuance and condition |
+| **FAT Records** | Factory Acceptance Testing with pass/fail tracking |
+| **Document Control** | Controlled document management with versioning |
+| **CAPA / Initiatives** | Corrective and Preventive Actions with root cause analysis |
+| **OEE / Efficiency** | Overall Equipment Effectiveness with live OEE calculation |
+| **Machine Management** | Machine registry and status tracking |
+
+## Security Features
+
+- **CSRF Protection** — Tokens on all forms, validated at router level
+- **Session Security** — `httponly`, `samesite=Strict`, strict mode, session regen on login
+- **Rate Limiting** — Max 5 login attempts per user, 15-minute lockout window
+- **Input Sanitization** — All output escaped via `htmlspecialchars()`
+- **Prepared Statements** — PDO with `ERRMODE_EXCEPTION`, emulated prepares disabled
+- **RBAC** — 8 roles with per-module access control
+- **Audit Trail** — All CRUD operations logged with user, timestamp, and IP
 
 ## User Roles
 
@@ -40,8 +64,7 @@ Plus: **Audit Trail**, **RBAC** (8 roles), **Dashboard with Charts**, **DataTabl
 
 - PHP 8.2+
 - MySQL 8.0+
-- Apache with mod_rewrite
-- Composer (optional)
+- Apache with mod_rewrite (XAMPP/WAMP/MAMP)
 
 ## Installation
 
@@ -57,19 +80,20 @@ mysql -u root -p < sql/schema.sql
 mysql -u root -p < sql/sample_data.sql
 ```
 
-### 3. Configure
-Edit `config/database.php`:
-```php
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'freshjuice');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('APP_URL', 'http://localhost/freshjuice');
+### 3. Configure (optional)
+Copy `.env.example` to `.env` and edit your settings:
+```ini
+DB_HOST=localhost
+DB_NAME=freshjuice
+DB_USER=root
+DB_PASS=
+APP_URL=http://localhost/freshjuice
 ```
+Or edit `config/database.php` directly.
 
 ### 4. Access
 ```
-http://localhost/freshjuice
+http://localhost/freshjuice/freshjuice
 ```
 
 ## Default Login
@@ -85,21 +109,25 @@ http://localhost/freshjuice
 | USR-007 | password123 | Accountant |
 | USR-008 | password123 | Maintenance Engineer |
 
-> **Note:** Sample passwords use bcrypt hash of `password`. For production, update with proper hashes using `password_hash()`.
+> **Note:** Default passwords are hashed with bcrypt. For production, update with `password_hash()`.
 
-## Database Schema (24 Tables)
+## Database Schema (26+ Tables)
 
-`roles`, `users`, `staff`, `shifts`, `attendance`, `suppliers`, `supplier_deliveries`, `raw_materials`, `packaging_materials`, `machines`, `production_batches`, `quality_inspections`, `finished_goods`, `customers`, `sales_orders`, `invoices`, `maintenance_records`, `waste_records`, `water_usage`, `water_quality_tests`, `power_usage`, `generator_log`, `certifications`, `sop_templates`, `sop_checklists`, `audit_trail`
+`roles`, `users`, `staff`, `shifts`, `attendance`, `suppliers`, `supplier_deliveries`, `supplier_evaluations`, `raw_materials`, `packaging_materials`, `machines`, `machine_fat_records`, `production_batches`, `quality_inspections`, `finished_goods`, `customers`, `sales_orders`, `invoices`, `maintenance_records`, `waste_records`, `water_usage`, `water_quality_tests`, `power_usage`, `generator_log`, `certifications`, `sop_templates`, `sop_checklists`, `safety_inspections`, `hazard_register`, `accident_reports`, `emergency_drills`, `permits`, `training_records`, `ppe_records`, `documents`, `capa_initiatives`, `oee_records`, `audit_trail`
 
 ## Project Structure
 
 ```
 freshjuice/
-├── config/database.php
-├── models/          (18 model files)
-├── controllers/     (19 controller files)
+├── config/
+│   ├── database.php          # DB config, session, CSRF, helpers
+│   └── permissions.php       # RBAC permission matrix
+├── models/                   # 20+ model files
+├── controllers/              # 25+ controller files
+├── auth/
+│   └── AuthController.php    # Login/logout with CSRF & rate limiting
 ├── views/
-│   ├── layouts/main.php
+│   ├── layouts/main.php      # Sidebar, navbar, flash messages
 │   ├── auth/
 │   ├── dashboard/
 │   ├── suppliers/
@@ -118,26 +146,39 @@ freshjuice/
 │   ├── power/
 │   ├── certifications/
 │   ├── sops/
+│   ├── safety/
+│   ├── improvement/
+│   ├── efficiency/
+│   ├── documents/
+│   ├── permits/
+│   ├── training/
+│   ├── ppe/
 │   └── users/
-├── assets/css/style.css
-├── assets/js/app.js
-├── auth/AuthController.php
-├── public/index.php
-├── sql/schema.sql
-├── sql/sample_data.sql
+├── assets/
+│   ├── css/style.css
+│   └── js/app.js
+├── public/
+│   └── index.php             # Router with CSRF enforcement
+├── sql/
+│   ├── schema.sql
+│   └── sample_data.sql
+├── .env.example              # Environment config template
+├── .gitignore
 ├── .htaccess
 └── README.md
 ```
 
 ## Key Business Logic
 
-1. **Batch Creation** → Auto-deducts raw material and packaging stock
-2. **Quality Pass** → Auto-creates finished goods with 6-month expiry
-3. **Sales Completion** → Auto-deducts finished goods stock
-4. **ID Generation** → Smart codes: FJ-20250710-001, RM-20250710-ABC12
-5. **Audit Trail** → Tracks who did what and when
-6. **Low-Stock Alerts** → Raw materials below minimum threshold
-7. **Expiry Tracking** → Finished goods and certifications
+1. **Batch Creation** — Transactional deduction of raw materials and packaging stock (rollbacks on failure)
+2. **Quality Pass** — Auto-creates finished goods with 6-month expiry (prevents duplicate creation)
+3. **Sales Completion** — Transactional deduction of finished goods stock
+4. **ID Generation** — Cryptographically random IDs: `FJ-20250710-ABC12`
+5. **Audit Trail** — Tracks who did what, when, and from which IP
+6. **Low-Stock Alerts** — Raw materials below minimum threshold
+7. **Expiry Tracking** — Finished goods, certifications, and permits
+8. **Risk Rating** — Automatic calculation from likelihood × consequence matrix
+9. **OEE Calculation** — Real-time Availability × Performance × Quality
 
 ## License
 

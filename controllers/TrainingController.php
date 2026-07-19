@@ -20,7 +20,7 @@ class TrainingController extends Controller
     public function create()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirect('training');
+            $this->render('form', ['staffList' => (new StaffModel())->all()]);
             return;
         }
 
@@ -45,13 +45,21 @@ class TrainingController extends Controller
 
     public function edit()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        $id = $this->getInput('id');
+        $training = $this->model->find($id);
+
+        if (!$training) {
+            setFlash('error', 'Training record not found.');
             $this->redirect('training');
             return;
         }
 
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->render('form', ['training' => $training, 'staffList' => (new StaffModel())->all()]);
+            return;
+        }
+
         $this->requireRole('admin', 'manager', 'supervisor');
-        $id = $this->getInput('TrainingID');
 
         $this->model->update($id, [
             'EmployeeName' => sanitize($this->getInput('StaffID')),

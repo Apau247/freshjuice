@@ -1,107 +1,97 @@
-<?php $pageTitle = isset($_GET['id']) ? 'Edit Hazard' : 'Create Hazard'; ?>
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4><i class="fas fa-exclamation-triangle me-2"></i><?php echo $pageTitle; ?></h4>
-        <a href="?route=safety/hazard_index" class="btn btn-secondary"><i class="fas fa-arrow-left me-1"></i>Back to Hazard Register</a>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
-            <form method="POST" action="?route=safety/hazard_save">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="HazardID" class="form-label">Hazard ID <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="HazardID" name="HazardID" value="<?php echo sanitize($hazard['HazardID'] ?? ''); ?>" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="RiskCategory" class="form-label">Risk Category <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="RiskCategory" name="RiskCategory" value="<?php echo sanitize($hazard['RiskCategory'] ?? ''); ?>" required>
-                    </div>
+<?php $pageTitle = isset($hazard) ? 'Edit Hazard' : 'New Hazard'; ?>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold mb-0"><i class="bi bi-exclamation-triangle me-2"></i><?= $pageTitle ?></h5>
+    <a href="?route=safety/hazards" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
+</div>
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <form method="POST" action="?route=<?= isset($hazard) ? 'safety/hazards/edit&id=' . urlencode($hazard['HazardID']) : 'safety/hazards/create' ?>" class="row g-3">
+            <?= csrfField() ?>
+            <div class="col-12">
+                <label class="form-label fw-semibold">Hazard Description <span class="text-danger">*</span></label>
+                <textarea name="description" class="form-control" rows="3" required><?= sanitize($hazard['HazardDescription'] ?? '') ?></textarea>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Risk Category</label>
+                <input type="text" name="risk_category" class="form-control" value="<?= sanitize($hazard['RiskCategory'] ?? '') ?>">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Likelihood <span class="text-danger">*</span></label>
+                <select name="likelihood" class="form-select" required id="likelihoodSelect">
+                    <option value="">Select</option>
+                    <?php $lk = $hazard['Likelihood'] ?? ''; ?>
+                    <option value="Rare" <?= $lk === 'Rare' ? 'selected' : '' ?>>Rare</option>
+                    <option value="Unlikely" <?= $lk === 'Unlikely' ? 'selected' : '' ?>>Unlikely</option>
+                    <option value="Possible" <?= $lk === 'Possible' ? 'selected' : '' ?>>Possible</option>
+                    <option value="Likely" <?= $lk === 'Likely' ? 'selected' : '' ?>>Likely</option>
+                    <option value="Almost Certain" <?= $lk === 'Almost Certain' ? 'selected' : '' ?>>Almost Certain</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Consequence <span class="text-danger">*</span></label>
+                <select name="consequence" class="form-select" required id="consequenceSelect">
+                    <option value="">Select</option>
+                    <?php $cn = $hazard['Consequence'] ?? ''; ?>
+                    <option value="Insignificant" <?= $cn === 'Insignificant' ? 'selected' : '' ?>>Insignificant</option>
+                    <option value="Minor" <?= $cn === 'Minor' ? 'selected' : '' ?>>Minor</option>
+                    <option value="Moderate" <?= $cn === 'Moderate' ? 'selected' : '' ?>>Moderate</option>
+                    <option value="Major" <?= $cn === 'Major' ? 'selected' : '' ?>>Major</option>
+                    <option value="Catastrophic" <?= $cn === 'Catastrophic' ? 'selected' : '' ?>>Catastrophic</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Risk Rating</label>
+                <div class="form-control bg-light" id="riskRatingDisplay">
+                    <?php $rr = $hazard['RiskRating'] ?? 0; ?>
+                    <?= $rr > 0 ? $rr . ' - ' . ($rr >= 15 ? 'Extreme' : ($rr >= 8 ? 'High' : ($rr >= 4 ? 'Medium' : 'Low'))) : '--' ?>
                 </div>
-
-                <div class="mb-3">
-                    <label for="HazardDescription" class="form-label">Hazard Description <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="HazardDescription" name="HazardDescription" rows="3" required><?php echo sanitize($hazard['HazardDescription'] ?? ''); ?></textarea>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label for="Likelihood" class="form-label">Likelihood <span class="text-danger">*</span></label>
-                        <select class="form-select" id="Likelihood" name="Likelihood" required>
-                            <option value="">Select Likelihood</option>
-                            <option value="1" <?php echo (isset($hazard['Likelihood']) && $hazard['Likelihood'] == '1') ? 'selected' : ''; ?>>1 - Rare</option>
-                            <option value="2" <?php echo (isset($hazard['Likelihood']) && $hazard['Likelihood'] == '2') ? 'selected' : ''; ?>>2 - Unlikely</option>
-                            <option value="3" <?php echo (isset($hazard['Likelihood']) && $hazard['Likelihood'] == '3') ? 'selected' : ''; ?>>3 - Possible</option>
-                            <option value="4" <?php echo (isset($hazard['Likelihood']) && $hazard['Likelihood'] == '4') ? 'selected' : ''; ?>>4 - Likely</option>
-                            <option value="5" <?php echo (isset($hazard['Likelihood']) && $hazard['Likelihood'] == '5') ? 'selected' : ''; ?>>5 - Almost Certain</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="Consequence" class="form-label">Consequence <span class="text-danger">*</span></label>
-                        <select class="form-select" id="Consequence" name="Consequence" required>
-                            <option value="">Select Consequence</option>
-                            <option value="1" <?php echo (isset($hazard['Consequence']) && $hazard['Consequence'] == '1') ? 'selected' : ''; ?>>1 - Insignificant</option>
-                            <option value="2" <?php echo (isset($hazard['Consequence']) && $hazard['Consequence'] == '2') ? 'selected' : ''; ?>>2 - Minor</option>
-                            <option value="3" <?php echo (isset($hazard['Consequence']) && $hazard['Consequence'] == '3') ? 'selected' : ''; ?>>3 - Moderate</option>
-                            <option value="4" <?php echo (isset($hazard['Consequence']) && $hazard['Consequence'] == '4') ? 'selected' : ''; ?>>4 - Major</option>
-                            <option value="5" <?php echo (isset($hazard['Consequence']) && $hazard['Consequence'] == '5') ? 'selected' : ''; ?>>5 - Catastrophic</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Risk Rating</label>
-                        <div class="form-control bg-light" id="riskRatingDisplay">--</div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="ControlMeasures" class="form-label">Control Measures</label>
-                    <textarea class="form-control" id="ControlMeasures" name="ControlMeasures" rows="3"><?php echo sanitize($hazard['ControlMeasures'] ?? ''); ?></textarea>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label for="ResponsiblePerson" class="form-label">Responsible Person</label>
-                        <input type="text" class="form-control" id="ResponsiblePerson" name="ResponsiblePerson" value="<?php echo sanitize($hazard['ResponsiblePerson'] ?? ''); ?>">
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="ReviewDate" class="form-label">Review Date</label>
-                        <input type="date" class="form-control" id="ReviewDate" name="ReviewDate" value="<?php echo sanitize($hazard['ReviewDate'] ?? ''); ?>">
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="Status" class="form-label">Status <span class="text-danger">*</span></label>
-                        <select class="form-select" id="Status" name="Status" required>
-                            <option value="Active" <?php echo (isset($hazard['Status']) && $hazard['Status'] === 'Active') ? 'selected' : ''; ?>>Active</option>
-                            <option value="Mitigated" <?php echo (isset($hazard['Status']) && $hazard['Status'] === 'Mitigated') ? 'selected' : ''; ?>>Mitigated</option>
-                            <option value="Closed" <?php echo (isset($hazard['Status']) && $hazard['Status'] === 'Closed') ? 'selected' : ''; ?>>Closed</option>
-                        </select>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Save Hazard</button>
-                <a href="?route=safety/hazard_index" class="btn btn-secondary ms-2">Cancel</a>
-            </form>
-        </div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Responsible Person</label>
+                <input type="text" name="responsible_person" class="form-control" value="<?= sanitize($hazard['ResponsiblePerson'] ?? '') ?>">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Review Date</label>
+                <input type="date" name="review_date" class="form-control" value="<?= sanitize($hazard['ReviewDate'] ?? '') ?>">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Status</label>
+                <select name="status" class="form-select">
+                    <?php $st = $hazard['Status'] ?? 'Active'; ?>
+                    <option value="Active" <?= $st === 'Active' ? 'selected' : '' ?>>Active</option>
+                    <option value="Mitigated" <?= $st === 'Mitigated' ? 'selected' : '' ?>>Mitigated</option>
+                    <option value="Closed" <?= $st === 'Closed' ? 'selected' : '' ?>>Closed</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <label class="form-label fw-semibold">Control Measures</label>
+                <textarea name="control_measures" class="form-control" rows="3"><?= sanitize($hazard['ControlMeasures'] ?? '') ?></textarea>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-success"><i class="bi bi-check-lg"></i> <?= isset($hazard) ? 'Update' : 'Create' ?> Hazard</button>
+                <a href="?route=safety/hazards" class="btn btn-outline-secondary ms-2">Cancel</a>
+            </div>
+        </form>
     </div>
 </div>
 
 <script>
-document.getElementById('Likelihood').addEventListener('change', calculateRisk);
-document.getElementById('Consequence').addEventListener('change', calculateRisk);
-
+const lScores = {'Rare':1,'Unlikely':2,'Possible':3,'Likely':4,'Almost Certain':5};
+const cScores = {'Insignificant':1,'Minor':2,'Moderate':3,'Major':4,'Catastrophic':5};
 function calculateRisk() {
-    var l = parseInt(document.getElementById('Likelihood').value) || 0;
-    var c = parseInt(document.getElementById('Consequence').value) || 0;
-    var rating = l * c;
+    var l = document.getElementById('likelihoodSelect').value;
+    var c = document.getElementById('consequenceSelect').value;
+    var ls = lScores[l] || 0, cs = cScores[c] || 0;
+    var rating = ls * cs;
     var display = document.getElementById('riskRatingDisplay');
-    if (l > 0 && c > 0) {
-        var label = 'Low';
-        var cls = 'text-success';
+    if (rating > 0) {
+        var label = 'Low', cls = 'text-success';
         if (rating >= 15) { label = 'Extreme'; cls = 'text-danger'; }
         else if (rating >= 8) { label = 'High'; cls = 'text-warning'; }
         else if (rating >= 4) { label = 'Medium'; cls = 'text-info'; }
         display.innerHTML = '<span class="' + cls + ' fw-bold">' + rating + ' - ' + label + '</span>';
-    } else {
-        display.innerHTML = '--';
-    }
+    } else { display.innerHTML = '--'; }
 }
+document.getElementById('likelihoodSelect').addEventListener('change', calculateRisk);
+document.getElementById('consequenceSelect').addEventListener('change', calculateRisk);
 </script>

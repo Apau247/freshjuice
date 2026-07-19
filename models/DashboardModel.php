@@ -114,16 +114,16 @@ class DashboardModel extends Model {
     }
 
     public function getRecentSafetyInspections(int $limit = 5): array {
-        return $this->db->query(
+        return $this->query(
             "SELECT s.*, u.Name AS InspectorName FROM safety_inspections s
              LEFT JOIN users u ON s.InspectorID = u.UserID
-             ORDER BY s.InspectionDate DESC LIMIT $limit"
-        )->fetchAll();
+             ORDER BY s.InspectionDate DESC LIMIT ?", [$limit]
+        );
     }
 
     public function getRecentImprovements(int $limit = 5): array {
-        return $this->db->query(
-            "SELECT * FROM improvement_initiatives ORDER BY TargetDate ASC LIMIT $limit"
-        )->fetchAll();
+        return $this->query(
+            "SELECT * FROM improvement_initiatives ORDER BY TargetDate ASC LIMIT ?", [$limit]
+        );
     }
 }

@@ -20,8 +20,9 @@ class SopController extends Controller {
 
     public function createTemplate(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = generateId('SOP');
             $this->model->createTemplate([
-                'SOP_ID' => $this->getInput('SOP_ID'), 'Title' => $this->getInput('title'),
+                'SOP_ID' => $id, 'Title' => $this->getInput('title'),
                 'Department' => $this->getInput('department'),
                 'Version' => $this->getInput('version', '1.0'),
                 'Content' => $this->getInput('content'),
@@ -53,7 +54,7 @@ class SopController extends Controller {
             $this->redirect('sops');
             return;
         }
-        $this->render('template_form', ['tpl' => $tpl]);
+        $this->render('template_form', ['template' => $tpl]);
     }
 
     public function deleteTemplate(): void {
@@ -64,8 +65,9 @@ class SopController extends Controller {
 
     public function createChecklist(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = generateId('CHK');
             $this->model->createChecklist([
-                'ChecklistID' => $this->getInput('ChecklistID'),
+                'ChecklistID' => $id,
                 'SOP_ID' => $this->getInput('sop_id'),
                 'BatchID' => $this->getInput('batch_id') ?: null,
                 'Date' => $this->getInput('date'),
@@ -83,11 +85,20 @@ class SopController extends Controller {
         $this->render('checklist_form', [
             'templates' => $this->model->getTemplates(),
             'batches' => (new ProductionBatchModel())->all(),
+            'users' => (new UserModel())->all(),
         ]);
     }
 
     public function editChecklist(): void {
         $id = $this->getInput('id');
+        $checklist = $this->model->findChecklist($id);
+
+        if (!$checklist) {
+            setFlash('error', 'Checklist not found.');
+            $this->redirect('sops');
+            return;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->updateChecklist($id, [
                 'CompletedItems' => (int)$this->getInput('completed_items', '0'),
@@ -98,6 +109,11 @@ class SopController extends Controller {
             $this->redirect('sops');
             return;
         }
-        $this->render('checklist_form', ['templates' => $this->model->getTemplates(), 'batches' => (new ProductionBatchModel())->all()]);
+        $this->render('checklist_form', [
+            'checklist' => $checklist,
+            'templates' => $this->model->getTemplates(),
+            'batches' => (new ProductionBatchModel())->all(),
+            'users' => (new UserModel())->all(),
+        ]);
     }
 }

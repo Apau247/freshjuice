@@ -20,7 +20,7 @@ class PpeController extends Controller
     public function create()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirect('ppe');
+            $this->render('form', ['staffList' => (new StaffModel())->all()]);
             return;
         }
 
@@ -28,7 +28,7 @@ class PpeController extends Controller
 
         $id = generateId('PPE');
         $this->model->create([
-            'PpeID' => $id,
+            'PpeId' => $id,
             'EquipmentType' => sanitize($this->getInput('PPESource')),
             'EmployeeName' => sanitize($this->getInput('StaffID')),
             'IssueDate' => $this->getInput('DateIssued'),
@@ -40,6 +40,39 @@ class PpeController extends Controller
 
         logAudit($_SESSION['user_id'], 'create', 'ppe', $id, 'Created PPE record');
         setFlash('success', 'PPE record created successfully.');
+        $this->redirect('ppe');
+    }
+
+    public function edit()
+    {
+        $id = $this->getInput('id');
+        $ppe = $this->model->find($id);
+
+        if (!$ppe) {
+            setFlash('error', 'PPE record not found.');
+            $this->redirect('ppe');
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->render('form', ['ppe' => $ppe, 'staffList' => (new StaffModel())->all()]);
+            return;
+        }
+
+        $this->requireRole('admin', 'manager', 'supervisor');
+
+        $this->model->update($id, [
+            'EquipmentType' => sanitize($this->getInput('PPESource')),
+            'EmployeeName' => sanitize($this->getInput('StaffID')),
+            'IssueDate' => $this->getInput('DateIssued'),
+            'ExpiryDate' => $this->getInput('ExpiryDate'),
+            'Condition' => sanitize($this->getInput('Condition')),
+            'Status' => sanitize($this->getInput('Status', 'Active')),
+            'Notes' => sanitize($this->getInput('Notes')),
+        ]);
+
+        logAudit($_SESSION['user_id'], 'update', 'ppe', $id, 'Updated PPE record');
+        setFlash('success', 'PPE record updated successfully.');
         $this->redirect('ppe');
     }
 

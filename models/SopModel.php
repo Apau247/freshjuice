@@ -44,6 +44,17 @@ class SopModel extends Model {
         );
     }
 
+    public function findChecklist(string $id): ?array {
+        return $this->queryOne(
+            "SELECT sc.*, s.Title AS SOPTitle, pb.BatchNumber, u.Name AS SupervisorName
+             FROM sop_checklists sc
+             LEFT JOIN sop_templates s ON sc.SOP_ID = s.SOP_ID
+             LEFT JOIN production_batches pb ON sc.BatchID = pb.BatchID
+             LEFT JOIN users u ON sc.SupervisorID = u.UserID
+             WHERE sc.ChecklistID = ?", [$id]
+        );
+    }
+
     public function createChecklist(array $data): bool {
         $cols = implode(', ', array_keys($data));
         $phs = implode(', ', array_fill(0, count($data), '?'));

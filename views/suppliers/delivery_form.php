@@ -5,7 +5,8 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <form method="POST" action="?route=<?= isset($delivery) ? 'suppliers/delivery/edit&id=' . urlencode($delivery['DeliveryID']) : 'suppliers/delivery/create' ?>" class="row g-3">
+        <form method="POST" action="?route=<?= isset($delivery) ? 'suppliers/delivery/edit&id=' . urlencode($delivery['DeliveryID']) : 'suppliers/delivery/create' ?>
+            <?= csrfField() ?>" class="row g-3">
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Supplier <span class="text-danger">*</span></label>
                 <select name="supplier_id" class="form-select" required>

@@ -1,67 +1,57 @@
-<?php $pageTitle = isset($_GET['id']) ? 'Edit Incident Report' : 'Report Incident'; ?>
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4><i class="fas fa-ambulance me-2"></i><?php echo $pageTitle; ?></h4>
-        <a href="?route=safety/accident_index" class="btn btn-secondary"><i class="fas fa-arrow-left me-1"></i>Back to Reports</a>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
-            <form method="POST" action="?route=safety/accident_save">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="AccidentID" class="form-label">Accident ID <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="AccidentID" name="AccidentID" value="<?php echo sanitize($accident['AccidentID'] ?? ''); ?>" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="IncidentDate" class="form-label">Incident Date & Time <span class="text-danger">*</span></label>
-                        <input type="datetime-local" class="form-control" id="IncidentDate" name="IncidentDate" value="<?php echo sanitize($accident['IncidentDate'] ?? ''); ?>" required>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="Location" class="form-label">Location <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="Location" name="Location" value="<?php echo sanitize($accident['Location'] ?? ''); ?>" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="IncidentType" class="form-label">Incident Type <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="IncidentType" name="IncidentType" value="<?php echo sanitize($accident['IncidentType'] ?? ''); ?>" required>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="Description" class="form-label">Description <span class="text-danger">*</span></label>
-                    <textarea class="form-control" id="Description" name="Description" rows="4" required><?php echo sanitize($accident['Description'] ?? ''); ?></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label for="Injuries" class="form-label">Injuries</label>
-                    <textarea class="form-control" id="Injuries" name="Injuries" rows="2"><?php echo sanitize($accident['Injuries'] ?? ''); ?></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label for="RootCause" class="form-label">Root Cause</label>
-                    <textarea class="form-control" id="RootCause" name="RootCause" rows="3"><?php echo sanitize($accident['RootCause'] ?? ''); ?></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label for="CorrectiveAction" class="form-label">Corrective Action</label>
-                    <textarea class="form-control" id="CorrectiveAction" name="CorrectiveAction" rows="3"><?php echo sanitize($accident['CorrectiveAction'] ?? ''); ?></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label for="Status" class="form-label">Status <span class="text-danger">*</span></label>
-                    <select class="form-select" id="Status" name="Status" required>
-                        <option value="Open" <?php echo (isset($accident['Status']) && $accident['Status'] === 'Open') ? 'selected' : ''; ?>>Open</option>
-                        <option value="Under Investigation" <?php echo (isset($accident['Status']) && $accident['Status'] === 'Under Investigation') ? 'selected' : ''; ?>>Under Investigation</option>
-                        <option value="Closed" <?php echo (isset($accident['Status']) && $accident['Status'] === 'Closed') ? 'selected' : ''; ?>>Closed</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Save Report</button>
-                <a href="?route=safety/accident_index" class="btn btn-secondary ms-2">Cancel</a>
-            </form>
-        </div>
+<?php $pageTitle = isset($accident) ? 'Edit Incident Report' : 'Report Incident'; ?>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold mb-0"><i class="bi bi-ambulance me-2"></i><?= $pageTitle ?></h5>
+    <a href="?route=safety/accidents" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
+</div>
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <form method="POST" action="?route=<?= isset($accident) ? 'safety/accidents/edit&id=' . urlencode($accident['AccidentID']) : 'safety/accidents/create' ?>" class="row g-3">
+            <?= csrfField() ?>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Incident Date & Time <span class="text-danger">*</span></label>
+                <input type="datetime-local" name="IncidentDate" class="form-control" value="<?= sanitize($accident['AccidentDate'] ?? '') ?>" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Location <span class="text-danger">*</span></label>
+                <input type="text" name="Location" class="form-control" value="<?= sanitize($accident['Location'] ?? '') ?>" required>
+            </div>
+            <div class="col-12">
+                <label class="form-label fw-semibold">Description <span class="text-danger">*</span></label>
+                <textarea name="Description" class="form-control" rows="3" required><?= sanitize($accident['Description'] ?? '') ?></textarea>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Injury Severity</label>
+                <input type="text" name="Injuries" class="form-control" value="<?= sanitize($accident['InjurySeverity'] ?? '') ?>" placeholder="e.g. Minor, Major, Fatal">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Injured Person</label>
+                <input type="text" name="InjuredPerson" class="form-control" value="<?= sanitize($accident['InjuredPerson'] ?? '') ?>">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Witnesses</label>
+                <input type="text" name="Witnesses" class="form-control" value="<?= sanitize($accident['Witnesses'] ?? '') ?>">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Root Cause</label>
+                <textarea name="RootCause" class="form-control" rows="3"><?= sanitize($accident['RootCause'] ?? '') ?></textarea>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Corrective Action</label>
+                <textarea name="CorrectiveAction" class="form-control" rows="3"><?= sanitize($accident['CorrectiveActions'] ?? '') ?></textarea>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
+                <select name="Status" class="form-select" required>
+                    <?php $st = $accident['Status'] ?? 'Open'; ?>
+                    <option value="Open" <?= $st === 'Open' ? 'selected' : '' ?>>Open</option>
+                    <option value="Under Investigation" <?= $st === 'Under Investigation' ? 'selected' : '' ?>>Under Investigation</option>
+                    <option value="Closed" <?= $st === 'Closed' ? 'selected' : '' ?>>Closed</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-success"><i class="bi bi-check-lg"></i> <?= isset($accident) ? 'Update' : 'Create' ?> Report</button>
+                <a href="?route=safety/accidents" class="btn btn-outline-secondary ms-2">Cancel</a>
+            </div>
+        </form>
     </div>
 </div>

@@ -1,4 +1,9 @@
 <?php
+declare(strict_types=1);
+require_once __DIR__ . '/Controller.php';
+require_once __DIR__ . '/../models/SupplierEvalModel.php';
+require_once __DIR__ . '/../models/SupplierModel.php';
+
 class SupplierEvalController extends Controller
 {
     public function __construct()
@@ -8,7 +13,7 @@ class SupplierEvalController extends Controller
         $this->viewPath = 'suppliers';
     }
 
-    public function index()
+    public function index(): void
     {
         $data = [
             'evaluations' => $this->model->getAllDetailed(),
@@ -16,44 +21,79 @@ class SupplierEvalController extends Controller
         $this->render('evaluations', $data);
     }
 
-    public function create()
+    public function create(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $supplierModel = new SupplierModel();
-            $data = [
-                'suppliers' => $supplierModel->all(),
-            ];
-            $this->render('evaluation_form', $data);
+            $this->render('evaluation_form', [
+                'suppliers' => (new SupplierModel())->all(),
+            ]);
             return;
         }
 
-        $this->requireRole('admin', 'manager');
-
         $id = generateId('SLE');
-        $strengths = $this->getInput('Strengths');
-        $weaknesses = $this->getInput('Weaknesses');
-        $recommendations = $this->getInput('Recommendations');
-        $comments = trim($strengths . "\n" . $weaknesses . "\n" . $recommendations);
-
-        $q = (int)$this->getInput('QualityScore');
-        $d = (int)$this->getInput('DeliveryScore');
-        $p = (int)$this->getInput('PriceScore');
-        $overall = ($q + $d + $p) / 3;
+        $q = (float)$this->getInput('quality_score', '0');
+        $d = (float)$this->getInput('delivery_score', '0');
+        $p = (float)$this->getInput('price_score', '0');
+        $overall = round(($q + $d + $p) / 3, 1);
 
         $this->model->create([
-            'EvalID' => $id,
-            'SupplierID' => sanitize($this->getInput('SupplierID')),
-            'EvaluationDate' => $this->getInput('EvaluationDate'),
+            'EvaluationID' => $id,
+            'SupplierID' => $this->getInput('supplier_id'),
+            'EvaluationDate' => $this->getInput('evaluation_date'),
             'QualityScore' => $q,
             'DeliveryScore' => $d,
             'PriceScore' => $p,
-            'OverallScore' => round($overall, 1),
-            'Comments' => sanitize($comments),
-            'Evaluator' => $_SESSION['user_id'] ?? null,
+            'OverallScore' => $overall,
+            'Strengths' => $this->getInput('strengths'),
+            'Weaknesses' => $this->getInput('weaknesses'),
+            'Recommendations' => $this->getInput('recommendations'),
+            'EvaluatedBy' => $_SESSION['user_id'] ?? null,
         ]);
 
-        logAudit($_SESSION['user_id'], 'create', 'supplier_eval', $id, 'Created supplier evaluation');
-        setFlash('success', 'Supplier evaluation created successfully.');
-        $this->redirect('suppliers/evaluations');
+        logAudit($_SESSION['user_id'], 'CREATE', 'Supplier Eval', $id, 'Created supplier evaluation');
+        setFlash('success', 'Evaluation created.');
+        $this->redirect('supplier-evaluations');
+    }
+
+    public function edit(): void
+    {
+        $id = $this->getInput('id');
+        $item = $this->model->find($id);
+        if (!$item) { setFlash('error', 'Not found.'); $this->redirect('supplier-evaluations'); return; }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $q = (float)$this->getInput('quality_score', '0');
+            $d = (float)$this->getInput('delivery_score', '0');
+            $p = (float)$this->getInput('price_score', '0');
+            $overall = round(($q + $d + $p) / 3, 1);
+
+            $this->model->update($id, [
+                'SupplierID' => $this->getInput('supplier_id'),
+                'EvaluationDate' => $this->getInput('evaluation_date'),
+                'QualityScore' => $q,
+                'DeliveryScore' => $d,
+                'PriceScore' => $p,
+                'OverallScore' => $overall,
+                'Strengths' => $this->getInput('strengths'),
+                'Weaknesses' => $this->getInput('weaknesses'),
+                'Recommendations' => $this->getInput('recommendations'),
+            ]);
+            logAudit($_SESSION['user_id'], 'UPDATE', 'Supplier Eval', $id, 'Updated evaluation');
+            setFlash('success', 'Evaluation updated.');
+            $this->redirect('supplier-evaluations');
+            return;
+        }
+        $this->render('evaluation_form', [
+            'evaluation' => $item,
+            'suppliers' => (new SupplierModel())->all(),
+        ]);
+    }
+
+    public function delete(): void
+    {
+        $id = $this->getInput('id');
+        $this->model->delete($id);
+        logAudit($_SESSION['user_id'], 'DELETE', 'Supplier Eval', $id, 'Deleted evaluation');
+        setFlash('success', 'Evaluation deleted.');
+        $this->redirect('supplier-evaluations');
     }
 }

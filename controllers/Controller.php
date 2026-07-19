@@ -40,4 +40,17 @@ abstract class Controller
             $this->redirect('dashboard');
         }
     }
+
+    protected function validatePostCsrf(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !validateCsrf()) {
+            setFlash('error', 'Invalid security token. Please try again.');
+            $this->redirect('dashboard');
+        }
+    }
+
+    protected function outputCsrfField(): void
+    {
+        echo csrfField();
+    }
 }

@@ -20,7 +20,7 @@ class PermitController extends Controller
     public function create()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirect('permits');
+            $this->render('form');
             return;
         }
 
@@ -45,13 +45,21 @@ class PermitController extends Controller
 
     public function edit()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        $id = $this->getInput('id');
+        $permit = $this->model->find($id);
+
+        if (!$permit) {
+            setFlash('error', 'Permit not found.');
             $this->redirect('permits');
             return;
         }
 
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->render('form', ['permit' => $permit]);
+            return;
+        }
+
         $this->requireRole('admin', 'manager');
-        $id = $this->getInput('PermitID');
 
         $this->model->update($id, [
             'PermitType' => sanitize($this->getInput('PermitType')),

@@ -52,6 +52,6 @@ class WaterController extends Controller {
             $this->redirect('water');
             return;
         }
-        $this->render('test_form');
+        $this->render('test_form', ['users' => (new UserModel())->all()]);
     }
 }

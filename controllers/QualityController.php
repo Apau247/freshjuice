@@ -18,7 +18,7 @@ class QualityController extends Controller {
 
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $this->getInput('InspectionID');
+            $id = $this->getInput('InspectionID') ?: generateId('QI');
             $result = $this->getInput('result', 'Pending');
             $batchId = $this->getInput('batch_id');
 
@@ -36,21 +36,7 @@ class QualityController extends Controller {
             ]);
 
             if ($result === 'Pass' && $batchId) {
-                $batchModel = new ProductionBatchModel();
-                $batch = $batchModel->find($batchId);
-                if ($batch && $batch['Status'] !== 'Completed') {
-                    $batchModel->update($batchId, ['Status' => 'Completed']);
-                    $fgModel = new FinishedGoodModel();
-                    $fgId = generateId('FG');
-                    $expiry = date('Y-m-d', strtotime('+6 months', strtotime($batch['ProductionDate'])));
-                    $fgModel->create([
-                        'FG_ID' => $fgId, 'BatchID' => $batchId,
-                        'Flavour' => $batch['Flavour'], 'ExpiryDate' => $expiry,
-                        'QuantityAvailable' => $batch['Quantity'],
-                        'Unit' => 'bottles',
-                    ]);
-                    logAudit($_SESSION['user_id'], 'CREATE', 'Finished Goods', $fgId, "Auto-created from batch $batchId");
-                }
+                $this->createFinishedGoods($batchId);
             }
 
             logAudit($_SESSION['user_id'], 'CREATE', 'Quality', $id, "Inspection: $result");
@@ -79,21 +65,10 @@ class QualityController extends Controller {
             ]);
 
             if ($result === 'Pass' && $item['BatchID']) {
-                $batchModel = new ProductionBatchModel();
-                $batch = $batchModel->find($item['BatchID']);
-                if ($batch && $batch['Status'] !== 'Completed') {
-                    $batchModel->update($item['BatchID'], ['Status' => 'Completed']);
-                    $fgModel = new FinishedGoodModel();
-                    $fgId = generateId('FG');
-                    $expiry = date('Y-m-d', strtotime('+6 months', strtotime($batch['ProductionDate'])));
-                    $fgModel->create([
-                        'FG_ID' => $fgId, 'BatchID' => $item['BatchID'],
-                        'Flavour' => $batch['Flavour'], 'ExpiryDate' => $expiry,
-                        'QuantityAvailable' => $batch['Quantity'], 'Unit' => 'bottles',
-                    ]);
-                }
+                $this->createFinishedGoods($item['BatchID']);
             }
 
+            logAudit($_SESSION['user_id'], 'UPDATE', 'Quality', $id, "Updated inspection: $result");
             setFlash('success', 'Inspection updated.');
             $this->redirect('quality');
             return;
@@ -103,8 +78,33 @@ class QualityController extends Controller {
     }
 
     public function delete(): void {
-        $this->model->delete($this->getInput('id'));
+        $id = $this->getInput('id');
+        $this->model->delete($id);
+        logAudit($_SESSION['user_id'], 'DELETE', 'Quality', $id, 'Deleted inspection');
         setFlash('success', 'Inspection deleted.');
         $this->redirect('quality');
+    }
+
+    private function createFinishedGoods(string $batchId): void {
+        $batchModel = new ProductionBatchModel();
+        $batch = $batchModel->find($batchId);
+        if (!$batch || $batch['Status'] === 'Completed') return;
+
+        $fgModel = new FinishedGoodModel();
+        $existing = $fgModel->queryOne(
+            "SELECT * FROM finished_goods WHERE BatchID = ?", [$batchId]
+        );
+        if ($existing) return;
+
+        $batchModel->update($batchId, ['Status' => 'Completed']);
+        $fgId = generateId('FG');
+        $expiry = date('Y-m-d', strtotime('+6 months', strtotime($batch['ProductionDate'])));
+        $fgModel->create([
+            'FG_ID' => $fgId, 'BatchID' => $batchId,
+            'Flavour' => $batch['Flavour'], 'ExpiryDate' => $expiry,
+            'QuantityAvailable' => $batch['Quantity'],
+            'Unit' => $batch['Unit'] ?? 'bottles',
+        ]);
+        logAudit($_SESSION['user_id'], 'CREATE', 'Finished Goods', $fgId, "Auto-created from batch $batchId");
     }
 }

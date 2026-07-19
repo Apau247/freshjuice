@@ -7,6 +7,7 @@
 <div class="card border-0 shadow-sm mb-4">
     <div class="card-body">
         <form method="GET" class="row g-3 align-items-end">
+            <?= csrfField() ?>
             <input type="hidden" name="route" value="staff/attendance">
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Filter by Date</label>

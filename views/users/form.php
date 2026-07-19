@@ -5,7 +5,8 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <form method="POST" action="?route=<?= isset($user) ? 'users/edit&id=' . urlencode($user['UserID']) : 'users/create' ?>" class="row g-3">
+        <form method="POST" action="?route=<?= isset($user) ? 'users/edit&id=' . urlencode($user['UserID']) : 'users/create' ?>
+            <?= csrfField() ?>" class="row g-3">
             <div class="col-md-6">
                 <label class="form-label fw-semibold">User ID <span class="text-danger">*</span></label>
                 <input type="text" name="user_id" class="form-control" value="<?= sanitize($user['UserID'] ?? '') ?>" <?= isset($user) ? 'readonly' : 'required' ?>>

@@ -19,7 +19,7 @@ class DrillController extends Controller
     public function create()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirect('safety/drills');
+            $this->render('drill_form');
             return;
         }
 
@@ -46,13 +46,21 @@ class DrillController extends Controller
 
     public function edit()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        $id = $this->getInput('id');
+        $drill = $this->model->find($id);
+
+        if (!$drill) {
+            setFlash('error', 'Drill record not found.');
             $this->redirect('safety/drills');
             return;
         }
 
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->render('drill_form', ['drill' => $drill]);
+            return;
+        }
+
         $this->requireRole('admin', 'manager', 'supervisor');
-        $id = $this->getInput('DrillID');
 
         $this->model->update($id, [
             'DrillType' => sanitize($this->getInput('DrillType')),

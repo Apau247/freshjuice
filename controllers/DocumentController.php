@@ -1,4 +1,8 @@
 <?php
+declare(strict_types=1);
+require_once __DIR__ . '/Controller.php';
+require_once __DIR__ . '/../models/DocumentModel.php';
+
 class DocumentController extends Controller
 {
     public function __construct()
@@ -8,7 +12,7 @@ class DocumentController extends Controller
         $this->viewPath = 'documents';
     }
 
-    public function index()
+    public function index(): void
     {
         $data = [
             'documents' => $this->model->getAllDetailed(),
@@ -17,68 +21,62 @@ class DocumentController extends Controller
         $this->render('index', $data);
     }
 
-    public function create()
+    public function create(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = generateId('DOC');
+            $this->model->create([
+                'DocID' => $id,
+                'Title' => $this->getInput('title'),
+                'DocType' => $this->getInput('doc_type'),
+                'Version' => $this->getInput('version', '1.0'),
+                'FilePath' => $this->getInput('file_path'),
+                'Description' => $this->getInput('description'),
+                'Department' => $this->getInput('department'),
+                'EffectiveDate' => $this->getInput('effective_date'),
+                'ReviewDate' => $this->getInput('review_date'),
+                'Status' => $this->getInput('status', 'Draft'),
+                'ApprovedBy' => $_SESSION['user_id'] ?? null,
+            ]);
+            logAudit($_SESSION['user_id'], 'CREATE', 'Documents', $id, 'Created document');
+            setFlash('success', 'Document created.');
             $this->redirect('documents');
             return;
         }
-
-        $this->requireRole('admin', 'manager');
-
-        $id = generateId('DOC');
-        $this->model->create([
-            'DocumentID' => $id,
-            'Title' => sanitize($this->getInput('Title')),
-            'DocumentType' => sanitize($this->getInput('DocType')),
-            'Version' => sanitize($this->getInput('Version')),
-            'Author' => sanitize($this->getInput('Department')),
-            'CreatedDate' => $this->getInput('EffectiveDate'),
-            'ReviewDate' => $this->getInput('ReviewDate'),
-            'Status' => sanitize($this->getInput('Status')),
-            'FilePath' => sanitize($this->getInput('FilePath')),
-            'Notes' => sanitize($this->getInput('Description')),
-        ]);
-
-        logAudit($_SESSION['user_id'], 'create', 'document', $id, 'Created document record');
-        setFlash('success', 'Document created successfully.');
-        $this->redirect('documents');
+        $this->render('form');
     }
 
-    public function edit()
+    public function edit(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        $id = $this->getInput('id');
+        $doc = $this->model->find($id);
+        if (!$doc) { setFlash('error', 'Not found.'); $this->redirect('documents'); return; }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->model->update($id, [
+                'Title' => $this->getInput('title'),
+                'DocType' => $this->getInput('doc_type'),
+                'Version' => $this->getInput('version'),
+                'FilePath' => $this->getInput('file_path'),
+                'Description' => $this->getInput('description'),
+                'Department' => $this->getInput('department'),
+                'EffectiveDate' => $this->getInput('effective_date'),
+                'ReviewDate' => $this->getInput('review_date'),
+                'Status' => $this->getInput('status'),
+            ]);
+            logAudit($_SESSION['user_id'], 'UPDATE', 'Documents', $id, 'Updated document');
+            setFlash('success', 'Document updated.');
             $this->redirect('documents');
             return;
         }
-
-        $this->requireRole('admin', 'manager');
-        $id = $this->getInput('DocumentID');
-
-        $this->model->update($id, [
-            'Title' => sanitize($this->getInput('Title')),
-            'DocumentType' => sanitize($this->getInput('DocType')),
-            'Version' => sanitize($this->getInput('Version')),
-            'Author' => sanitize($this->getInput('Department')),
-            'CreatedDate' => $this->getInput('EffectiveDate'),
-            'ReviewDate' => $this->getInput('ReviewDate'),
-            'Status' => sanitize($this->getInput('Status')),
-            'FilePath' => sanitize($this->getInput('FilePath')),
-            'Notes' => sanitize($this->getInput('Description')),
-        ]);
-
-        logAudit($_SESSION['user_id'], 'update', 'document', $id, 'Updated document record');
-        setFlash('success', 'Document updated successfully.');
-        $this->redirect('documents');
+        $this->render('form', ['document' => $doc]);
     }
 
-    public function delete()
+    public function delete(): void
     {
-        $id = $this->getInput('DocumentID');
+        $id = $this->getInput('id');
         $this->model->delete($id);
-
-        logAudit($_SESSION['user_id'], 'delete', 'document', $id, 'Deleted document record');
-        setFlash('success', 'Document deleted successfully.');
+        logAudit($_SESSION['user_id'], 'DELETE', 'Documents', $id, 'Deleted document');
+        setFlash('success', 'Document deleted.');
         $this->redirect('documents');
     }
 }

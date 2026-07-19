@@ -19,7 +19,7 @@ class AccidentController extends Controller
     public function create()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirect('safety/accidents');
+            $this->render('accident_form');
             return;
         }
 
@@ -46,13 +46,21 @@ class AccidentController extends Controller
 
     public function edit()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        $id = $this->getInput('id');
+        $accident = $this->model->find($id);
+
+        if (!$accident) {
+            setFlash('error', 'Accident report not found.');
             $this->redirect('safety/accidents');
             return;
         }
 
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->render('accident_form', ['accident' => $accident]);
+            return;
+        }
+
         $this->requireRole('admin', 'manager', 'supervisor');
-        $id = $this->getInput('AccidentID');
 
         $this->model->update($id, [
             'AccidentDate' => $this->getInput('IncidentDate'),

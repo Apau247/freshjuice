@@ -5,7 +5,8 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <form method="POST" action="?route=<?= isset($record) ? 'maintenance/edit&id=' . urlencode($record['MaintenanceID']) : 'maintenance/create' ?>" class="row g-3">
+        <form method="POST" action="?route=<?= isset($record) ? 'maintenance/edit&id=' . urlencode($record['MaintenanceID']) : 'maintenance/create' ?>
+            <?= csrfField() ?>" class="row g-3">
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Machine <span class="text-danger">*</span></label>
                 <select name="machine_id" class="form-select" required>

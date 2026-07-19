@@ -175,6 +175,19 @@ $map = [
 if (isset($map[$route])) {
     [$prefix, $class, $method] = $map[$route];
 
+    if ($prefix !== 'auth' && !isLoggedIn()) {
+        header('Location: ?route=auth/login');
+        exit;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && $prefix !== 'auth') {
+        if (!validateCsrf()) {
+            setFlash('error', 'Invalid security token. Please try again.');
+            header('Location: ?route=' . $route);
+            exit;
+        }
+    }
+
     if ($prefix !== 'auth' && isLoggedIn()) {
         $module = getModuleForRoute($route);
         if ($module && !can($module)) {
