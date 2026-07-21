@@ -29,6 +29,7 @@ class PermitController extends Controller
         $id = generateId('PRM');
         $this->model->create([
             'PermitID' => $id,
+            'PermitName' => sanitize($this->getInput('PermitName', $this->getInput('PermitType'))),
             'PermitType' => sanitize($this->getInput('PermitType')),
             'PermitNumber' => sanitize($this->getInput('PermitNumber')),
             'IssuingAuthority' => sanitize($this->getInput('IssuingAuthority')),
@@ -78,7 +79,7 @@ class PermitController extends Controller
 
     public function delete()
     {
-        $id = $this->getInput('PermitID');
+        $id = $this->getInput('id');
         $this->model->delete($id);
 
         logAudit($_SESSION['user_id'], 'delete', 'permit', $id, 'Deleted permit record');

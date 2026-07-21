@@ -1,7 +1,7 @@
 <?php $pageTitle = 'Raw Materials'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h5 class="fw-bold mb-0"><i class="bi bi-bar-chart-steps me-2"></i><?= $pageTitle ?></h5>
-    <a href="?route=materials/raw/form" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> New Raw Material</a>
+    <a href="?route=materials/raw/create" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> New Raw Material</a>
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">

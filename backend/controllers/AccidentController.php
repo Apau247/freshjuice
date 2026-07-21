@@ -28,15 +28,15 @@ class AccidentController extends Controller
         $id = generateId('ACC');
         $this->model->create([
             'AccidentID' => $id,
-            'AccidentDate' => $this->getInput('IncidentDate'),
+            'IncidentDate' => $this->getInput('IncidentDate'),
             'Location' => sanitize($this->getInput('Location')),
+            'IncidentType' => sanitize($this->getInput('IncidentType', 'General')),
             'Description' => sanitize($this->getInput('Description')),
-            'InjurySeverity' => sanitize($this->getInput('Injuries')),
-            'InjuredPerson' => sanitize($this->getInput('InjuredPerson')),
-            'Witnesses' => sanitize($this->getInput('Witnesses')),
+            'Injuries' => sanitize($this->getInput('Injuries')),
             'RootCause' => sanitize($this->getInput('RootCause')),
-            'CorrectiveActions' => sanitize($this->getInput('CorrectiveAction')),
-            'Status' => sanitize($this->getInput('Status')),
+            'CorrectiveAction' => sanitize($this->getInput('CorrectiveAction')),
+            'ReportedBy' => $_SESSION['user_id'] ?? null,
+            'Status' => sanitize($this->getInput('Status', 'Reported')),
         ]);
 
         logAudit($_SESSION['user_id'], 'create', 'accident', $id, 'Created accident report');
@@ -63,19 +63,28 @@ class AccidentController extends Controller
         $this->requireRole('admin', 'manager', 'supervisor');
 
         $this->model->update($id, [
-            'AccidentDate' => $this->getInput('IncidentDate'),
+            'IncidentDate' => $this->getInput('IncidentDate'),
             'Location' => sanitize($this->getInput('Location')),
+            'IncidentType' => sanitize($this->getInput('IncidentType', 'General')),
             'Description' => sanitize($this->getInput('Description')),
-            'InjurySeverity' => sanitize($this->getInput('Injuries')),
-            'InjuredPerson' => sanitize($this->getInput('InjuredPerson')),
-            'Witnesses' => sanitize($this->getInput('Witnesses')),
+            'Injuries' => sanitize($this->getInput('Injuries')),
             'RootCause' => sanitize($this->getInput('RootCause')),
-            'CorrectiveActions' => sanitize($this->getInput('CorrectiveAction')),
+            'CorrectiveAction' => sanitize($this->getInput('CorrectiveAction')),
             'Status' => sanitize($this->getInput('Status')),
         ]);
 
         logAudit($_SESSION['user_id'], 'update', 'accident', $id, 'Updated accident report');
         setFlash('success', 'Accident report updated successfully.');
+        $this->redirect('safety/accidents');
+    }
+
+    public function delete()
+    {
+        $id = $this->getInput('id');
+        $this->model->delete($id);
+
+        logAudit($_SESSION['user_id'], 'delete', 'accident', $id, 'Deleted accident report');
+        setFlash('success', 'Accident report deleted successfully.');
         $this->redirect('safety/accidents');
     }
 }

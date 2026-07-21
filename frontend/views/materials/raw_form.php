@@ -5,8 +5,8 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <form method="POST" action="?route=<?= isset($material) ? 'materials/raw/edit&id=' . urlencode($material['MaterialID']) : 'materials/raw/create' ?>
-            <?= csrfField() ?>" class="row g-3">
+        <form method="POST" action="?route=<?= isset($material) ? 'materials/raw/edit&id=' . urlencode($material['MaterialID']) : 'materials/raw/create' ?>" class="row g-3">
+            <?= csrfField() ?>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Material Name <span class="text-danger">*</span></label>
                 <input type="text" name="name" class="form-control" value="<?= sanitize($material['Name'] ?? '') ?>" required>

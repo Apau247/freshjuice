@@ -28,13 +28,13 @@ class PpeController extends Controller
 
         $id = generateId('PPE');
         $this->model->create([
-            'PpeId' => $id,
-            'EquipmentType' => sanitize($this->getInput('PPESource')),
-            'EmployeeName' => sanitize($this->getInput('StaffID')),
-            'IssueDate' => $this->getInput('DateIssued'),
+            'PPE_ID' => $id,
+            'StaffID' => sanitize($this->getInput('StaffID')),
+            'PPESource' => sanitize($this->getInput('PPESource')),
+            'DateIssued' => $this->getInput('DateIssued'),
             'ExpiryDate' => $this->getInput('ExpiryDate'),
-            'Condition' => sanitize($this->getInput('Condition')),
-            'Status' => sanitize($this->getInput('Status', 'Active')),
+            '`Condition`' => sanitize($this->getInput('Condition', 'New')),
+            'ReplacementNeeded' => $this->getInput('ReplacementNeeded') ? 1 : 0,
             'Notes' => sanitize($this->getInput('Notes')),
         ]);
 
@@ -62,12 +62,12 @@ class PpeController extends Controller
         $this->requireRole('admin', 'manager', 'supervisor');
 
         $this->model->update($id, [
-            'EquipmentType' => sanitize($this->getInput('PPESource')),
-            'EmployeeName' => sanitize($this->getInput('StaffID')),
-            'IssueDate' => $this->getInput('DateIssued'),
+            'StaffID' => sanitize($this->getInput('StaffID')),
+            'PPESource' => sanitize($this->getInput('PPESource')),
+            'DateIssued' => $this->getInput('DateIssued'),
             'ExpiryDate' => $this->getInput('ExpiryDate'),
-            'Condition' => sanitize($this->getInput('Condition')),
-            'Status' => sanitize($this->getInput('Status', 'Active')),
+            '`Condition`' => sanitize($this->getInput('Condition', 'New')),
+            'ReplacementNeeded' => $this->getInput('ReplacementNeeded') ? 1 : 0,
             'Notes' => sanitize($this->getInput('Notes')),
         ]);
 
@@ -78,7 +78,7 @@ class PpeController extends Controller
 
     public function delete()
     {
-        $id = $this->getInput('PpeID');
+        $id = $this->getInput('id');
         $this->model->delete($id);
 
         logAudit($_SESSION['user_id'], 'delete', 'ppe', $id, 'Deleted PPE record');

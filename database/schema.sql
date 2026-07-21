@@ -702,3 +702,9 @@ CREATE TABLE fat_records (
     INDEX idx_fat_date (TestDate),
     INDEX idx_fat_result (Result)
 ) ENGINE=InnoDB;
+
+-- ================================================================
+-- MIGRATION: Add password reset fields
+-- ================================================================
+ALTER TABLE users ADD COLUMN reset_token VARCHAR(64) DEFAULT NULL;
+ALTER TABLE users ADD COLUMN reset_expires DATETIME DEFAULT NULL;

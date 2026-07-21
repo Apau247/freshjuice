@@ -5,8 +5,8 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <form method="POST" action="?route=<?= isset($machine) ? 'machines/edit&id=' . urlencode($machine['MachineID']) : 'machines/create' ?>
-            <?= csrfField() ?>" class="row g-3">
+        <form method="POST" action="?route=<?= isset($machine) ? 'machines/edit&id=' . urlencode($machine['MachineID']) : 'machines/create' ?>" class="row g-3">
+            <?= csrfField() ?>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Machine Name <span class="text-danger">*</span></label>
                 <input type="text" name="name" class="form-control" value="<?= sanitize($machine['Name'] ?? '') ?>" required>

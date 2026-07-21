@@ -21,7 +21,7 @@ class SafetyController extends Controller
     public function create()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirect('safety');
+            $this->render('inspection_form');
             return;
         }
 
@@ -31,12 +31,15 @@ class SafetyController extends Controller
         $this->model->create([
             'SafetyID' => $id,
             'InspectionDate' => $this->getInput('InspectionDate'),
-            'InspectorName' => sanitize($this->getInput('InspectorName')),
+            'InspectionType' => sanitize($this->getInput('InspectionType', 'General')),
             'Area' => sanitize($this->getInput('Area')),
-            'Status' => sanitize($this->getInput('Status')),
+            'InspectorID' => $_SESSION['user_id'] ?? null,
+            'HazardLevel' => sanitize($this->getInput('HazardLevel', 'Low')),
             'Findings' => sanitize($this->getInput('Findings')),
-            'CorrectiveActions' => sanitize($this->getInput('CorrectiveActions')),
-            'NextInspectionDate' => $this->getInput('NextInspectionDate'),
+            'CorrectiveAction' => sanitize($this->getInput('CorrectiveAction')),
+            'ResponsiblePerson' => sanitize($this->getInput('ResponsiblePerson')),
+            'TargetDate' => $this->getInput('TargetDate'),
+            'Status' => sanitize($this->getInput('Status', 'Open')),
         ]);
 
         logAudit($_SESSION['user_id'], 'create', 'safety', $id, 'Created safety inspection');
@@ -46,22 +49,32 @@ class SafetyController extends Controller
 
     public function edit()
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        $id = $this->getInput('id');
+        $inspection = $this->model->find($id);
+
+        if (!$inspection) {
+            setFlash('error', 'Safety inspection not found.');
             $this->redirect('safety');
             return;
         }
 
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->render('inspection_form', ['inspection' => $inspection]);
+            return;
+        }
+
         $this->requireRole('admin', 'manager', 'supervisor');
-        $id = $this->getInput('SafetyID');
 
         $this->model->update($id, [
             'InspectionDate' => $this->getInput('InspectionDate'),
-            'InspectorName' => sanitize($this->getInput('InspectorName')),
+            'InspectionType' => sanitize($this->getInput('InspectionType', 'General')),
             'Area' => sanitize($this->getInput('Area')),
-            'Status' => sanitize($this->getInput('Status')),
+            'HazardLevel' => sanitize($this->getInput('HazardLevel', 'Low')),
             'Findings' => sanitize($this->getInput('Findings')),
-            'CorrectiveActions' => sanitize($this->getInput('CorrectiveActions')),
-            'NextInspectionDate' => $this->getInput('NextInspectionDate'),
+            'CorrectiveAction' => sanitize($this->getInput('CorrectiveAction')),
+            'ResponsiblePerson' => sanitize($this->getInput('ResponsiblePerson')),
+            'TargetDate' => $this->getInput('TargetDate'),
+            'Status' => sanitize($this->getInput('Status')),
         ]);
 
         logAudit($_SESSION['user_id'], 'update', 'safety', $id, 'Updated safety inspection');
@@ -71,7 +84,7 @@ class SafetyController extends Controller
 
     public function delete()
     {
-        $id = $this->getInput('SafetyID');
+        $id = $this->getInput('id');
         $this->model->delete($id);
 
         logAudit($_SESSION['user_id'], 'delete', 'safety', $id, 'Deleted safety inspection');

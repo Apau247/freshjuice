@@ -25,6 +25,13 @@ if (!defined('APP_NAME')) define('APP_NAME', 'FreshJuice Factory');
 if (!defined('APP_URL')) define('APP_URL', 'http://localhost/freshjuice');
 if (!defined('APP_ROOT')) define('APP_ROOT', dirname(__DIR__, 2));
 
+if (!defined('MAIL_HOST'))       define('MAIL_HOST', '');
+if (!defined('MAIL_USERNAME'))   define('MAIL_USERNAME', '');
+if (!defined('MAIL_PASSWORD'))   define('MAIL_PASSWORD', '');
+if (!defined('MAIL_ENCRYPTION')) define('MAIL_ENCRYPTION', 'ssl');
+if (!defined('MAIL_PORT'))       define('MAIL_PORT', '465');
+if (!defined('MAIL_FROM'))       define('MAIL_FROM', '');
+
 if (php_sapi_name() !== 'cli') {
     ini_set('session.cookie_httponly', '1');
     ini_set('session.cookie_samesite', 'Strict');

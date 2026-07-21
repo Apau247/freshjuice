@@ -1,4 +1,4 @@
-<?php $pageTitle = 'Login'; ?>
+<?php $pageTitle = 'Reset Password'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,7 +39,7 @@
             display:inline-flex; align-items:center; justify-content:center;
             margin-bottom:0.75rem; box-shadow:0 8px 24px rgba(34,197,94,0.3);
         }
-        .login-brand-icon svg { width:32px; height:32px; }
+        .login-brand-icon i { font-size:1.6rem; color:white; }
         .login-brand h3 { color:white; font-size:1.3rem; font-weight:800; letter-spacing:-0.03em; }
         .login-brand p { color:rgba(255,255,255,0.45); font-size:0.82rem; margin-top:0.25rem; }
         .form-group { margin-bottom:1.15rem; }
@@ -71,63 +71,64 @@
             color:#fca5a5; border-radius:10px; padding:0.6rem 0.8rem;
             font-size:0.8rem; margin-bottom:1rem;
         }
+        .login-success {
+            background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.2);
+            color:#86efac; border-radius:10px; padding:0.6rem 0.8rem;
+            font-size:0.8rem; margin-bottom:1rem;
+        }
         .login-footer { text-align:center; margin-top:1.5rem; }
-        .login-footer p { color:rgba(255,255,255,0.3); font-size:0.72rem; }
+        .login-footer a { color:rgba(255,255,255,0.45); font-size:0.78rem; text-decoration:none; transition:color .15s; }
+        .login-footer a:hover { color:#22c55e; }
     </style>
 </head>
 <body>
     <div class="login-card">
         <div class="login-brand">
             <div class="login-brand-icon">
-                <svg viewBox="0 0 32 32" fill="none">
-                    <rect width="32" height="32" rx="10" fill="url(#lg)"/>
-                    <path d="M16 6C11 6 8 10 8 15C8 20 11 26 16 26C21 26 24 20 24 15C24 10 21 6 16 6Z" fill="white" opacity="0.9"/>
-                    <path d="M13 14C13 14 14.5 18 16 18C17.5 18 19 14 19 14" stroke="url(#lg)" stroke-width="1.5" stroke-linecap="round"/>
-                    <defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#22c55e"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
-                </svg>
+                <i class="bi bi-shield-lock"></i>
             </div>
-            <h3><?= APP_NAME ?></h3>
-            <p>Factory Management System</p>
+            <h3>Reset Password</h3>
+            <p>Enter your new password below</p>
         </div>
+
+        <?php if (!empty($tokenInvalid)): ?>
+        <div class="login-error">
+            <i class="bi bi-exclamation-circle"></i> This reset link is invalid or has expired. Please request a new one.
+        </div>
+        <?php else: ?>
 
         <?php $flash = getFlash(); if ($flash): ?>
-        <div class="login-error">
-            <i class="bi bi-exclamation-circle"></i> <?= sanitize($flash['message']) ?>
+        <div class="<?= $flash['type'] === 'success' ? 'login-success' : 'login-error' ?>">
+            <i class="bi <?= $flash['type'] === 'success' ? 'bi-check-circle' : 'bi-exclamation-circle' ?>"></i> <?= sanitize($flash['message']) ?>
         </div>
         <?php endif; ?>
 
-        <?php if ($error = getFlash('login_error')): ?>
-        <div class="login-error">
-            <i class="bi bi-exclamation-circle"></i> <?= sanitize($error) ?>
-        </div>
-        <?php endif; ?>
-
-        <form method="POST" action="?route=auth/login">
+        <form method="POST" action="?route=auth/reset">
             <?= csrfField() ?>
+            <input type="hidden" name="token" value="<?= sanitize($token) ?>">
             <div class="form-group">
-                <label class="form-label">User ID</label>
+                <label class="form-label">New Password</label>
                 <div class="input-icon">
-                    <input type="text" name="user_id" class="form-input" placeholder="Enter your User ID" required autofocus autocomplete="username" value="<?= sanitize($_POST['user_id'] ?? '') ?>">
-                    <i class="bi bi-person"></i>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Password</label>
-                <div class="input-icon">
-                    <input type="password" name="password" class="form-input" placeholder="Enter your password" required autocomplete="current-password">
+                    <input type="password" name="new_password" class="form-input" placeholder="Enter new password" required minlength="6" autocomplete="new-password">
                     <i class="bi bi-lock"></i>
                 </div>
             </div>
-            <div class="text-end mb-3">
-                <a href="?route=auth/forgot" class="text-decoration-none" style="font-size:0.82rem;color:var(--brand, #22c55e);">Forgot Password?</a>
+            <div class="form-group">
+                <label class="form-label">Confirm Password</label>
+                <div class="input-icon">
+                    <input type="password" name="confirm_password" class="form-input" placeholder="Confirm new password" required minlength="6" autocomplete="new-password">
+                    <i class="bi bi-lock-fill"></i>
+                </div>
             </div>
             <button type="submit" class="login-btn">
-                <i class="bi bi-box-arrow-in-right"></i> Sign In
+                <i class="bi bi-check-lg"></i> Reset Password
             </button>
         </form>
 
+        <?php endif; ?>
+
         <div class="login-footer">
-            <p>&copy; <?= date('Y') ?> <?= APP_NAME ?>. All rights reserved.</p>
+            <a href="?route=auth/login"><i class="bi bi-arrow-left"></i> Back to Sign In</a>
         </div>
     </div>
 </body>

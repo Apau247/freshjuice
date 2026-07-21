@@ -5,8 +5,8 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <form method="POST" action="?route=<?= isset($checklist) ? 'sops/checklist/edit&id=' . urlencode($checklist['ChecklistID']) : 'sops/checklist/create' ?>
-            <?= csrfField() ?>" class="row g-3">
+        <form method="POST" action="?route=<?= isset($checklist) ? 'sops/checklist/edit&id=' . urlencode($checklist['ChecklistID']) : 'sops/checklist/create' ?>" class="row g-3">
+            <?= csrfField() ?>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">SOP Template <span class="text-danger">*</span></label>
                 <select name="sop_id" class="form-select" required>

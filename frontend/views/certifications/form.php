@@ -5,8 +5,8 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <form method="POST" action="?route=<?= isset($cert) ? 'certifications/edit&id=' . urlencode($cert['CertID']) : 'certifications/create' ?>
-            <?= csrfField() ?>" class="row g-3">
+        <form method="POST" action="?route=<?= isset($cert) ? 'certifications/edit&id=' . urlencode($cert['CertID']) : 'certifications/create' ?>" class="row g-3">
+            <?= csrfField() ?>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Certification Name <span class="text-danger">*</span></label>
                 <input type="text" name="cert_name" class="form-control" value="<?= sanitize($cert['CertName'] ?? '') ?>" required>

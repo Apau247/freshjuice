@@ -79,7 +79,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 try {
                     $(this).DataTable({
                         order: [],
-                        pageLength: 25,
+                        pageLength: 100,
+                        lengthMenu: [10, 25, 50, 100],
                         language: { search: '', searchPlaceholder: 'Search...' },
                         responsive: true
                     });

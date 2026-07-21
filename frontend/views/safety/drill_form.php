@@ -21,11 +21,11 @@
             </div>
             <div class="col-md-3">
                 <label class="form-label fw-semibold">Participants</label>
-                <input type="number" name="ParticipantsCount" class="form-control" value="<?= sanitize((string)($drill['Participants'] ?? '')) ?>">
+                <input type="number" name="ParticipantsCount" class="form-control" value="<?= sanitize((string)($drill['ParticipantsCount'] ?? '')) ?>">
             </div>
             <div class="col-md-3">
                 <label class="form-label fw-semibold">Duration (min)</label>
-                <input type="number" name="DurationMinutes" class="form-control" value="<?= sanitize((string)($drill['Duration'] ?? '')) ?>">
+                <input type="number" name="DurationMinutes" class="form-control" value="<?= sanitize((string)($drill['DurationMinutes'] ?? '')) ?>">
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Conducted By</label>
@@ -40,8 +40,17 @@
                 <textarea name="IssuesFound" class="form-control" rows="2"><?= sanitize($drill['IssuesFound'] ?? '') ?></textarea>
             </div>
             <div class="col-md-6">
-                <label class="form-label fw-semibold">Corrective Action</label>
-                <textarea name="CorrectiveAction" class="form-control" rows="2"><?= sanitize($drill['CorrectiveActions'] ?? '') ?></textarea>
+                <label class="form-label fw-semibold">Corrective Actions</label>
+                <textarea name="CorrectiveAction" class="form-control" rows="2"><?= sanitize($drill['CorrectiveAction'] ?? '') ?></textarea>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
+                <select name="Status" class="form-select" required>
+                    <?php $st = $drill['Status'] ?? 'Scheduled'; ?>
+                    <option value="Scheduled" <?= $st === 'Scheduled' ? 'selected' : '' ?>>Scheduled</option>
+                    <option value="Completed" <?= $st === 'Completed' ? 'selected' : '' ?>>Completed</option>
+                    <option value="Cancelled" <?= $st === 'Cancelled' ? 'selected' : '' ?>>Cancelled</option>
+                </select>
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-success"><i class="bi bi-check-lg"></i> <?= isset($drill) ? 'Update' : 'Create' ?> Drill</button>

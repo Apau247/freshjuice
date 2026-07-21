@@ -5,8 +5,8 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <form method="POST" action="?route=<?= isset($record) ? 'waste/edit&id=' . urlencode($record['WasteID']) : 'waste/create' ?>
-            <?= csrfField() ?>" class="row g-3">
+        <form method="POST" action="?route=<?= isset($record) ? 'waste/edit&id=' . urlencode($record['WasteID']) : 'waste/create' ?>" class="row g-3">
+            <?= csrfField() ?>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Date <span class="text-danger">*</span></label>
                 <input type="date" name="date" class="form-control" value="<?= sanitize($record['Date'] ?? $record['date'] ?? date('Y-m-d')) ?>" required>

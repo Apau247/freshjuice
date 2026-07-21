@@ -8,6 +8,10 @@
         <form method="POST" action="?route=<?= isset($permit) ? 'permits/edit&id=' . urlencode($permit['PermitID']) : 'permits/create' ?>" class="row g-3">
             <?= csrfField() ?>
             <div class="col-md-6">
+                <label class="form-label fw-semibold">Permit Name <span class="text-danger">*</span></label>
+                <input type="text" name="PermitName" class="form-control" value="<?= sanitize($permit['PermitName'] ?? '') ?>" required placeholder="e.g. Fire Safety Certificate">
+            </div>
+            <div class="col-md-6">
                 <label class="form-label fw-semibold">Permit Type <span class="text-danger">*</span></label>
                 <input type="text" name="PermitType" class="form-control" value="<?= sanitize($permit['PermitType'] ?? '') ?>" required placeholder="e.g. Fire Safety, Environmental, Operating">
             </div>
@@ -32,7 +36,7 @@
                 <select name="Status" class="form-select" required>
                     <?php $st = $permit['Status'] ?? 'Active'; ?>
                     <option value="Active" <?= $st === 'Active' ? 'selected' : '' ?>>Active</option>
-                    <option value="Expiring Soon" <?= $st === 'Expiring Soon' ? 'selected' : '' ?>>Expiring Soon</option>
+                    <option value="Pending Renewal" <?= $st === 'Pending Renewal' ? 'selected' : '' ?>>Pending Renewal</option>
                     <option value="Expired" <?= $st === 'Expired' ? 'selected' : '' ?>>Expired</option>
                     <option value="Suspended" <?= $st === 'Suspended' ? 'selected' : '' ?>>Suspended</option>
                 </select>

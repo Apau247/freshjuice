@@ -5,8 +5,8 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <form method="POST" action="?route=<?= isset($supplier) ? 'suppliers/edit&id=' . urlencode($supplier['SupplierID']) : 'suppliers/create' ?>
-            <?= csrfField() ?>" class="row g-3">
+        <form method="POST" action="?route=<?= isset($supplier) ? 'suppliers/edit&id=' . urlencode($supplier['SupplierID']) : 'suppliers/create' ?>" class="row g-3">
+            <?= csrfField() ?>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Supplier Name <span class="text-danger">*</span></label>
                 <input type="text" name="name" class="form-control" value="<?= sanitize($supplier['Name'] ?? '') ?>" required>

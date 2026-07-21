@@ -31,12 +31,13 @@ class DrillController extends Controller
             'DrillType' => sanitize($this->getInput('DrillType')),
             'DrillDate' => $this->getInput('DrillDate'),
             'Location' => sanitize($this->getInput('Location')),
-            'Participants' => (int) $this->getInput('ParticipantsCount'),
-            'Duration' => $this->getInput('DurationMinutes'),
+            'ParticipantsCount' => (int) $this->getInput('ParticipantsCount'),
+            'DurationMinutes' => (int) $this->getInput('DurationMinutes'),
             'Outcome' => sanitize($this->getInput('Outcome')),
             'IssuesFound' => sanitize($this->getInput('IssuesFound')),
-            'CorrectiveActions' => sanitize($this->getInput('CorrectiveAction')),
+            'CorrectiveAction' => sanitize($this->getInput('CorrectiveAction')),
             'ConductedBy' => sanitize($this->getInput('ConductedBy')),
+            'Status' => sanitize($this->getInput('Status', 'Scheduled')),
         ]);
 
         logAudit($_SESSION['user_id'], 'create', 'drill', $id, 'Created drill record');
@@ -66,12 +67,13 @@ class DrillController extends Controller
             'DrillType' => sanitize($this->getInput('DrillType')),
             'DrillDate' => $this->getInput('DrillDate'),
             'Location' => sanitize($this->getInput('Location')),
-            'Participants' => (int) $this->getInput('ParticipantsCount'),
-            'Duration' => $this->getInput('DurationMinutes'),
+            'ParticipantsCount' => (int) $this->getInput('ParticipantsCount'),
+            'DurationMinutes' => (int) $this->getInput('DurationMinutes'),
             'Outcome' => sanitize($this->getInput('Outcome')),
             'IssuesFound' => sanitize($this->getInput('IssuesFound')),
-            'CorrectiveActions' => sanitize($this->getInput('CorrectiveAction')),
+            'CorrectiveAction' => sanitize($this->getInput('CorrectiveAction')),
             'ConductedBy' => sanitize($this->getInput('ConductedBy')),
+            'Status' => sanitize($this->getInput('Status')),
         ]);
 
         logAudit($_SESSION['user_id'], 'update', 'drill', $id, 'Updated drill record');
@@ -81,7 +83,7 @@ class DrillController extends Controller
 
     public function delete()
     {
-        $id = $this->getInput('DrillID');
+        $id = $this->getInput('id');
         $this->model->delete($id);
 
         logAudit($_SESSION['user_id'], 'delete', 'drill', $id, 'Deleted drill record');

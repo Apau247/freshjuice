@@ -337,6 +337,13 @@ $assetBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' 
 
                 <?php if (can('users') || can('sops')): ?>
                 <li class="nav-item"><span class="nav-section">ADMIN</span></li>
+                <li class="nav-item">
+                    <a href="?route=audit" class="nav-link<?= str_starts_with($currentRoute, 'audit') ? ' active' : '' ?>">
+                        <i class="nav-icon bi bi-journal-text"></i>
+                        <span class="nav-label">Audit Trail</span>
+                    </a>
+                    <span class="nav-tooltip">Audit Trail</span>
+                </li>
                 <?php if (can('users')): ?>
                 <li class="nav-item">
                     <a href="?route=users" class="nav-link<?= str_starts_with($currentRoute, 'users') ? ' active' : '' ?>">
@@ -360,13 +367,6 @@ $assetBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' 
 
             <ul class="nav-list secondary-nav">
                 <li class="nav-item">
-                    <a href="?route=dashboard" class="nav-link">
-                        <i class="nav-icon bi bi-person-circle"></i>
-                        <span class="nav-label"><?= sanitize($user['name']) ?></span>
-                    </a>
-                    <span class="nav-tooltip"><?= sanitize($user['name']) ?></span>
-                </li>
-                <li class="nav-item">
                     <a href="?route=auth/logout" class="nav-link">
                         <i class="nav-icon bi bi-box-arrow-right"></i>
                         <span class="nav-label">Sign Out</span>
@@ -383,9 +383,20 @@ $assetBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' 
                 <button class="btn btn-sm btn-outline-secondary me-3" id="sidebarToggle"><i class="bi bi-list"></i></button>
                 <span class="fw-semibold fs-5"><?= sanitize($pageTitle ?? 'Dashboard') ?></span>
                 <div class="ms-auto d-flex align-items-center gap-2">
-                    <div class="d-flex align-items-center gap-2">
-                        <div style="width:30px;height:30px;border-radius:9px;background:var(--gradient-brand);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.75rem;"><?= strtoupper(substr($user['name'], 0, 1)) ?></div>
-                        <span class="fw-medium text-muted" style="font-size:0.82rem;"><?= sanitize($user['name']) ?></span>
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center gap-2 text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="cursor:pointer;">
+                            <div style="width:32px;height:32px;border-radius:10px;background:var(--gradient-brand);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.8rem;"><?= strtoupper(substr($user['name'] ?? 'U', 0, 1)) ?></div>
+                            <span class="fw-medium text-muted d-none d-md-inline" style="font-size:0.82rem;"><?= sanitize($user['name'] ?? 'User') ?></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" style="min-width:180px;border-radius:12px;border:1px solid rgba(0,0,0,0.08);box-shadow:0 8px 32px rgba(0,0,0,0.12);padding:0.4rem;">
+                            <li class="px-3 py-2 border-bottom">
+                                <div class="fw-semibold" style="font-size:0.85rem;"><?= sanitize($user['name'] ?? 'User') ?></div>
+                                <div class="text-muted" style="font-size:0.72rem;"><?= sanitize($user['role_name'] ?? '') ?></div>
+                            </li>
+                            <li><a class="dropdown-item d-flex align-items-center gap-2" href="?route=profile" style="font-size:0.82rem;padding:0.5rem 0.85rem;border-radius:8px;"><i class="bi bi-person-circle"></i> My Profile</a></li>
+                            <li><hr class="dropdown-divider" style="margin:0.25rem 0;"></li>
+                            <li><a class="dropdown-item d-flex align-items-center gap-2 text-danger" href="?route=auth/logout" style="font-size:0.82rem;padding:0.5rem 0.85rem;border-radius:8px;"><i class="bi bi-box-arrow-right"></i> Sign Out</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>

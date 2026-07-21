@@ -15,6 +15,24 @@ class FinishedGoodsController extends Controller {
         $this->render('index', ['goods' => $this->model->getAllDetailed()]);
     }
 
+    public function create(): void {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->model->create([
+                'FG_ID' => $this->getInput('FG_ID'),
+                'BatchID' => $this->getInput('batch_id') ?: null,
+                'Flavour' => $this->getInput('flavour'),
+                'ExpiryDate' => $this->getInput('expiry_date'),
+                'QuantityAvailable' => (float)$this->getInput('quantity_available', '0'),
+                'Unit' => $this->getInput('unit', 'bottles'),
+                'StorageLocation' => $this->getInput('storage_location'),
+            ]);
+            setFlash('success', 'Finished good created.');
+            $this->redirect('finished-goods');
+            return;
+        }
+        $this->render('form', ['batches' => (new ProductionBatchModel())->all()]);
+    }
+
     public function edit(): void {
         $id = $this->getInput('id');
         $item = $this->model->find($id);
@@ -29,7 +47,7 @@ class FinishedGoodsController extends Controller {
             $this->redirect('finished-goods');
             return;
         }
-        $this->render('form', ['item' => $item]);
+        $this->render('form', ['good' => $item]);
     }
 
     public function delete(): void {

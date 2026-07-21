@@ -74,7 +74,7 @@ class SupplierController extends Controller {
     public function createDelivery(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $this->getInput('DeliveryID');
-            $this->model->create([
+            $this->model->createDelivery([
                 'DeliveryID' => $id, 'SupplierID' => $this->getInput('supplier_id'),
                 'DeliveryDate' => $this->getInput('delivery_date'),
                 'ItemName' => $this->getInput('item_name'),
@@ -95,7 +95,7 @@ class SupplierController extends Controller {
     public function editDelivery(): void {
         $id = $this->getInput('id');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->model->update($id, [
+            $this->model->updateDelivery($id, [
                 'SupplierID' => $this->getInput('supplier_id'),
                 'DeliveryDate' => $this->getInput('delivery_date'),
                 'ItemName' => $this->getInput('item_name'),
@@ -108,14 +108,14 @@ class SupplierController extends Controller {
             return;
         }
         $this->render('delivery_form', [
-            'delivery' => $this->model->find($id),
+            'delivery' => $this->model->findDelivery($id),
             'suppliers' => $this->model->all(),
         ]);
     }
 
     public function deleteDelivery(): void {
         $id = $this->getInput('id');
-        $this->model->delete($id);
+        $this->model->deleteDelivery($id);
         setFlash('success', 'Delivery deleted.');
         $this->redirect('suppliers/deliveries');
     }

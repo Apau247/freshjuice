@@ -12,7 +12,7 @@
                 <select name="StaffID" class="form-select" required>
                     <option value="">Select Staff Member</option>
                     <?php if (!empty($staffList)): foreach ($staffList as $staff): ?>
-                    <option value="<?= sanitize($staff['StaffID']) ?>" <?= (isset($training) && ($training['EmployeeName'] ?? '') === $staff['StaffID']) ? 'selected' : '' ?>><?= sanitize($staff['FirstName'] . ' ' . $staff['LastName']) ?></option>
+                    <option value="<?= sanitize($staff['StaffID']) ?>" <?= (isset($training) && ($training['StaffID'] ?? '') === $staff['StaffID']) ? 'selected' : '' ?>><?= sanitize($staff['FirstName'] . ' ' . $staff['LastName']) ?></option>
                     <?php endforeach; endif; ?>
                 </select>
             </div>
@@ -26,16 +26,16 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Duration</label>
-                <input type="text" name="Duration" class="form-control" value="<?= sanitize($training['Score'] ?? '') ?>" placeholder="e.g. 2 hours">
+                <input type="text" name="Duration" class="form-control" value="<?= sanitize($training['Duration'] ?? '') ?>" placeholder="e.g. 2 hours">
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Cert Expiry Date</label>
-                <input type="date" name="ExpiryDate" class="form-control" value="<?= sanitize($training['CertificationExpiry'] ?? '') ?>">
+                <input type="date" name="ExpiryDate" class="form-control" value="<?= sanitize($training['ExpiryDate'] ?? '') ?>">
             </div>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
                 <select name="Status" class="form-select" required>
-                    <?php $st = $training['CompletionStatus'] ?? ''; ?>
+                    <?php $st = $training['Status'] ?? ''; ?>
                     <option value="Scheduled" <?= $st === 'Scheduled' ? 'selected' : '' ?>>Scheduled</option>
                     <option value="In Progress" <?= $st === 'In Progress' ? 'selected' : '' ?>>In Progress</option>
                     <option value="Completed" <?= $st === 'Completed' ? 'selected' : '' ?>>Completed</option>

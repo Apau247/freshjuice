@@ -5,8 +5,8 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <form method="POST" action="?route=<?= isset($order) ? 'sales/edit&id=' . urlencode($order['OrderID']) : 'sales/create' ?>
-            <?= csrfField() ?>" class="row g-3">
+        <form method="POST" action="?route=<?= isset($order) ? 'sales/edit&id=' . urlencode($order['OrderID']) : 'sales/create' ?>" class="row g-3">
+            <?= csrfField() ?>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Order Date <span class="text-danger">*</span></label>
                 <input type="date" name="order_date" class="form-control" value="<?= sanitize($order['OrderDate'] ?? $order['order_date'] ?? date('Y-m-d')) ?>" required>

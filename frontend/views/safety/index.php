@@ -3,7 +3,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4><i class="fas fa-shield-alt me-2"></i>Safety Inspections</h4>
         <?php if (canCreate('safety')): ?>
-        <a href="?route=safety/inspection_form" class="btn btn-primary"><i class="fas fa-plus me-1"></i>New Inspection</a>
+        <a href="?route=safety/create" class="btn btn-primary"><i class="fas fa-plus me-1"></i>New Inspection</a>
         <?php endif; ?>
     </div>
 
@@ -11,7 +11,7 @@
         <div class="col-md-3">
             <div class="card text-bg-danger">
                 <div class="card-body text-center">
-                    <h5><?php echo sanitize($openCount ?? 0); ?></h5>
+                    <h5><?php echo sanitize($statusCounts['open'] ?? 0); ?></h5>
                     <small>Open</small>
                 </div>
             </div>
@@ -19,7 +19,7 @@
         <div class="col-md-3">
             <div class="card text-bg-warning">
                 <div class="card-body text-center">
-                    <h5><?php echo sanitize($inProgressCount ?? 0); ?></h5>
+                    <h5><?php echo sanitize($statusCounts['in_progress'] ?? 0); ?></h5>
                     <small>In Progress</small>
                 </div>
             </div>
@@ -27,7 +27,7 @@
         <div class="col-md-3">
             <div class="card text-bg-success">
                 <div class="card-body text-center">
-                    <h5><?php echo sanitize($closedCount ?? 0); ?></h5>
+                    <h5><?php echo sanitize($statusCounts['closed'] ?? 0); ?></h5>
                     <small>Closed</small>
                 </div>
             </div>
@@ -35,7 +35,7 @@
         <div class="col-md-3">
             <div class="card text-bg-info">
                 <div class="card-body text-center">
-                    <h5><?php echo sanitize($totalCount ?? 0); ?></h5>
+                    <h5><?php echo sanitize($statusCounts['total'] ?? 0); ?></h5>
                     <small>Total Inspections</small>
                 </div>
             </div>
@@ -86,8 +86,8 @@
                                 </td>
                                 <td>
                                     <?php if (canEdit('safety')): ?>
-                                    <a href="?route=safety/inspection_form&id=<?php echo sanitize($row['SafetyID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
-                                    <a href="?route=safety/inspection_delete&id=<?php echo sanitize($row['SafetyID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this inspection?')"><i class="fas fa-trash"></i></a>
+                                    <a href="?route=safety/edit&id=<?php echo sanitize($row['SafetyID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                    <a href="?route=safety/delete&id=<?php echo sanitize($row['SafetyID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this inspection?')"><i class="fas fa-trash"></i></a>
                                     <?php endif; ?>
                                 </td>
                             </tr>

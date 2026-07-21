@@ -20,30 +20,38 @@
                 <textarea name="Description" class="form-control" rows="3" required><?= sanitize($accident['Description'] ?? '') ?></textarea>
             </div>
             <div class="col-md-4">
+                <label class="form-label fw-semibold">Incident Type <span class="text-danger">*</span></label>
+                <select name="IncidentType" class="form-select" required>
+                    <?php $it = $accident['IncidentType'] ?? ''; ?>
+                    <option value="">-- Select --</option>
+                    <option value="Injury" <?= $it === 'Injury' ? 'selected' : '' ?>>Injury</option>
+                    <option value="Property Damage" <?= $it === 'Property Damage' ? 'selected' : '' ?>>Property Damage</option>
+                    <option value="Environmental" <?= $it === 'Environmental' ? 'selected' : '' ?>>Environmental</option>
+                    <option value="Near Miss" <?= $it === 'Near Miss' ? 'selected' : '' ?>>Near Miss</option>
+                    <option value="Other" <?= $it === 'Other' ? 'selected' : '' ?>>Other</option>
+                </select>
+            </div>
+            <div class="col-md-4">
                 <label class="form-label fw-semibold">Injury Severity</label>
-                <input type="text" name="Injuries" class="form-control" value="<?= sanitize($accident['InjurySeverity'] ?? '') ?>" placeholder="e.g. Minor, Major, Fatal">
+                <input type="text" name="Injuries" class="form-control" value="<?= sanitize($accident['Injuries'] ?? '') ?>" placeholder="e.g. Minor, Major, Fatal">
             </div>
             <div class="col-md-4">
-                <label class="form-label fw-semibold">Injured Person</label>
-                <input type="text" name="InjuredPerson" class="form-control" value="<?= sanitize($accident['InjuredPerson'] ?? '') ?>">
-            </div>
-            <div class="col-md-4">
-                <label class="form-label fw-semibold">Witnesses</label>
-                <input type="text" name="Witnesses" class="form-control" value="<?= sanitize($accident['Witnesses'] ?? '') ?>">
+                <label class="form-label fw-semibold">Reported By</label>
+                <input type="text" class="form-control" value="<?= sanitize(currentUser()['name'] ?? '') ?>" disabled>
             </div>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Root Cause</label>
                 <textarea name="RootCause" class="form-control" rows="3"><?= sanitize($accident['RootCause'] ?? '') ?></textarea>
             </div>
             <div class="col-md-6">
-                <label class="form-label fw-semibold">Corrective Action</label>
-                <textarea name="CorrectiveAction" class="form-control" rows="3"><?= sanitize($accident['CorrectiveActions'] ?? '') ?></textarea>
+                <label class="form-label fw-semibold">Corrective Actions</label>
+                <textarea name="CorrectiveAction" class="form-control" rows="3"><?= sanitize($accident['CorrectiveAction'] ?? '') ?></textarea>
             </div>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
                 <select name="Status" class="form-select" required>
-                    <?php $st = $accident['Status'] ?? 'Open'; ?>
-                    <option value="Open" <?= $st === 'Open' ? 'selected' : '' ?>>Open</option>
+                    <?php $st = $accident['Status'] ?? 'Reported'; ?>
+                    <option value="Reported" <?= $st === 'Reported' ? 'selected' : '' ?>>Reported</option>
                     <option value="Under Investigation" <?= $st === 'Under Investigation' ? 'selected' : '' ?>>Under Investigation</option>
                     <option value="Closed" <?= $st === 'Closed' ? 'selected' : '' ?>>Closed</option>
                 </select>

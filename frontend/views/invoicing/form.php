@@ -5,8 +5,8 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <form method="POST" action="?route=<?= isset($invoice) ? 'invoicing/edit&id=' . urlencode($invoice['InvoiceID']) : 'invoicing/create' ?>
-            <?= csrfField() ?>" class="row g-3">
+        <form method="POST" action="?route=<?= isset($invoice) ? 'invoicing/edit&id=' . urlencode($invoice['InvoiceID']) : 'invoicing/create' ?>" class="row g-3">
+            <?= csrfField() ?>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Invoice Date <span class="text-danger">*</span></label>
                 <input type="date" name="invoice_date" class="form-control" value="<?= sanitize($invoice['InvoiceDate'] ?? $invoice['invoice_date'] ?? date('Y-m-d')) ?>" required>

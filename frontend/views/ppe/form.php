@@ -5,24 +5,24 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <form method="POST" action="?route=<?= isset($ppe) ? 'ppe/edit&id=' . urlencode($ppe['PpeId']) : 'ppe/create' ?>" class="row g-3">
+        <form method="POST" action="?route=<?= isset($ppe) ? 'ppe/edit&id=' . urlencode($ppe['PPE_ID']) : 'ppe/create' ?>" class="row g-3">
             <?= csrfField() ?>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Staff <span class="text-danger">*</span></label>
                 <select name="StaffID" class="form-select" required>
                     <option value="">Select Staff Member</option>
                     <?php if (!empty($staffList)): foreach ($staffList as $staff): ?>
-                    <option value="<?= sanitize($staff['StaffID']) ?>" <?= (isset($ppe) && ($ppe['EmployeeName'] ?? '') === $staff['StaffID']) ? 'selected' : '' ?>><?= sanitize($staff['FirstName'] . ' ' . $staff['LastName']) ?></option>
+                    <option value="<?= sanitize($staff['StaffID']) ?>" <?= (isset($ppe) && ($ppe['StaffID'] ?? '') === $staff['StaffID']) ? 'selected' : '' ?>><?= sanitize($staff['FirstName'] . ' ' . $staff['LastName']) ?></option>
                     <?php endforeach; endif; ?>
                 </select>
             </div>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Equipment Type <span class="text-danger">*</span></label>
-                <input type="text" name="PPESource" class="form-control" value="<?= sanitize($ppe['EquipmentType'] ?? '') ?>" required placeholder="e.g. Hard Hat, Safety Boots, Gloves">
+                <input type="text" name="PPESource" class="form-control" value="<?= sanitize($ppe['PPESource'] ?? '') ?>" required placeholder="e.g. Hard Hat, Safety Boots, Gloves">
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Date Issued <span class="text-danger">*</span></label>
-                <input type="date" name="DateIssued" class="form-control" value="<?= sanitize($ppe['IssueDate'] ?? '') ?>" required>
+                <input type="date" name="DateIssued" class="form-control" value="<?= sanitize($ppe['DateIssued'] ?? '') ?>" required>
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Expiry Date</label>
@@ -37,7 +37,7 @@
                     <option value="Good" <?= $cond === 'Good' ? 'selected' : '' ?>>Good</option>
                     <option value="Fair" <?= $cond === 'Fair' ? 'selected' : '' ?>>Fair</option>
                     <option value="Poor" <?= $cond === 'Poor' ? 'selected' : '' ?>>Poor</option>
-                    <option value="Damaged" <?= $cond === 'Damaged' ? 'selected' : '' ?>>Damaged</option>
+                    <option value="Expired" <?= $cond === 'Expired' ? 'selected' : '' ?>>Expired</option>
                 </select>
             </div>
             <div class="col-md-6">

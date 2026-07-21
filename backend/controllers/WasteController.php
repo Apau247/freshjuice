@@ -35,6 +35,27 @@ class WasteController extends Controller {
         $this->render('form', ['batches' => (new ProductionBatchModel())->all()]);
     }
 
+    public function edit(): void {
+        $id = $this->getInput('id');
+        $record = $this->model->find($id);
+        if (!$record) { setFlash('error', 'Not found.'); $this->redirect('waste'); return; }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->model->update($id, [
+                'Date' => $this->getInput('date'),
+                'WasteType' => $this->getInput('waste_type'),
+                'Quantity' => (float)$this->getInput('quantity', '0'),
+                'Unit' => $this->getInput('unit'),
+                'DisposalMethod' => $this->getInput('disposal_method'),
+                'BatchID' => $this->getInput('batch_id') ?: null,
+                'EnvironmentalImpact' => $this->getInput('environmental_impact'),
+            ]);
+            setFlash('success', 'Waste record updated.');
+            $this->redirect('waste');
+            return;
+        }
+        $this->render('form', ['record' => $record, 'batches' => (new ProductionBatchModel())->all()]);
+    }
+
     public function delete(): void {
         $this->model->delete($this->getInput('id'));
         setFlash('success', 'Record deleted.');

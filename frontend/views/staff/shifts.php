@@ -53,8 +53,8 @@
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-white fw-semibold"><i class="bi bi-pencil me-2"></i>Edit Shift</div>
     <div class="card-body">
-        <form method="POST" action="?route=staff/shifts/edit&id=<?= urlencode($editShift['ShiftID']) ?>
-            <?= csrfField() ?>" class="row g-3">
+        <form method="POST" action="?route=staff/shifts/edit&id=<?= urlencode($editShift['ShiftID']) ?>" class="row g-3">
+            <?= csrfField() ?>
             <div class="col-md-3">
                 <label class="form-label fw-semibold">Shift Name <span class="text-danger">*</span></label>
                 <input type="text" name="shift_name" class="form-control" value="<?= sanitize($editShift['ShiftName'] ?? '') ?>" required>

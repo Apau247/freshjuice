@@ -80,7 +80,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof $.fn.DataTable !== 'undefined') {
-        $('#qualityDataTable').DataTable({ order: [], pageLength: 25, language: { search: '', searchPlaceholder: 'Search...' }, responsive: true });
+        $('#qualityDataTable').DataTable({ order: [], pageLength: 100, lengthMenu: [10, 25, 50, 100], language: { search: '', searchPlaceholder: 'Search...' }, responsive: true });
     }
 });
 </script>

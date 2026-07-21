@@ -5,8 +5,8 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <form method="POST" action="?route=<?= isset($good) ? 'finished-goods/edit&id=' . urlencode($good['FG_ID']) : 'finished-goods/create' ?>
-            <?= csrfField() ?>" class="row g-3">
+        <form method="POST" action="?route=<?= isset($good) ? 'finished-goods/edit&id=' . urlencode($good['FG_ID']) : 'finished-goods/create' ?>" class="row g-3">
+            <?= csrfField() ?>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Batch</label>
                 <select name="batch_id" class="form-select">

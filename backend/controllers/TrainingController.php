@@ -29,12 +29,13 @@ class TrainingController extends Controller
         $id = generateId('TRN');
         $this->model->create([
             'TrainingID' => $id,
-            'EmployeeName' => sanitize($this->getInput('StaffID')),
+            'StaffID' => sanitize($this->getInput('StaffID')),
             'TrainingType' => sanitize($this->getInput('TrainingType')),
             'TrainingDate' => $this->getInput('TrainingDate'),
-            'CompletionStatus' => sanitize($this->getInput('Status')),
-            'Score' => $this->getInput('Duration'),
-            'CertificationExpiry' => $this->getInput('ExpiryDate'),
+            'Duration' => sanitize($this->getInput('Duration')),
+            'Trainer' => sanitize($this->getInput('Trainer')),
+            'ExpiryDate' => $this->getInput('ExpiryDate'),
+            'Status' => sanitize($this->getInput('Status', 'Scheduled')),
             'Notes' => sanitize($this->getInput('Notes')),
         ]);
 
@@ -62,12 +63,13 @@ class TrainingController extends Controller
         $this->requireRole('admin', 'manager', 'supervisor');
 
         $this->model->update($id, [
-            'EmployeeName' => sanitize($this->getInput('StaffID')),
+            'StaffID' => sanitize($this->getInput('StaffID')),
             'TrainingType' => sanitize($this->getInput('TrainingType')),
             'TrainingDate' => $this->getInput('TrainingDate'),
-            'CompletionStatus' => sanitize($this->getInput('Status')),
-            'Score' => $this->getInput('Duration'),
-            'CertificationExpiry' => $this->getInput('ExpiryDate'),
+            'Duration' => sanitize($this->getInput('Duration')),
+            'Trainer' => sanitize($this->getInput('Trainer')),
+            'ExpiryDate' => $this->getInput('ExpiryDate'),
+            'Status' => sanitize($this->getInput('Status')),
             'Notes' => sanitize($this->getInput('Notes')),
         ]);
 
@@ -78,7 +80,7 @@ class TrainingController extends Controller
 
     public function delete()
     {
-        $id = $this->getInput('TrainingID');
+        $id = $this->getInput('id');
         $this->model->delete($id);
 
         logAudit($_SESSION['user_id'], 'delete', 'training', $id, 'Deleted training record');

@@ -18,6 +18,8 @@ $route = $_GET['route'] ?? 'dashboard';
 $map = [
     'auth/login'                => ['auth',   'AuthController',   'login'],
     'auth/logout'               => ['auth',   'AuthController',   'logout'],
+    'auth/forgot'               => ['auth',   'AuthController',   'forgotPassword'],
+    'auth/reset'                => ['auth',   'AuthController',   'resetPassword'],
     'dashboard'                 => ['dash',   'DashboardController','index'],
 
     'suppliers'                 => ['sup',    'SupplierController','index'],
@@ -50,6 +52,7 @@ $map = [
     'quality/delete'            => ['qi',     'QualityController','delete'],
 
     'finished-goods'            => ['fg',     'FinishedGoodsController','index'],
+    'finished-goods/create'     => ['fg',     'FinishedGoodsController','create'],
     'finished-goods/edit'       => ['fg',     'FinishedGoodsController','edit'],
     'finished-goods/delete'     => ['fg',     'FinishedGoodsController','delete'],
 
@@ -87,6 +90,7 @@ $map = [
 
     'waste'                     => ['waste',  'WasteController','index'],
     'waste/create'              => ['waste',  'WasteController','create'],
+    'waste/edit'                => ['waste',  'WasteController','edit'],
     'waste/delete'              => ['waste',  'WasteController','delete'],
 
     'water'                     => ['water',  'WaterController','index'],
@@ -113,6 +117,7 @@ $map = [
     'users/create'              => ['users',  'UserController','create'],
     'users/edit'                => ['users',  'UserController','edit'],
     'users/delete'              => ['users',  'UserController','delete'],
+    'profile'                   => ['users',  'UserController','profile'],
 
     'safety'                    => ['safety', 'SafetyController','index'],
     'safety/create'             => ['safety', 'SafetyController','create'],
@@ -170,6 +175,9 @@ $map = [
     'fat/create'                => ['fat',   'FatController','create'],
     'fat/edit'                  => ['fat',   'FatController','edit'],
     'fat/delete'                => ['fat',   'FatController','delete'],
+
+    'notifications'             => ['notif', 'NotificationController','index'],
+    'audit'                     => ['audit', 'AuditController','index'],
 ];
 
 if (isset($map[$route])) {
@@ -230,6 +238,8 @@ if (isset($map[$route])) {
         'doc'      => 'DocumentController',
         'seval'    => 'SupplierEvalController',
         'fat'      => 'FatController',
+        'notif'    => 'NotificationController',
+        'audit'    => 'AuditController',
     ];
     if ($prefix === 'auth') {
         require_once APP_ROOT . '/backend/auth/' . $fileMap[$prefix] . '.php';

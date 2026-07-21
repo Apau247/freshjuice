@@ -2,7 +2,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4><i class="fas fa-fire-extinguisher me-2"></i>Emergency Drills</h4>
-        <a href="?route=safety/drill_form" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Schedule Drill</a>
+        <a href="?route=safety/drills/create" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Schedule Drill</a>
     </div>
 
     <div class="card">
@@ -41,8 +41,8 @@
                                     <span class="badge bg-<?php echo $statusBadge; ?>"><?php echo $status; ?></span>
                                 </td>
                                 <td>
-                                    <a href="?route=safety/drill_form&id=<?php echo sanitize($row['DrillID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
-                                    <a href="?route=safety/drill_delete&id=<?php echo sanitize($row['DrillID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this drill record?')"><i class="fas fa-trash"></i></a>
+                                    <a href="?route=safety/drills/edit&id=<?php echo sanitize($row['DrillID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                    <a href="?route=safety/drills/delete&id=<?php echo sanitize($row['DrillID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this drill record?')"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

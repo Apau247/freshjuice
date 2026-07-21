@@ -8,7 +8,10 @@ class UserController extends Controller {
         parent::__construct();
         $this->model = new UserModel();
         $this->viewPath = 'users';
-        $this->requireRole('ROLE-001');
+        $route = $_GET['route'] ?? '';
+        if ($route !== 'profile') {
+            $this->requireRole('ROLE-001');
+        }
     }
 
     public function index(): void {
@@ -58,6 +61,60 @@ class UserController extends Controller {
             return;
         }
         $this->render('form', ['user' => $user, 'roles' => $this->model->getRoles()]);
+    }
+
+    public function profile(): void {
+        $userId = $_SESSION['user_id'];
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $action = $_POST['form_action'] ?? '';
+            if ($action === 'change_password') {
+                $this->changePassword($userId);
+                return;
+            }
+            $name = $this->getInput('name');
+            $email = $this->getInput('email');
+            if (empty($name)) {
+                setFlash('error', 'Name is required.');
+                $this->redirect('profile');
+                return;
+            }
+            $data = ['Name' => $name, 'Email' => $email];
+            $this->model->update($userId, $data);
+            $_SESSION['user_name'] = $name;
+            logAudit($userId, 'UPDATE', 'Users', $userId, 'Updated profile');
+            setFlash('success', 'Profile updated.');
+            $this->redirect('profile');
+            return;
+        }
+        $user = $this->model->find($userId);
+        if (!$user) { setFlash('error', 'User not found.'); $this->redirect('dashboard'); return; }
+        $this->render('profile', ['profileUser' => $user]);
+    }
+
+    private function changePassword(string $userId): void {
+        $current = $_POST['current_password'] ?? '';
+        $newPass = $_POST['new_password'] ?? '';
+        $confirm = $_POST['confirm_password'] ?? '';
+        if (empty($current) || empty($newPass) || empty($confirm)) {
+            setFlash('error', 'All password fields are required.');
+            $this->redirect('profile');
+            return;
+        }
+        $user = $this->model->find($userId);
+        if (!$user || !password_verify($current, $user['password'])) {
+            setFlash('error', 'Current password is incorrect.');
+            $this->redirect('profile');
+            return;
+        }
+        if ($newPass !== $confirm) {
+            setFlash('error', 'New passwords do not match.');
+            $this->redirect('profile');
+            return;
+        }
+        $this->model->update($userId, ['password' => password_hash($newPass, PASSWORD_DEFAULT)]);
+        logAudit($userId, 'UPDATE', 'Users', $userId, 'Changed password');
+        setFlash('success', 'Password changed successfully.');
+        $this->redirect('profile');
     }
 
     public function delete(): void {

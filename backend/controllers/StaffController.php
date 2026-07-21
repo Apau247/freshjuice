@@ -52,7 +52,7 @@ class StaffController extends Controller {
             $this->redirect('staff');
             return;
         }
-        $this->render('form', ['person' => $person]);
+        $this->render('form', ['staff' => $person]);
     }
 
     public function delete(): void {
@@ -80,7 +80,7 @@ class StaffController extends Controller {
             return;
         }
         $this->render('attendance', [
-            'attendance' => $this->model->getAttendance($date),
+            'attendanceRecords' => $this->model->getAttendance($date),
             'staffList' => $this->model->all(),
             'shifts' => $this->model->getShifts(),
             'selectedDate' => $date,
