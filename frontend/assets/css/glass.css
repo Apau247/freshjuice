@@ -40,14 +40,20 @@ body {
 /* ═══════════════════════════════════════════════════════════
    SIDEBAR — Dash-Hero Style (Dark Gradient + Glow)
    ═══════════════════════════════════════════════════════════ */
-.sidebar {
-    position: fixed;
-    width: var(--sidebar-width);
-    top: 16px;
-    left: 16px;
-    bottom: 16px;
+aside.sidebar,
+#sidebar {
+    display: block !important;
+    position: fixed !important;
+    width: var(--sidebar-width) !important;
+    min-width: var(--sidebar-width) !important;
+    max-width: var(--sidebar-width) !important;
+    top: 16px !important;
+    left: 16px !important;
+    bottom: 16px !important;
+    right: auto !important;
+    float: none !important;
     border-radius: 16px;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0f766e 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0f766e 100%) !important;
     transition: all 0.4s cubic-bezier(.4,0,.2,1);
     box-shadow: 0 12px 48px rgba(15, 23, 42, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.06);
@@ -58,7 +64,8 @@ body {
     scrollbar-color: rgba(255,255,255,0.08) transparent;
 }
 /* Glow blobs — same as dash-hero */
-.sidebar::before {
+aside.sidebar::before,
+#sidebar::before {
     content: '';
     position: absolute;
     top: -30%;
@@ -71,7 +78,8 @@ body {
     pointer-events: none;
     z-index: 0;
 }
-.sidebar::after {
+aside.sidebar::after,
+#sidebar::after {
     content: '';
     position: absolute;
     bottom: -20%;
@@ -84,15 +92,21 @@ body {
     pointer-events: none;
     z-index: 0;
 }
-.sidebar > * {
+aside.sidebar > *,
+#sidebar > * {
     position: relative;
     z-index: 1;
 }
-.sidebar::-webkit-scrollbar { width: 4px; }
-.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+aside.sidebar::-webkit-scrollbar,
+#sidebar::-webkit-scrollbar { width: 4px; }
+aside.sidebar::-webkit-scrollbar-thumb,
+#sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
 
-.sidebar.collapsed {
-    width: var(--sidebar-collapsed);
+aside.sidebar.collapsed,
+#sidebar.collapsed {
+    width: var(--sidebar-collapsed) !important;
+    min-width: var(--sidebar-collapsed) !important;
+    max-width: var(--sidebar-collapsed) !important;
 }
 
 /* ── Sidebar Header ── */
@@ -584,28 +598,35 @@ body {
    RESPONSIVE — Mobile Menu
    ═══════════════════════════════════════════════════════════ */
 @media (max-width: 1024px) {
-    .sidebar {
-        top: 12px;
-        left: 12px;
-        bottom: auto;
-        height: 52px;
-        width: calc(100% - 24px);
+    aside.sidebar,
+    #sidebar {
+        top: 12px !important;
+        left: 12px !important;
+        right: 12px !important;
+        bottom: auto !important;
+        height: 52px !important;
+        width: auto !important;
+        min-width: auto !important;
+        max-width: none !important;
         max-height: calc(100vh - 24px);
         overflow-y: hidden;
         scrollbar-width: none;
         border-radius: 14px;
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0f766e 100%);
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0f766e 100%) !important;
         box-shadow: 0 8px 32px rgba(15, 23, 42, 0.5);
     }
-    .sidebar::-webkit-scrollbar { display: none; }
+    aside.sidebar::-webkit-scrollbar,
+    #sidebar::-webkit-scrollbar { display: none; }
 
-    .sidebar.menu-active {
+    aside.sidebar.menu-active,
+    #sidebar.menu-active {
         overflow-y: auto;
-        height: auto;
+        height: auto !important;
         max-height: calc(100vh - 24px);
     }
 
-    .sidebar .sidebar-header {
+    aside.sidebar .sidebar-header,
+    #sidebar .sidebar-header {
         position: sticky;
         top: 0;
         z-index: 20;
@@ -634,7 +655,8 @@ body {
         font-size: 1rem;
     }
 
-    .sidebar .sidebar-nav .nav-list {
+    aside.sidebar .sidebar-nav .nav-list,
+    #sidebar .sidebar-nav .nav-list {
         padding: 0 10px;
     }
 
@@ -680,12 +702,16 @@ body {
 }
 
 @media (max-width: 576px) {
-    .sidebar {
-        top: 8px;
-        left: 8px;
-        width: calc(100% - 16px);
+    aside.sidebar,
+    #sidebar {
+        top: 8px !important;
+        left: 8px !important;
+        right: 8px !important;
+        width: auto !important;
+        min-width: auto !important;
     }
-    .sidebar.menu-active {
+    aside.sidebar.menu-active,
+    #sidebar.menu-active {
         max-height: calc(100vh - 16px);
     }
     #wrapper {
