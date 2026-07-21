@@ -1,3 +1,8 @@
+<?php
+$assetBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http')
+    . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
+    . rtrim(dirname(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php')), '/');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,8 +13,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link href="<?= APP_ROOT ?>/frontend/assets/css/glass.css" rel="stylesheet">
-    <link href="<?= APP_ROOT ?>/frontend/assets/css/style.css" rel="stylesheet">
+    <link href="<?= $assetBase ?>/frontend/assets/css/glass.css" rel="stylesheet">
+    <link href="<?= $assetBase ?>/frontend/assets/css/style.css" rel="stylesheet">
 </head>
 <body>
 <?php if (isLoggedIn()): ?>
@@ -406,27 +411,15 @@
 <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="<?= APP_ROOT ?>/frontend/assets/js/app.js"></script>
+<script src="<?= $assetBase ?>/frontend/assets/js/app.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof $.fn.DataTable !== 'undefined') {
-            $('.table').each(function() {
-                if ($(this).find('th').length > 0 && !$(this).closest('.no-datatable').length) {
-                    try { $(this).DataTable({ order: [], pageLength: 25, language: { search: '', searchPlaceholder: 'Search...' }, responsive: true }); } catch(e) {}
-                }
-            });
-        }
-        document.getElementById('sidebarToggle')?.addEventListener('click', function() {
-            document.getElementById('wrapper').classList.toggle('toggled');
-        });
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                var wrapper = document.getElementById('wrapper');
-                if (wrapper && wrapper.classList.contains('dashboard-fullscreen')) {
-                    if (typeof toggleDashboardFullscreen === 'function') toggleDashboardFullscreen();
-                }
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            var wrapper = document.getElementById('wrapper');
+            if (wrapper && wrapper.classList.contains('dashboard-fullscreen')) {
+                if (typeof toggleDashboardFullscreen === 'function') toggleDashboardFullscreen();
             }
-        });
+        }
     });
 </script>
 </body>
