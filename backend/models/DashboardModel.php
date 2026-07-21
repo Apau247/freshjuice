@@ -28,6 +28,11 @@ class DashboardModel extends Model {
         $certsExpiring = (int)   $db->query("SELECT COUNT(*) FROM certifications WHERE ExpiryDate <= DATE_ADD(CURDATE(), INTERVAL 90 DAY) AND Status != 'Expired'")->fetchColumn();
         $totalSuppliers = (int)  $db->query("SELECT COUNT(*) FROM suppliers")->fetchColumn();
 
+        // SOP Checklists
+        $sopTotal    = (int) @$db->query("SELECT COUNT(*) FROM sop_templates")->fetchColumn() ?: 0;
+        $sopActive   = (int) @$db->query("SELECT COUNT(*) FROM sop_templates WHERE Status='Active'")->fetchColumn() ?: 0;
+        $sopPending  = (int) @$db->query("SELECT COUNT(*) FROM sop_checklists WHERE ApprovalStatus='Pending'")->fetchColumn() ?: 0;
+
         // Safety & Compliance
         $safetyOpen     = (int)   @$db->query("SELECT COUNT(*) FROM safety_inspections WHERE Status='Open'")->fetchColumn() ?: 0;
         $safetyClosed   = (int)   @$db->query("SELECT COUNT(*) FROM safety_inspections WHERE Status='Closed'")->fetchColumn() ?: 0;
@@ -47,6 +52,7 @@ class DashboardModel extends Model {
             'pendingOrders','totalRevenue','totalWaste','totalProd','wastePct','unpaidInv',
             'pendingQI','mTotal','mDown','totalDowntime','waterTotal','powerTotal',
             'certsActive','certsExpiring','totalSuppliers',
+            'sopTotal','sopActive','sopPending',
             'safetyOpen','safetyClosed','accidentsOpen','hazardsHigh','permitsExpiring',
             'trainingPending','capaOpen','capaOverdue','avgOEE','ppeReplace'
         );
