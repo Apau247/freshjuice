@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$envFile = dirname(__DIR__) . '/.env';
+$envFile = dirname(__DIR__, 2) . '/.env';
 if (file_exists($envFile)) {
     foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
         $line = trim($line);
@@ -23,7 +23,7 @@ if (!defined('DB_PASS')) define('DB_PASS', '');
 if (!defined('DB_CHARSET')) define('DB_CHARSET', 'utf8mb4');
 if (!defined('APP_NAME')) define('APP_NAME', 'FreshJuice Factory');
 if (!defined('APP_URL')) define('APP_URL', 'http://localhost/freshjuice');
-if (!defined('APP_ROOT')) define('APP_ROOT', dirname(__DIR__));
+if (!defined('APP_ROOT')) define('APP_ROOT', dirname(__DIR__, 2));
 
 if (php_sapi_name() !== 'cli') {
     ini_set('session.cookie_httponly', '1');
@@ -43,7 +43,7 @@ function getDb(): PDO {
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES   => false,
         ];
-        $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+         $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
     }
     return $pdo;
 }
@@ -75,8 +75,9 @@ function hasRole(string ...$roleIds): bool {
     return in_array($u['role_id'], $roleIds, true);
 }
 
-function sanitize(string $input): string {
-    return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
+function sanitize(mixed $input): string {
+    if ($input === null) return '';
+    return htmlspecialchars(trim((string)$input), ENT_QUOTES, 'UTF-8');
 }
 
 function sanitizeArray(array $data): array {

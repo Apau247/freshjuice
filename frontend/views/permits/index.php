@@ -79,7 +79,7 @@
                                 </td>
                                 <td>
                                     <?php if (canEdit('permits')): ?>
-                                    <a href="?route=permits/create&id=<?php echo sanitize($row['PermitID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                    <a href="?route=permits/edit&id=<?php echo sanitize($row['PermitID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
                                     <a href="?route=permits/delete&id=<?php echo sanitize($row['PermitID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this permit?')"><i class="fas fa-trash"></i></a>
                                     <?php endif; ?>
                                 </td>

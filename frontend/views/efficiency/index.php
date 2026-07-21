@@ -69,22 +69,22 @@
                 <tbody>
                     <?php if (!empty($efficiencies)): ?>
                         <?php foreach ($efficiencies as $row): ?>
-                            <?php $oee = ($row['Availability'] ?? 0) * ($row['Performance'] ?? 0) * ($row['Quality'] ?? 0) / 10000; ?>
+                            <?php $oee = ($row['AvailabilityRate'] ?? 0) * ($row['PerformanceRate'] ?? 0) * ($row['QualityRate'] ?? 0) / 10000; ?>
                             <tr>
                                 <td><?php echo sanitize($row['EfficiencyID']); ?></td>
-                                <td><?php echo sanitize($row['RecordDate']); ?></td>
+                                <td><?php echo sanitize($row['Date']); ?></td>
                                 <td><?php echo sanitize($row['Shift']); ?></td>
                                 <td><?php echo sanitize($row['MachineName']); ?></td>
-                                <td><?php echo sanitize($row['Availability']); ?>%</td>
-                                <td><?php echo sanitize($row['Performance']); ?>%</td>
-                                <td><?php echo sanitize($row['Quality']); ?>%</td>
+                                <td><?php echo sanitize($row['AvailabilityRate']); ?>%</td>
+                                <td><?php echo sanitize($row['PerformanceRate']); ?>%</td>
+                                <td><?php echo sanitize($row['QualityRate']); ?>%</td>
                                 <td>
                                     <?php $oeeBadge = 'success'; if ($oee < 65) $oeeBadge = 'danger'; elseif ($oee < 85) $oeeBadge = 'warning'; ?>
                                     <span class="badge bg-<?php echo $oeeBadge; ?>"><?php echo number_format($oee, 1); ?>%</span>
                                 </td>
                                 <td>
                                     <?php if (canEdit('efficiency')): ?>
-                                    <a href="?route=efficiency/create&id=<?php echo sanitize($row['EfficiencyID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                    <a href="?route=efficiency/edit&id=<?php echo sanitize($row['EfficiencyID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
                                     <a href="?route=efficiency/delete&id=<?php echo sanitize($row['EfficiencyID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this record?')"><i class="fas fa-trash"></i></a>
                                     <?php endif; ?>
                                 </td>

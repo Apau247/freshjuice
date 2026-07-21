@@ -8,8 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link href="<?= APP_ROOT ?>/assets/css/glass.css" rel="stylesheet">
-    <link href="<?= APP_ROOT ?>/assets/css/style.css" rel="stylesheet">
+    <link href="<?= APP_ROOT ?>/frontend/assets/css/glass.css" rel="stylesheet">
+    <link href="<?= APP_ROOT ?>/frontend/assets/css/style.css" rel="stylesheet">
 </head>
 <body>
 <?php if (isLoggedIn()): ?>
@@ -192,7 +192,7 @@
 <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="<?= APP_ROOT ?>/assets/js/app.js"></script>
+<script src="<?= APP_ROOT ?>/frontend/assets/js/app.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof $.fn.DataTable !== 'undefined') {

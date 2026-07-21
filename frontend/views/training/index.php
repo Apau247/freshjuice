@@ -79,7 +79,7 @@
                                 </td>
                                 <td>
                                     <?php if (canEdit('training')): ?>
-                                    <a href="?route=training/create&id=<?php echo sanitize($row['TrainingID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                    <a href="?route=training/edit&id=<?php echo sanitize($row['TrainingID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
                                     <a href="?route=training/delete&id=<?php echo sanitize($row['TrainingID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this training record?')"><i class="fas fa-trash"></i></a>
                                     <?php endif; ?>
                                 </td>

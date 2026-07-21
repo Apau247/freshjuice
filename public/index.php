@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../config/permissions.php';
-require_once APP_ROOT . '/models/Model.php';
-require_once APP_ROOT . '/controllers/Controller.php';
+require_once __DIR__ . '/../backend/config/database.php';
+require_once __DIR__ . '/../backend/config/permissions.php';
+require_once APP_ROOT . '/backend/models/Model.php';
+require_once APP_ROOT . '/backend/controllers/Controller.php';
 
 spl_autoload_register(function (string $class): void {
-    $file = APP_ROOT . '/models/' . $class . '.php';
+    $file = APP_ROOT . '/backend/models/' . $class . '.php';
     if (file_exists($file)) {
         require_once $file;
     }
@@ -232,9 +232,9 @@ if (isset($map[$route])) {
         'fat'      => 'FatController',
     ];
     if ($prefix === 'auth') {
-        require_once APP_ROOT . '/auth/' . $fileMap[$prefix] . '.php';
+        require_once APP_ROOT . '/backend/auth/' . $fileMap[$prefix] . '.php';
     } else {
-        require_once APP_ROOT . '/controllers/' . $fileMap[$prefix] . '.php';
+        require_once APP_ROOT . '/backend/controllers/' . $fileMap[$prefix] . '.php';
     }
 
     $controller = new $class();

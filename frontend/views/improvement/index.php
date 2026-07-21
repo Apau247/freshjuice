@@ -78,7 +78,7 @@
                                 </td>
                                 <td>
                                     <?php if (canEdit('improvement')): ?>
-                                    <a href="?route=improvement/create&id=<?php echo sanitize($row['InitiativeID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                    <a href="?route=improvement/edit&id=<?php echo sanitize($row['InitiativeID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
                                     <a href="?route=improvement/delete&id=<?php echo sanitize($row['InitiativeID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this initiative?')"><i class="fas fa-trash"></i></a>
                                     <?php endif; ?>
                                 </td>

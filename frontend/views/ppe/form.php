@@ -12,7 +12,7 @@
                 <select name="StaffID" class="form-select" required>
                     <option value="">Select Staff Member</option>
                     <?php if (!empty($staffList)): foreach ($staffList as $staff): ?>
-                    <option value="<?= sanitize($staff['StaffID']) ?>" <?= (isset($ppe) && ($ppe['EmployeeName'] ?? '') === $staff['StaffID']) ? 'selected' : '' ?>><?= sanitize($staff['FullName']) ?></option>
+                    <option value="<?= sanitize($staff['StaffID']) ?>" <?= (isset($ppe) && ($ppe['EmployeeName'] ?? '') === $staff['StaffID']) ? 'selected' : '' ?>><?= sanitize($staff['FirstName'] . ' ' . $staff['LastName']) ?></option>
                     <?php endforeach; endif; ?>
                 </select>
             </div>

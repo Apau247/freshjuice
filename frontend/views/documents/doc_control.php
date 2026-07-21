@@ -82,7 +82,7 @@
                             <td><?php echo sanitize($row['Version']); ?></td>
                             <td><?php echo sanitize($row['ReviewDate']); ?></td>
                             <td>
-                                <a href="?route=documents/create&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Review</a>
+                                <a href="?route=documents/edit&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Review</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -130,7 +130,7 @@
                                 </td>
                                 <td><?php echo sanitize($row['EffectiveDate']); ?></td>
                                 <td>
-                                    <a href="?route=documents/create&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                    <a href="?route=documents/edit&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
                                     <a href="?route=documents/download&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-info"><i class="fas fa-download"></i></a>
                                     <a href="?route=documents/delete&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this document?')"><i class="fas fa-trash"></i></a>
                                 </td>

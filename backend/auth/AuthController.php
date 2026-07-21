@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once APP_ROOT . '/models/Model.php';
+require_once APP_ROOT . '/backend/models/Model.php';
 
 class AuthController
 {
@@ -64,7 +64,7 @@ class AuthController
             exit;
         }
 
-        require APP_ROOT . '/views/auth/login.php';
+        require APP_ROOT . '/frontend/views/auth/login.php';
     }
 
     public function logout(): void

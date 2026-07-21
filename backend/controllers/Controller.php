@@ -14,12 +14,12 @@ abstract class Controller
     protected function render(string $view, array $data = []): void
     {
         extract($data);
-        $viewFile = APP_ROOT . '/views/' . $this->viewPath . '/' . $view . '.php';
+        $viewFile = APP_ROOT . '/frontend/views/' . $this->viewPath . '/' . $view . '.php';
         if (!file_exists($viewFile)) throw new RuntimeException("View not found: {$view}");
         ob_start();
         require $viewFile;
         $content = ob_get_clean();
-        require APP_ROOT . '/views/layouts/main.php';
+        require APP_ROOT . '/frontend/views/layouts/main.php';
     }
 
     protected function redirect(string $route): void
