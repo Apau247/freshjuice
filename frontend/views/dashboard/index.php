@@ -370,10 +370,7 @@ $user = currentUser();
 .dash-badge-primary    { background: #dbeafe; color: #2563eb; }
 .dash-badge-dark       { background: #1e293b; color: #fff; }
 
-/* ── Fullscreen ── */
-.dashboard-fullscreen #sidebar { display: none !important; }
-.dashboard-fullscreen #page-content-wrapper { margin-left: 0 !important; width: 100% !important; }
-.dashboard-fullscreen .navbar { display: none !important; }
+/* ── Fullscreen (handled by glass.css) ── */
 
 /* ── Responsive ── */
 @media (max-width: 992px) {

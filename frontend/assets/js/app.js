@@ -1,32 +1,96 @@
 // FreshJuice Factory Management System - Main JS
 document.addEventListener('DOMContentLoaded', function () {
 
-    // DataTables initialization
-    document.querySelectorAll('#dataTable').forEach(function (table) {
-        new DataTable(table, {
-            pageLength: 10,
-            order: [[0, 'desc']],
-            language: {
-                search: '<i class="bi bi-search"></i>',
-                lengthMenu: 'Show _MENU_',
-                info: 'Showing _START_ to _END_ of _TOTAL_',
-                paginate: { previous: '<i class="bi bi-chevron-left"></i>', next: '<i class="bi bi-chevron-right"></i>' }
-            },
-            dom: '<"row mb-3"<"col-sm-6"l><"col-sm-6"f>>rtip'
-        });
-    });
-
-    // Sidebar toggle
-    var toggleBtn = document.getElementById('toggle-sidebar');
+    /* ═══════════════════════════════════════════
+       SIDEBAR — Collapsible + Mobile Menu
+       ═══════════════════════════════════════════ */
     var sidebar = document.getElementById('sidebar');
-    if (toggleBtn && sidebar) {
-        toggleBtn.addEventListener('click', function () {
+    var wrapper = document.getElementById('wrapper');
+    var sidebarToggler = document.querySelector('.sidebar-toggler');
+    var menuToggler = document.querySelector('.menu-toggler');
+
+    var collapsedSidebarHeight = '52px';
+    var fullSidebarHeight = 'calc(100vh - 32px)';
+
+    // Desktop: toggle collapsed state
+    if (sidebarToggler && sidebar) {
+        sidebarToggler.addEventListener('click', function () {
             sidebar.classList.toggle('collapsed');
-            sidebar.classList.toggle('show');
+            if (wrapper) {
+                wrapper.classList.toggle('sidebar-collapsed', sidebar.classList.contains('collapsed'));
+            }
         });
     }
 
-    // Delete confirmations with SweetAlert
+    // Mobile: toggle menu-active (expand/collapse height)
+    var toggleMenu = function (isMenuActive) {
+        if (!sidebar || !menuToggler) return;
+        if (isMenuActive) {
+            sidebar.style.height = sidebar.scrollHeight + 'px';
+        } else {
+            sidebar.style.height = '';
+        }
+        var icon = menuToggler.querySelector('i');
+        if (icon) {
+            icon.className = isMenuActive ? 'bi bi-x-lg' : 'bi bi-list';
+        }
+    };
+
+    if (menuToggler && sidebar) {
+        menuToggler.addEventListener('click', function () {
+            toggleMenu(sidebar.classList.toggle('menu-active'));
+        });
+    }
+
+    // Window resize handler
+    window.addEventListener('resize', function () {
+        if (!sidebar) return;
+        if (window.innerWidth > 1024) {
+            sidebar.style.height = '';
+            sidebar.classList.remove('menu-active');
+        } else {
+            sidebar.classList.remove('collapsed');
+            if (wrapper) wrapper.classList.remove('sidebar-collapsed');
+            toggleMenu(sidebar.classList.contains('menu-active'));
+        }
+    });
+
+    // Mobile sidebar toggle from navbar button
+    var sidebarToggle = document.getElementById('sidebarToggle');
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', function () {
+            if (window.innerWidth <= 1024) {
+                toggleMenu(sidebar.classList.toggle('menu-active'));
+            } else {
+                sidebar.classList.toggle('collapsed');
+                if (wrapper) {
+                    wrapper.classList.toggle('sidebar-collapsed', sidebar.classList.contains('collapsed'));
+                }
+            }
+        });
+    }
+
+    /* ═══════════════════════════════════════════
+       DATATABLES
+       ═══════════════════════════════════════════ */
+    if (typeof $.fn.DataTable !== 'undefined') {
+        $('.table').each(function () {
+            if ($(this).find('th').length > 0 && !$(this).closest('.no-datatable').length) {
+                try {
+                    $(this).DataTable({
+                        order: [],
+                        pageLength: 25,
+                        language: { search: '', searchPlaceholder: 'Search...' },
+                        responsive: true
+                    });
+                } catch (e) {}
+            }
+        });
+    }
+
+    /* ═══════════════════════════════════════════
+       DELETE CONFIRMATIONS
+       ═══════════════════════════════════════════ */
     document.querySelectorAll('a[data-confirm]').forEach(function (link) {
         link.addEventListener('click', function (e) {
             e.preventDefault();
@@ -45,26 +109,31 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Chart.js default config
+    /* ═══════════════════════════════════════════
+       CHART.JS DEFAULTS
+       ═══════════════════════════════════════════ */
     if (typeof Chart !== 'undefined') {
-        Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
-        Chart.defaults.font.size = 13;
+        Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+        Chart.defaults.font.size = 12;
         Chart.defaults.plugins.legend.labels.usePointStyle = true;
     }
 
-    // Auto-dismiss alerts
+    /* ═══════════════════════════════════════════
+       AUTO-DISMISS ALERTS
+       ═══════════════════════════════════════════ */
     document.querySelectorAll('.alert-dismissible').forEach(function (alert) {
         setTimeout(function () { bootstrap.Alert.getOrCreateInstance(alert).close(); }, 5000);
     });
 
-    // Active nav highlighting
-    var params = new URLSearchParams(window.location.search);
-    var currentRoute = params.get('route') || 'dashboard';
-    document.querySelectorAll('#sidebar .nav-link').forEach(function (link) {
-        var href = link.getAttribute('href') || '';
-        var linkRoute = href.replace('?route=', '');
-        if (currentRoute === linkRoute || currentRoute.startsWith(linkRoute + '/')) {
-            link.classList.add('active');
+    /* ═══════════════════════════════════════════
+       KEYBOARD SHORTCUTS
+       ═══════════════════════════════════════════ */
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            var fs = document.getElementById('wrapper');
+            if (fs && fs.classList.contains('dashboard-fullscreen')) {
+                if (typeof toggleDashboardFullscreen === 'function') toggleDashboardFullscreen();
+            }
         }
     });
 });
