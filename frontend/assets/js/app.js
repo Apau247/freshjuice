@@ -2,6 +2,19 @@
 document.addEventListener('DOMContentLoaded', function () {
 
     /* ═══════════════════════════════════════════
+       SCROLL POSITION — Save/Restore across page loads
+       ═══════════════════════════════════════════ */
+    var scrollKey = 'fj_scroll_' + window.location.search;
+    var savedScroll = sessionStorage.getItem(scrollKey);
+    if (savedScroll) {
+        window.scrollTo(0, parseInt(savedScroll, 10));
+        sessionStorage.removeItem(scrollKey);
+    }
+    window.addEventListener('beforeunload', function () {
+        sessionStorage.setItem(scrollKey, window.scrollY);
+    });
+
+    /* ═══════════════════════════════════════════
        SIDEBAR — Collapsible + Mobile Menu
        ═══════════════════════════════════════════ */
     var sidebar = document.getElementById('sidebar');
@@ -90,9 +103,31 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /* ═══════════════════════════════════════════
-       DELETE CONFIRMATIONS
+       LOGOUT — Convert GET to POST
        ═══════════════════════════════════════════ */
-    document.querySelectorAll('a[data-confirm]').forEach(function (link) {
+    document.querySelectorAll('a[href*="auth/logout"]').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = this.getAttribute('href');
+            var csrfMeta = document.querySelector('meta[name="csrf-token"]');
+            if (csrfMeta) {
+                var hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'csrf_token';
+                hidden.value = csrfMeta.getAttribute('content');
+                form.appendChild(hidden);
+            }
+            document.body.appendChild(form);
+            form.submit();
+        });
+    });
+
+    /* ═══════════════════════════════════════════
+       DELETE LINKS — Convert GET to POST with CSRF
+       ═══════════════════════════════════════════ */
+    document.querySelectorAll('a[href*="/delete"]').forEach(function (link) {
         link.addEventListener('click', function (e) {
             e.preventDefault();
             var href = this.getAttribute('href');
@@ -105,7 +140,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 cancelButtonColor: '#6c757d',
                 confirmButtonText: 'Yes, delete it!'
             }).then(function (result) {
-                if (result.isConfirmed) window.location.href = href;
+                if (result.isConfirmed) {
+                    var form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = href;
+                    var csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                    if (csrfMeta) {
+                        var hidden = document.createElement('input');
+                        hidden.type = 'hidden';
+                        hidden.name = 'csrf_token';
+                        hidden.value = csrfMeta.getAttribute('content');
+                        form.appendChild(hidden);
+                    }
+                    document.body.appendChild(form);
+                    form.submit();
+                }
             });
         });
     });

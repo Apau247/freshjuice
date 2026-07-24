@@ -1,9 +1,9 @@
 <?php $pageTitle = 'PPE Tracking'; ?>
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4><i class="fas fa-hard-hat me-2"></i>PPE Tracking</h4>
+        <h4><i class="bi bi-hard-hat me-2"></i>PPE Tracking</h4>
         <?php if (canCreate('ppe')): ?>
-        <a href="?route=ppe/create" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Issue PPE</a>
+        <a href="?route=ppe/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Issue PPE</a>
         <?php endif; ?>
     </div>
 
@@ -77,8 +77,8 @@
                                 </td>
                                 <td>
                                     <?php if (canEdit('ppe')): ?>
-                                    <a href="?route=ppe/edit&id=<?php echo sanitize($row['PPE_ID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
-                                    <a href="?route=ppe/delete&id=<?php echo sanitize($row['PPE_ID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this PPE record?')"><i class="fas fa-trash"></i></a>
+                                    <a href="?route=ppe/edit&id=<?php echo sanitize($row['PPE_ID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                                    <a href="?route=ppe/delete&id=<?php echo sanitize($row['PPE_ID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this PPE record?')"><i class="bi bi-trash"></i></a>
                                     <?php endif; ?>
                                 </td>
                             </tr>

@@ -8,6 +8,7 @@ $assetBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<?= generateCsrfToken() ?>">
     <title><?= sanitize($pageTitle ?? APP_NAME) ?> - <?= APP_NAME ?></title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -367,7 +368,7 @@ $assetBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' 
 
             <ul class="nav-list secondary-nav">
                 <li class="nav-item">
-                    <a href="?route=auth/logout" class="nav-link">
+                    <a href="?route=auth/logout" class="nav-link logout-link">
                         <i class="nav-icon bi bi-box-arrow-right"></i>
                         <span class="nav-label">Sign Out</span>
                     </a>
@@ -405,7 +406,7 @@ $assetBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' 
             <?php $flash = getFlash(); if ($flash): ?>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({ icon: '<?= $flash['type'] === 'success' ? 'success' : ($flash['type'] === 'error' ? 'error' : 'info') ?>', title: '<?= addslashes($flash['message']) ?>', toast: true, position: 'top-end', showConfirmButton: false, timer: 4000 });
+                    Swal.fire({ icon: <?= json_encode($flash['type'] === 'success' ? 'success' : ($flash['type'] === 'error' ? 'error' : 'info')) ?>, title: <?= json_encode($flash['message']) ?>, toast: true, position: 'top-end', showConfirmButton: false, timer: 4000 });
                 });
             </script>
             <?php endif; ?>

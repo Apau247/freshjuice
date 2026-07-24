@@ -38,6 +38,9 @@ if (php_sapi_name() !== 'cli') {
     ini_set('session.use_strict_mode', '1');
     ini_set('session.cookie_lifetime', '0');
     ini_set('session.gc_maxlifetime', '1800');
+    if (!headers_sent()) {
+        ini_set('session.cookie_secure', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? '1' : '0');
+    }
     session_start();
 }
 

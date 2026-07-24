@@ -10,7 +10,7 @@
         <table id="dataTable" class="table table-hover align-middle">
             <thead class="table-light"><tr><th>User ID</th><th>Name</th><th>Role</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead>
             <tbody>
-                <?php foreach ($users as $u): ?>
+                <?php if (!empty($users)): foreach ($users as $u): ?>
                 <tr>
                     <td><?= sanitize($u['UserID']) ?></td>
                     <td class="fw-semibold"><?= sanitize($u['Name']) ?></td>

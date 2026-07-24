@@ -1,8 +1,8 @@
 <?php $pageTitle = 'Document Control Panel'; ?>
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4><i class="fas fa-folder-open me-2"></i>Document Control Panel</h4>
-        <a href="?route=documents/create" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Add Document</a>
+        <h4><i class="bi bi-folder2-open me-2"></i>Document Control Panel</h4>
+        <a href="?route=documents/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Document</a>
     </div>
 
     <div class="row mb-4">
@@ -59,7 +59,7 @@
     <?php if (!empty($dueForReviewDocs)): ?>
     <div class="card border-warning mb-4">
         <div class="card-header bg-warning text-dark">
-            <i class="fas fa-clock me-1"></i>Documents Due for Review
+            <i class="bi bi-clock me-1"></i>Documents Due for Review
         </div>
         <div class="card-body p-0">
             <table class="table table-striped table-hover mb-0">
@@ -82,7 +82,7 @@
                             <td><?php echo sanitize($row['Version']); ?></td>
                             <td><?php echo sanitize($row['ReviewDate']); ?></td>
                             <td>
-                                <a href="?route=documents/edit&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Review</a>
+                                <a href="?route=documents/edit&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i> Review</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -130,9 +130,9 @@
                                 </td>
                                 <td><?php echo sanitize($row['EffectiveDate']); ?></td>
                                 <td>
-                                    <a href="?route=documents/edit&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
-                                    <a href="?route=documents/download&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-info"><i class="fas fa-download"></i></a>
-                                    <a href="?route=documents/delete&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this document?')"><i class="fas fa-trash"></i></a>
+                                    <a href="?route=documents/edit&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                                    <a href="?route=documents/download&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-info"><i class="bi bi-download"></i></a>
+                                    <a href="?route=documents/delete&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this document?')"><i class="bi bi-trash"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-require_once APP_ROOT . '/vendor/phpmailer/src/PHPMailer.php';
-require_once APP_ROOT . '/vendor/phpmailer/src/SMTP.php';
-require_once APP_ROOT . '/vendor/phpmailer/src/Exception.php';
+require_once APP_ROOT . '/vendor/phpmailer/PHPMailer.php';
+require_once APP_ROOT . '/vendor/phpmailer/SMTP.php';
+require_once APP_ROOT . '/vendor/phpmailer/Exception.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;

@@ -1,14 +1,14 @@
 <?php $pageTitle = 'Hazard Register'; ?>
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4><i class="fas fa-exclamation-triangle me-2"></i>Hazard Register</h4>
-        <a href="?route=safety/hazards/create" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Add Hazard</a>
+        <h4><i class="bi bi-exclamation-triangle me-2"></i>Hazard Register</h4>
+        <a href="?route=safety/hazards/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Hazard</a>
     </div>
 
     <?php if (!empty($highRisk)): ?>
     <div class="card border-danger mb-4">
         <div class="card-header bg-danger text-white">
-            <i class="fas fa-radiation me-1"></i>HIGH RISK Hazards - Immediate Attention Required
+            <i class="bi bi-exclamation-octagon me-1"></i>HIGH RISK Hazards - Immediate Attention Required
         </div>
         <div class="card-body p-0">
             <table class="table table-striped table-hover mb-0">
@@ -35,7 +35,7 @@
                             <td><span class="badge bg-danger"><?php echo sanitize($row['RiskRating']); ?></span></td>
                             <td><span class="badge bg-danger"><?php echo sanitize($row['Status']); ?></span></td>
                             <td>
-                                <a href="?route=safety/hazards/edit&id=<?php echo sanitize($row['HazardID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                                <a href="?route=safety/hazards/edit&id=<?php echo sanitize($row['HazardID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -90,8 +90,8 @@
                                     <span class="badge bg-<?php echo $sBadge; ?>"><?php echo $status; ?></span>
                                 </td>
                                 <td>
-                                    <a href="?route=safety/hazards/edit&id=<?php echo sanitize($row['HazardID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
-                                    <a href="?route=safety/hazards/delete&id=<?php echo sanitize($row['HazardID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this hazard?')"><i class="fas fa-trash"></i></a>
+                                    <a href="?route=safety/hazards/edit&id=<?php echo sanitize($row['HazardID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                                    <a href="?route=safety/hazards/delete&id=<?php echo sanitize($row['HazardID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this hazard?')"><i class="bi bi-trash"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

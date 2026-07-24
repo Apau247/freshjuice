@@ -20,7 +20,7 @@ class WaterController extends Controller {
 
     public function createUsage(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->model->db->prepare(
+            $this->model->getDb()->prepare(
                 "INSERT INTO water_usage (WaterUsageID, Date, UsageType, Quantity, Unit, Purpose, RecordedBy) VALUES (?,?,?,?,?,?,?)"
             )->execute([
                 $this->getInput('WaterUsageID'), $this->getInput('date'),
@@ -37,7 +37,7 @@ class WaterController extends Controller {
 
     public function createTest(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->model->db->prepare(
+            $this->model->getDb()->prepare(
                 "INSERT INTO water_quality_tests (WaterTestID, TestDate, TestType, pH_Level, Turbidity, TDS, Chlorine, BacteriaCount, Result, Notes, TestedBy) VALUES (?,?,?,?,?,?,?,?,?,?,?)"
             )->execute([
                 $this->getInput('WaterTestID'), $this->getInput('test_date'),

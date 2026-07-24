@@ -5,7 +5,7 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <form method="POST" action="?route=<?= isset($document) ? 'documents/edit&id=' . urlencode($document['DocID']) : 'documents/create' ?>" class="row g-3">
+        <form method="POST" enctype="multipart/form-data" action="?route=<?= isset($document) ? 'documents/edit&id=' . urlencode($document['DocID']) : 'documents/create' ?>" class="row g-3">
             <?= csrfField() ?>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Title <span class="text-danger">*</span></label>
@@ -24,8 +24,17 @@
                 <input type="text" name="department" class="form-control" value="<?= sanitize($document['Department'] ?? '') ?>">
             </div>
             <div class="col-md-4">
-                <label class="form-label fw-semibold">File Path</label>
-                <input type="text" name="file_path" class="form-control" value="<?= sanitize($document['FilePath'] ?? '') ?>">
+                <label class="form-label fw-semibold">Document File</label>
+                <input type="file" name="document_file" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.gif,.doc,.docx,.xls,.xlsx,.txt,.csv">
+                <?php if (!empty($document['FilePath'])): ?>
+                    <div class="form-text mt-1">
+                        <i class="bi bi-file-earmark"></i>
+                        Current: <a href="?route=documents/download&id=<?= urlencode($document['DocID']) ?>" target="_blank"><?= basename($document['FilePath']) ?></a>
+                        <span class="text-muted">(leave empty to keep current file)</span>
+                    </div>
+                <?php else: ?>
+                    <div class="form-text mt-1">Accepted: PDF, Images, Word, Excel, Text, CSV (max 10 MB)</div>
+                <?php endif; ?>
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Status</label>

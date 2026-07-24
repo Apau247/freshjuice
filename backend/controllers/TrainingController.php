@@ -1,4 +1,8 @@
 <?php
+require_once __DIR__ . '/Controller.php';
+require_once __DIR__ . '/../models/TrainingModel.php';
+require_once __DIR__ . '/../models/StaffModel.php';
+
 class TrainingController extends Controller
 {
     public function __construct()

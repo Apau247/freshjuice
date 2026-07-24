@@ -68,7 +68,7 @@ class StaffController extends Controller {
     public function attendance(): void {
         $date = $this->getInput('date', date('Y-m-d'));
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->model->db->prepare(
+            $this->model->getDb()->prepare(
                 "INSERT INTO attendance (AttendanceID, StaffID, ShiftID, Date, ClockIn, Status) VALUES (?,?,?,?,?,?)"
             )->execute([
                 $this->getInput('AttendanceID'), $this->getInput('StaffID'),

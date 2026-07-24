@@ -1,9 +1,9 @@
 <?php $pageTitle = 'Permits & Licenses'; ?>
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4><i class="fas fa-certificate me-2"></i>Permits & Licenses</h4>
+        <h4><i class="bi bi-award me-2"></i>Permits & Licenses</h4>
         <?php if (canCreate('permits')): ?>
-        <a href="?route=permits/create" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Add Permit</a>
+        <a href="?route=permits/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Permit</a>
         <?php endif; ?>
     </div>
 
@@ -79,8 +79,8 @@
                                 </td>
                                 <td>
                                     <?php if (canEdit('permits')): ?>
-                                    <a href="?route=permits/edit&id=<?php echo sanitize($row['PermitID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
-                                    <a href="?route=permits/delete&id=<?php echo sanitize($row['PermitID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this permit?')"><i class="fas fa-trash"></i></a>
+                                    <a href="?route=permits/edit&id=<?php echo sanitize($row['PermitID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                                    <a href="?route=permits/delete&id=<?php echo sanitize($row['PermitID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this permit?')"><i class="bi bi-trash"></i></a>
                                     <?php endif; ?>
                                 </td>
                             </tr>

@@ -898,7 +898,7 @@ document.addEventListener('DOMContentLoaded', function() {
     new Chart(document.getElementById('flavourChart'), {
         type: 'bar',
         data: {
-            labels: [<?php foreach ($productionByFlavour as $f): ?>'<?= addslashes($f['Flavour']) ?>',<?php endforeach; ?>],
+            labels: [<?php foreach ($productionByFlavour as $f): ?><?= json_encode($f['Flavour']) ?>,<?php endforeach; ?>],
             datasets: [{
                 data: [<?php foreach ($productionByFlavour as $f): ?><?= $f['Total'] ?>,<?php endforeach; ?>],
                 backgroundColor: colors,
@@ -924,7 +924,7 @@ document.addEventListener('DOMContentLoaded', function() {
     new Chart(document.getElementById('monthlyChart'), {
         type: 'line',
         data: {
-            labels: [<?php foreach ($months as $m): ?>'<?= $m['Month'] ?>',<?php endforeach; ?>],
+            labels: [<?php foreach ($months as $m): ?><?= json_encode($m['Month']) ?>,<?php endforeach; ?>],
             datasets: [{
                 data: [<?php foreach ($months as $m): ?><?= $m['Total'] ?>,<?php endforeach; ?>],
                 borderColor: '#2563eb',
@@ -956,7 +956,7 @@ document.addEventListener('DOMContentLoaded', function() {
     new Chart(document.getElementById('wasteChart'), {
         type: 'doughnut',
         data: {
-            labels: [<?php foreach ($wasteData as $w): ?>'<?= addslashes($w['WasteType']) ?>',<?php endforeach; ?>],
+            labels: [<?php foreach ($wasteData as $w): ?><?= json_encode($w['WasteType']) ?>,<?php endforeach; ?>],
             datasets: [{
                 data: [<?php foreach ($wasteData as $w): ?><?= $w['Total'] ?>,<?php endforeach; ?>],
                 backgroundColor: ['#ef4444','#f97316','#f59e0b','#22c55e','#06b6d4','#8b5cf6'],
@@ -982,7 +982,7 @@ document.addEventListener('DOMContentLoaded', function() {
     new Chart(document.getElementById('oeeChart'), {
         type: 'bar',
         data: {
-            labels: [<?php foreach ($oeeByMachine as $o): ?>'<?= addslashes($o['MachineName']) ?>',<?php endforeach; ?>],
+            labels: [<?php foreach ($oeeByMachine as $o): ?><?= json_encode($o['MachineName']) ?>,<?php endforeach; ?>],
             datasets: [{
                 data: [<?php foreach ($oeeByMachine as $o): ?><?= number_format((float)$o['AvgOEE'], 1) ?>,<?php endforeach; ?>],
                 backgroundColor: [<?php foreach ($oeeByMachine as $i => $o): ?>'rgba(99,102,241,<?= round(1 - ($i * 0.12), 2) ?>)',<?php endforeach; ?>],

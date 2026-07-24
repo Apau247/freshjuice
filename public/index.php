@@ -165,6 +165,7 @@ $map = [
     'documents/create'          => ['doc',   'DocumentController','create'],
     'documents/edit'            => ['doc',   'DocumentController','edit'],
     'documents/delete'          => ['doc',   'DocumentController','delete'],
+    'documents/download'        => ['doc',   'DocumentController','download'],
 
     'supplier-evaluations'      => ['seval', 'SupplierEvalController','index'],
     'supplier-evaluations/create'=>['seval', 'SupplierEvalController','create'],
@@ -194,6 +195,12 @@ if (isset($map[$route])) {
             header('Location: ?route=' . $route);
             exit;
         }
+    }
+
+    if (str_ends_with($route, '/delete') && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+        setFlash('error', 'Invalid request method.');
+        header('Location: ?route=' . dirname($route));
+        exit;
     }
 
     if ($prefix !== 'auth' && isLoggedIn()) {

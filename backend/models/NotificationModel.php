@@ -4,6 +4,9 @@ require_once __DIR__ . '/Model.php';
 
 class NotificationModel extends Model
 {
+    protected string $table = 'notifications';
+    protected string $primaryKey = 'NotificationID';
+
     public function getLowStockAlerts(): array
     {
         return $this->query(

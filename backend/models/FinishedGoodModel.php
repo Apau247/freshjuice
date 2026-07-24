@@ -23,6 +23,10 @@ class FinishedGoodModel extends Model {
         return $this->db->prepare("UPDATE finished_goods SET QuantityAvailable = QuantityAvailable - ? WHERE FG_ID = ? AND QuantityAvailable >= ?")->execute([$qty, $id, $qty]);
     }
 
+    public function restoreStock(string $id, float $qty): bool {
+        return $this->db->prepare("UPDATE finished_goods SET QuantityAvailable = QuantityAvailable + ? WHERE FG_ID = ?")->execute([$qty, $id]);
+    }
+
     public function getExpiringSoon(int $days = 30): array {
         return $this->query("SELECT * FROM finished_goods WHERE ExpiryDate <= DATE_ADD(CURDATE(), INTERVAL ? DAY) AND QuantityAvailable > 0 ORDER BY ExpiryDate ASC", [$days]);
     }

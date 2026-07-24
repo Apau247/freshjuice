@@ -1,9 +1,9 @@
 <?php $pageTitle = 'OEE Dashboard'; ?>
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4><i class="fas fa-chart-line me-2"></i>OEE Dashboard</h4>
+        <h4><i class="bi bi-graph-up me-2"></i>OEE Dashboard</h4>
         <?php if (canCreate('efficiency')): ?>
-        <a href="?route=efficiency/create" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Record Data</a>
+        <a href="?route=efficiency/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Record Data</a>
         <?php endif; ?>
     </div>
 
@@ -84,8 +84,8 @@
                                 </td>
                                 <td>
                                     <?php if (canEdit('efficiency')): ?>
-                                    <a href="?route=efficiency/edit&id=<?php echo sanitize($row['EfficiencyID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
-                                    <a href="?route=efficiency/delete&id=<?php echo sanitize($row['EfficiencyID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this record?')"><i class="fas fa-trash"></i></a>
+                                    <a href="?route=efficiency/edit&id=<?php echo sanitize($row['EfficiencyID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                                    <a href="?route=efficiency/delete&id=<?php echo sanitize($row['EfficiencyID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this record?')"><i class="bi bi-trash"></i></a>
                                     <?php endif; ?>
                                 </td>
                             </tr>

@@ -1,9 +1,9 @@
 <?php $pageTitle = 'Document Control'; ?>
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4><i class="fas fa-file-alt me-2"></i>Document Control</h4>
+        <h4><i class="bi bi-file-text me-2"></i>Document Control</h4>
         <?php if (canCreate('documents')): ?>
-        <a href="?route=documents/create" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Add Document</a>
+        <a href="?route=documents/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Document</a>
         <?php endif; ?>
     </div>
 
@@ -11,7 +11,7 @@
         <div class="col-md-3">
             <div class="card text-bg-warning">
                 <div class="card-body text-center">
-                    <h5><?php echo sanitize($underReviewCount ?? 0); ?></h5>
+                    <h5><?php echo count($underReview ?? []); ?></h5>
                     <small>Under Review</small>
                 </div>
             </div>
@@ -19,7 +19,7 @@
         <div class="col-md-3">
             <div class="card text-bg-success">
                 <div class="card-body text-center">
-                    <h5><?php echo sanitize($approvedCount ?? 0); ?></h5>
+                    <h5><?php echo count(array_filter($documents ?? [], fn($d) => $d['Status'] === 'Approved')); ?></h5>
                     <small>Approved</small>
                 </div>
             </div>
@@ -27,7 +27,7 @@
         <div class="col-md-3">
             <div class="card text-bg-secondary">
                 <div class="card-body text-center">
-                    <h5><?php echo sanitize($draftCount ?? 0); ?></h5>
+                    <h5><?php echo count(array_filter($documents ?? [], fn($d) => $d['Status'] === 'Draft')); ?></h5>
                     <small>Draft</small>
                 </div>
             </div>
@@ -35,7 +35,7 @@
         <div class="col-md-3">
             <div class="card text-bg-info">
                 <div class="card-body text-center">
-                    <h5><?php echo sanitize($totalCount ?? 0); ?></h5>
+                    <h5><?php echo count($documents ?? []); ?></h5>
                     <small>Total Documents</small>
                 </div>
             </div>
@@ -54,6 +54,7 @@
                         <th>Department</th>
                         <th>Status</th>
                         <th>Effective Date</th>
+                        <th>File</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -79,9 +80,16 @@
                                 </td>
                                 <td><?php echo sanitize($row['EffectiveDate']); ?></td>
                                 <td>
+                                    <?php if (!empty($row['FilePath'])): ?>
+                                        <a href="?route=documents/download&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-outline-primary" title="Download"><i class="bi bi-download"></i></a>
+                                    <?php else: ?>
+                                        <span class="text-muted">—</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
                                     <?php if (canEdit('documents')): ?>
-                                    <a href="?route=documents/edit&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
-                                    <a href="?route=documents/delete&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this document?')"><i class="fas fa-trash"></i></a>
+                                    <a href="?route=documents/edit&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                                    <a href="?route=documents/delete&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
                                     <?php endif; ?>
                                 </td>
                             </tr>

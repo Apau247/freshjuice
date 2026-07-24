@@ -14,6 +14,11 @@ abstract class Model
         $this->db = getDb();
     }
 
+    public function getDb(): PDO
+    {
+        return $this->db;
+    }
+
     public function all(): array
     {
         return $this->db->query("SELECT * FROM {$this->table} ORDER BY {$this->primaryKey} DESC")->fetchAll();

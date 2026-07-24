@@ -19,7 +19,7 @@ class PowerController extends Controller {
 
     public function createUsage(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->model->db->prepare(
+            $this->model->getDb()->prepare(
                 "INSERT INTO power_usage (PowerUsageID, Date, Source, ConsumptionKWh, Cost, Notes) VALUES (?,?,?,?,?,?)"
             )->execute([
                 $this->getInput('PowerUsageID'), $this->getInput('date'),
@@ -36,7 +36,7 @@ class PowerController extends Controller {
 
     public function createGeneratorLog(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->model->db->prepare(
+            $this->model->getDb()->prepare(
                 "INSERT INTO generator_log (LogID, Date, StartTime, EndTime, RuntimeHrs, FuelUsed, FuelUnit, Reason, Notes) VALUES (?,?,?,?,?,?,?,?,?)"
             )->execute([
                 $this->getInput('LogID'), $this->getInput('date'),

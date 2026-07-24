@@ -1,8 +1,8 @@
 <?php $pageTitle = 'Factory Acceptance Testing'; ?>
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4><i class="fas fa-flask me-2"></i>Factory Acceptance Testing</h4>
-        <a href="?route=fat/create" class="btn btn-primary"><i class="fas fa-plus me-1"></i>New FAT Record</a>
+        <h4><i class="bi bi-flask me-2"></i>Factory Acceptance Testing</h4>
+        <a href="?route=fat/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>New FAT Record</a>
     </div>
 
     <div class="card">
@@ -48,8 +48,8 @@
                                     <span class="badge bg-<?php echo $sBadge; ?>"><?php echo $status; ?></span>
                                 </td>
                                 <td>
-                                    <a href="?route=fat/edit&id=<?php echo sanitize($row['FAT_ID']); ?>" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
-                                    <a href="?route=fat/delete&id=<?php echo sanitize($row['FAT_ID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this FAT record?')"><i class="fas fa-trash"></i></a>
+                                    <a href="?route=fat/edit&id=<?php echo sanitize($row['FAT_ID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                                    <a href="?route=fat/delete&id=<?php echo sanitize($row['FAT_ID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this FAT record?')"><i class="bi bi-trash"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
