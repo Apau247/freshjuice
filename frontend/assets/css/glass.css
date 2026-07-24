@@ -575,6 +575,38 @@ aside.sidebar.collapsed,
 .expiry-warning { color: #dc2626 !important; font-weight: 600 !important; }
 .expiry-ok { color: #16a34a !important; }
 
+/* ── Stat Card Overrides ── */
+.card.text-bg-primary {
+    background: var(--gradient-brand) !important;
+    color: white !important;
+}
+.card.text-bg-primary * { color: white !important; }
+.card.text-bg-success {
+    background: var(--gradient-emerald) !important;
+    color: white !important;
+}
+.card.text-bg-success * { color: white !important; }
+.card.text-bg-danger {
+    background: var(--gradient-warm) !important;
+    color: white !important;
+}
+.card.text-bg-danger * { color: white !important; }
+.card.text-bg-info {
+    background: var(--gradient-sky) !important;
+    color: white !important;
+}
+.card.text-bg-info * { color: white !important; }
+.card.text-bg-warning {
+    background: var(--gradient-amber) !important;
+    color: white !important;
+}
+.card.text-bg-warning * { color: white !important; }
+.card.text-bg-secondary {
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%) !important;
+    color: white !important;
+}
+.card.text-bg-secondary * { color: white !important; }
+
 /* ── DataTables Override ── */
 .dataTables_wrapper .dataTables_paginate .paginate_button.current {
     background: var(--gradient-brand) !important;
