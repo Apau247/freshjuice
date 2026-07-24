@@ -37,7 +37,7 @@
                                     ?>
                                     <span class="badge bg-<?php echo $statusBadge; ?>"><?php echo $status; ?></span>
                                 </td>
-                                <td><?php echo sanitize($row['ReportedBy']); ?></td>
+                                <td><?php echo sanitize($row['ReportedByName'] ?? $row['ReportedBy']); ?></td>
                                 <td>
                                     <a href="?route=safety/accidents/edit&id=<?php echo sanitize($row['AccidentID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
                                     <a href="?route=safety/accidents/delete&id=<?php echo sanitize($row['AccidentID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this report?')"><i class="bi bi-trash"></i></a>
