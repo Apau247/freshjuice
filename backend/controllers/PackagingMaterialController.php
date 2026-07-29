@@ -17,7 +17,7 @@ class PackagingMaterialController extends Controller {
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->create([
-                'PackageID' => $this->getInput('PackageID'), 'Name' => $this->getInput('name'),
+                'PackageID' => generateId('PKG'), 'Name' => $this->getInput('name'),
                 'Type' => $this->getInput('type'), 'Unit' => $this->getInput('unit', 'pcs'),
                 'CurrentStock' => (float)$this->getInput('current_stock', '0'),
                 'MinStock' => (float)$this->getInput('min_stock', '0'),

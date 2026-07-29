@@ -16,8 +16,9 @@ class StaffController extends Controller {
 
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = generateId('STF');
             $this->model->create([
-                'StaffID' => $this->getInput('StaffID'),
+                'StaffID' => $id,
                 'UserID' => $this->getInput('UserID') ?: null,
                 'FirstName' => $this->getInput('first_name'),
                 'LastName' => $this->getInput('last_name'),
@@ -68,10 +69,11 @@ class StaffController extends Controller {
     public function attendance(): void {
         $date = $this->getInput('date', date('Y-m-d'));
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = generateId('ATT');
             $this->model->getDb()->prepare(
                 "INSERT INTO attendance (AttendanceID, StaffID, ShiftID, Date, ClockIn, Status) VALUES (?,?,?,?,?,?)"
             )->execute([
-                $this->getInput('AttendanceID'), $this->getInput('StaffID'),
+                $id, $this->getInput('StaffID'),
                 $this->getInput('ShiftID') ?: null, $date,
                 $this->getInput('ClockIn'), $this->getInput('Status', 'Present'),
             ]);
@@ -85,5 +87,69 @@ class StaffController extends Controller {
             'shifts' => $this->model->getShifts(),
             'selectedDate' => $date,
         ]);
+    }
+
+    public function createShift(): void {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = generateId('SHF');
+            $this->model->createShift([
+                'ShiftID' => $id,
+                'ShiftName' => $this->getInput('shift_name'),
+                'StartTime' => $this->getInput('start_time'),
+                'EndTime' => $this->getInput('end_time'),
+                'Description' => $this->getInput('description'),
+            ]);
+            setFlash('success', 'Shift created.');
+            $this->redirect('staff/shifts');
+            return;
+        }
+        $this->redirect('staff/shifts');
+    }
+
+    public function editShift(): void {
+        $id = $this->getInput('id');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->model->updateShift($id, [
+                'ShiftName' => $this->getInput('shift_name'),
+                'StartTime' => $this->getInput('start_time'),
+                'EndTime' => $this->getInput('end_time'),
+                'Description' => $this->getInput('description'),
+            ]);
+            setFlash('success', 'Shift updated.');
+            $this->redirect('staff/shifts');
+            return;
+        }
+        $this->redirect('staff/shifts');
+    }
+
+    public function deleteShift(): void {
+        $this->model->deleteShift($this->getInput('id'));
+        setFlash('success', 'Shift deleted.');
+        $this->redirect('staff/shifts');
+    }
+
+    public function editAttendance(): void {
+        $id = $this->getInput('id');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->model->getDb()->prepare(
+                "UPDATE attendance SET StaffID = ?, ShiftID = ?, ClockIn = ?, Status = ? WHERE AttendanceID = ?"
+            )->execute([
+                $this->getInput('StaffID'),
+                $this->getInput('ShiftID') ?: null,
+                $this->getInput('ClockIn'),
+                $this->getInput('Status', 'Present'),
+                $id,
+            ]);
+            setFlash('success', 'Attendance updated.');
+            $this->redirect('staff/attendance');
+            return;
+        }
+        $this->redirect('staff/attendance');
+    }
+
+    public function deleteAttendance(): void {
+        $this->model->getDb()->prepare("DELETE FROM attendance WHERE AttendanceID = ?")->execute([$this->getInput('id')]);
+        setFlash('success', 'Attendance deleted.');
+        $this->redirect('staff/attendance');
     }
 }

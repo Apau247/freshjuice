@@ -17,7 +17,7 @@ class CustomerController extends Controller {
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->create([
-                'CustomerID' => $this->getInput('CustomerID'),
+                'CustomerID' => generateId('CUS'),
                 'Name' => $this->getInput('name'),
                 'Contact' => $this->getInput('contact'),
                 'Email' => $this->getInput('email'),

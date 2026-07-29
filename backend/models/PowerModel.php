@@ -27,4 +27,34 @@ class PowerModel extends Model {
     public function getMonthlyConsumption(): array {
         return $this->db->query("SELECT DATE_FORMAT(Date, '%Y-%m') AS Month, SUM(ConsumptionKWh) AS Total FROM power_usage GROUP BY Month ORDER BY Month DESC LIMIT 12")->fetchAll();
     }
+
+    public function findUsage(string $id): ?array {
+        return $this->queryOne("SELECT * FROM power_usage WHERE PowerUsageID = ?", [$id]);
+    }
+
+    public function updateUsage(string $id, array $data): bool {
+        $sets = implode(', ', array_map(fn($c) => "{$c} = ?", array_keys($data)));
+        $params = array_values($data);
+        $params[] = $id;
+        return $this->db->prepare("UPDATE power_usage SET {$sets} WHERE PowerUsageID = ?")->execute($params);
+    }
+
+    public function deleteUsage(string $id): bool {
+        return $this->db->prepare("DELETE FROM power_usage WHERE PowerUsageID = ?")->execute([$id]);
+    }
+
+    public function findGeneratorLog(string $id): ?array {
+        return $this->queryOne("SELECT * FROM generator_log WHERE LogID = ?", [$id]);
+    }
+
+    public function updateGeneratorLog(string $id, array $data): bool {
+        $sets = implode(', ', array_map(fn($c) => "{$c} = ?", array_keys($data)));
+        $params = array_values($data);
+        $params[] = $id;
+        return $this->db->prepare("UPDATE generator_log SET {$sets} WHERE LogID = ?")->execute($params);
+    }
+
+    public function deleteGeneratorLog(string $id): bool {
+        return $this->db->prepare("DELETE FROM generator_log WHERE LogID = ?")->execute([$id]);
+    }
 }

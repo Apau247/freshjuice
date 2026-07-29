@@ -67,4 +67,8 @@ class SopModel extends Model {
         $params[] = $id;
         return $this->db->prepare("UPDATE sop_checklists SET " . implode(', ', $sets) . " WHERE ChecklistID = ?")->execute($params);
     }
+
+    public function deleteChecklist(string $id): bool {
+        return $this->db->prepare("DELETE FROM sop_checklists WHERE ChecklistID = ?")->execute([$id]);
+    }
 }

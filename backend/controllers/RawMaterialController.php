@@ -17,7 +17,7 @@ class RawMaterialController extends Controller {
 
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $this->getInput('MaterialID');
+            $id = generateId('RMW');
             $this->model->create([
                 'MaterialID' => $id, 'Name' => $this->getInput('name'),
                 'Type' => $this->getInput('type'), 'Unit' => $this->getInput('unit', 'kg'),

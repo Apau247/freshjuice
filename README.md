@@ -7,10 +7,10 @@ A comprehensive **web-based Factory Management System** for a Fresh Fruit Juice 
 | # | Module | Description |
 |---|--------|-------------|
 | 1 | **Supplier Management** | Supplier CRUD, fruit/ingredient delivery tracking, supplier evaluations |
-| 2 | **Raw Material Inventory** | Fruits, sugar, additives — stock in/out, low-stock alerts |
+| 2 | **Raw Material Inventory** | Fruits, sugar, additives -- stock in/out, low-stock alerts |
 | 3 | **Packaging Inventory** | Bottles, caps, labels, cartons, PVC wrappers |
 | 4 | **Production Management** | Batch creation, auto-numbering, transactional stock deduction |
-| 5 | **Quality Assurance/QC** | Incoming, In-process, Finished inspections — Pass/Fail/CAPA |
+| 5 | **Quality Assurance/QC** | Incoming, In-process, Finished inspections -- Pass/Fail/CAPA |
 | 6 | **Finished Goods** | Auto-generated from approved batches, expiry tracking |
 | 7 | **Sales & Invoicing** | Customer management, orders, stock deduction, invoices |
 | 8 | **Staff & Shift Management** | Staff records, shifts, attendance tracking |
@@ -18,7 +18,7 @@ A comprehensive **web-based Factory Management System** for a Fresh Fruit Juice 
 | 10 | **Waste Management** | Waste per batch, disposal method, environmental impact |
 | 11 | **Water Management** | Usage tracking (washing/mixing/cleaning), quality tests |
 | 12 | **Power Management** | Electricity consumption, generator runtime & fuel |
-| 13 | **Certification Management** | FDA, HACCP, ISO 22000, GSA — expiry reminders |
+| 13 | **Certification Management** | FDA, HACCP, ISO 22000, GSA -- expiry reminders |
 | 14 | **SOP Checklists** | Digital SOPs, checklist items, supervisor approval |
 
 ### Additional Modules
@@ -39,13 +39,13 @@ A comprehensive **web-based Factory Management System** for a Fresh Fruit Juice 
 
 ## Security Features
 
-- **CSRF Protection** — Tokens on all forms, validated at router level
-- **Session Security** — `httponly`, `samesite=Strict`, strict mode, session regen on login
-- **Rate Limiting** — Max 5 login attempts per user, 15-minute lockout window
-- **Input Sanitization** — All output escaped via `htmlspecialchars()`
-- **Prepared Statements** — PDO with `ERRMODE_EXCEPTION`, emulated prepares disabled
-- **RBAC** — 8 roles with per-module access control
-- **Audit Trail** — All CRUD operations logged with user, timestamp, and IP
+- **CSRF Protection** -- Tokens on all forms, validated at router level
+- **Session Security** -- `httponly`, `samesite=Strict`, strict mode, session regen on login
+- **Rate Limiting** -- Max 5 login attempts per user, 15-minute lockout window
+- **Input Sanitization** -- All output escaped via `htmlspecialchars()`
+- **Prepared Statements** -- PDO with `ERRMODE_EXCEPTION`, emulated prepares disabled
+- **RBAC** -- 8 roles with per-module access control
+- **Audit Trail** -- All CRUD operations logged with user, timestamp, and IP
 
 ## User Roles
 
@@ -119,67 +119,67 @@ http://localhost/freshjuice/freshjuice
 
 ```
 freshjuice/
-├── config/
-│   ├── database.php          # DB config, session, CSRF, helpers
-│   └── permissions.php       # RBAC permission matrix
-├── models/                   # 20+ model files
-├── controllers/              # 25+ controller files
-├── auth/
-│   └── AuthController.php    # Login/logout with CSRF & rate limiting
-├── views/
-│   ├── layouts/main.php      # Sidebar, navbar, flash messages
-│   ├── auth/
-│   ├── dashboard/
-│   ├── suppliers/
-│   ├── materials/
-│   ├── production/
-│   ├── quality/
-│   ├── finished_goods/
-│   ├── customers/
-│   ├── sales/
-│   ├── invoicing/
-│   ├── staff/
-│   ├── machines/
-│   ├── maintenance/
-│   ├── waste/
-│   ├── water/
-│   ├── power/
-│   ├── certifications/
-│   ├── sops/
-│   ├── safety/
-│   ├── improvement/
-│   ├── efficiency/
-│   ├── documents/
-│   ├── permits/
-│   ├── training/
-│   ├── ppe/
-│   └── users/
-├── assets/
-│   ├── css/style.css
-│   └── js/app.js
-├── public/
-│   └── index.php             # Router with CSRF enforcement
-├── sql/
-│   ├── schema.sql
-│   └── sample_data.sql
-├── .env.example              # Environment config template
-├── .gitignore
-├── .htaccess
-└── README.md
+|-- config/
+|   |-- database.php          # DB config, session, CSRF, helpers
+|   +-- permissions.php       # RBAC permission matrix
+|-- models/                   # 20+ model files
+|-- controllers/              # 25+ controller files
+|-- auth/
+|   +-- AuthController.php    # Login/logout with CSRF & rate limiting
+|-- views/
+|   |-- layouts/main.php      # Sidebar, navbar, flash messages
+|   |-- auth/
+|   |-- dashboard/
+|   |-- suppliers/
+|   |-- materials/
+|   |-- production/
+|   |-- quality/
+|   |-- finished_goods/
+|   |-- customers/
+|   |-- sales/
+|   |-- invoicing/
+|   |-- staff/
+|   |-- machines/
+|   |-- maintenance/
+|   |-- waste/
+|   |-- water/
+|   |-- power/
+|   |-- certifications/
+|   |-- sops/
+|   |-- safety/
+|   |-- improvement/
+|   |-- efficiency/
+|   |-- documents/
+|   |-- permits/
+|   |-- training/
+|   |-- ppe/
+|   +-- users/
+|-- assets/
+|   |-- css/style.css
+|   +-- js/app.js
+|-- public/
+|   +-- index.php             # Router with CSRF enforcement
+|-- sql/
+|   |-- schema.sql
+|   +-- sample_data.sql
+|-- .env.example              # Environment config template
+|-- .gitignore
+|-- .htaccess
++-- README.md
 ```
 
 ## Key Business Logic
 
-1. **Batch Creation** — Transactional deduction of raw materials and packaging stock (rollbacks on failure)
-2. **Quality Pass** — Auto-creates finished goods with 6-month expiry (prevents duplicate creation)
-3. **Sales Completion** — Transactional deduction of finished goods stock
-4. **ID Generation** — Cryptographically random IDs: `FJ-20250710-ABC12`
-5. **Audit Trail** — Tracks who did what, when, and from which IP
-6. **Low-Stock Alerts** — Raw materials below minimum threshold
-7. **Expiry Tracking** — Finished goods, certifications, and permits
-8. **Risk Rating** — Automatic calculation from likelihood × consequence matrix
-9. **OEE Calculation** — Real-time Availability × Performance × Quality
+1. **Batch Creation** -- Transactional deduction of raw materials and packaging stock (rollbacks on failure)
+2. **Quality Pass** -- Auto-creates finished goods with 6-month expiry (prevents duplicate creation)
+3. **Sales Completion** -- Transactional deduction of finished goods stock
+4. **ID Generation** -- Cryptographically random IDs: `FJ-20250710-ABC12`
+5. **Audit Trail** -- Tracks who did what, when, and from which IP
+6. **Low-Stock Alerts** -- Raw materials below minimum threshold
+7. **Expiry Tracking** -- Finished goods, certifications, and permits
+8. **Risk Rating** -- Automatic calculation from likelihood x consequence matrix
+9. **OEE Calculation** -- Real-time Availability x Performance x Quality
 
 ## License
 
-MIT License — use freely for any project.
+MIT License -- use freely for any project.

@@ -20,10 +20,11 @@ class WaterController extends Controller {
 
     public function createUsage(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = generateId('WU');
             $this->model->getDb()->prepare(
                 "INSERT INTO water_usage (WaterUsageID, Date, UsageType, Quantity, Unit, Purpose, RecordedBy) VALUES (?,?,?,?,?,?,?)"
             )->execute([
-                $this->getInput('WaterUsageID'), $this->getInput('date'),
+                $id, $this->getInput('date'),
                 $this->getInput('usage_type'), (float)$this->getInput('quantity', '0'),
                 $this->getInput('unit', 'litres'), $this->getInput('purpose'),
                 $_SESSION['user_id'] ?? null,
@@ -35,12 +36,38 @@ class WaterController extends Controller {
         $this->render('usage_form');
     }
 
+    public function editUsage(): void {
+        $id = $this->getInput('id');
+        $record = $this->model->findUsage($id);
+        if (!$record) { setFlash('error', 'Not found.'); $this->redirect('water'); return; }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->model->updateUsage($id, [
+                'Date' => $this->getInput('date'),
+                'UsageType' => $this->getInput('usage_type'),
+                'Quantity' => (float)$this->getInput('quantity', '0'),
+                'Unit' => $this->getInput('unit', 'litres'),
+                'Purpose' => $this->getInput('purpose'),
+            ]);
+            setFlash('success', 'Water usage updated.');
+            $this->redirect('water');
+            return;
+        }
+        $this->render('usage_form', ['record' => $record]);
+    }
+
+    public function deleteUsage(): void {
+        $this->model->deleteUsage($this->getInput('id'));
+        setFlash('success', 'Water usage deleted.');
+        $this->redirect('water');
+    }
+
     public function createTest(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = generateId('WT');
             $this->model->getDb()->prepare(
                 "INSERT INTO water_quality_tests (WaterTestID, TestDate, TestType, pH_Level, Turbidity, TDS, Chlorine, BacteriaCount, Result, Notes, TestedBy) VALUES (?,?,?,?,?,?,?,?,?,?,?)"
             )->execute([
-                $this->getInput('WaterTestID'), $this->getInput('test_date'),
+                $id, $this->getInput('test_date'),
                 $this->getInput('test_type'),
                 $this->getInput('ph_level') ?: null, $this->getInput('turbidity') ?: null,
                 $this->getInput('tds') ?: null, $this->getInput('chlorine') ?: null,
@@ -53,5 +80,34 @@ class WaterController extends Controller {
             return;
         }
         $this->render('test_form', ['users' => (new UserModel())->all()]);
+    }
+
+    public function editTest(): void {
+        $id = $this->getInput('id');
+        $test = $this->model->findTest($id);
+        if (!$test) { setFlash('error', 'Not found.'); $this->redirect('water'); return; }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->model->updateTest($id, [
+                'TestDate' => $this->getInput('test_date'),
+                'TestType' => $this->getInput('test_type'),
+                'pH_Level' => $this->getInput('ph_level') ?: null,
+                'Turbidity' => $this->getInput('turbidity') ?: null,
+                'TDS' => $this->getInput('tds') ?: null,
+                'Chlorine' => $this->getInput('chlorine') ?: null,
+                'BacteriaCount' => $this->getInput('bacteria_count') ?: null,
+                'Result' => $this->getInput('result', 'Pending'),
+                'Notes' => $this->getInput('notes'),
+            ]);
+            setFlash('success', 'Water quality test updated.');
+            $this->redirect('water');
+            return;
+        }
+        $this->render('test_form', ['test' => $test, 'users' => (new UserModel())->all()]);
+    }
+
+    public function deleteTest(): void {
+        $this->model->deleteTest($this->getInput('id'));
+        setFlash('success', 'Water quality test deleted.');
+        $this->redirect('water');
     }
 }

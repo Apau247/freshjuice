@@ -16,10 +16,10 @@ class SupplierController extends Controller {
 
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $this->getInput('SupplierID');
+            $id = generateId('SUP');
             $name = $this->getInput('name');
-            if (empty($id) || empty($name)) {
-                setFlash('error', 'Supplier ID and Name are required.');
+            if (empty($name)) {
+                setFlash('error', 'Supplier Name is required.');
                 $this->redirect('suppliers');
                 return;
             }
@@ -73,7 +73,7 @@ class SupplierController extends Controller {
 
     public function createDelivery(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $this->getInput('DeliveryID');
+            $id = generateId('DEL');
             $this->model->createDelivery([
                 'DeliveryID' => $id, 'SupplierID' => $this->getInput('supplier_id'),
                 'DeliveryDate' => $this->getInput('delivery_date'),

@@ -18,7 +18,7 @@ class InvoiceController extends Controller {
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->create([
-                'InvoiceID' => $this->getInput('InvoiceID'),
+                'InvoiceID' => generateId('INV'),
                 'InvoiceDate' => $this->getInput('invoice_date'),
                 'Amount' => (float)$this->getInput('amount', '0'),
                 'Tax' => (float)$this->getInput('tax', '0'),

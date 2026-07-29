@@ -19,7 +19,7 @@ class MaintenanceController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $machineId = $this->getInput('machine_id');
             $this->model->create([
-                'MaintenanceID' => $this->getInput('MaintenanceID'),
+                'MaintenanceID' => generateId('MNT'),
                 'MaintenanceType' => $this->getInput('maintenance_type', 'Preventive'),
                 'MaintenanceDate' => $this->getInput('maintenance_date'),
                 'Downtime' => (float)$this->getInput('downtime', '0'),

@@ -70,6 +70,16 @@ class AuthController
 
     public function logout(): void
     {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            setFlash('error', 'Invalid request method.');
+            header('Location: ?route=auth/login');
+            exit;
+        }
+        if (!validateCsrf()) {
+            setFlash('error', 'Invalid security token. Please try again.');
+            header('Location: ?route=auth/login');
+            exit;
+        }
         $uid = $_SESSION['user_id'] ?? null;
         if ($uid) logAudit($uid, 'LOGOUT', 'Auth', $uid, 'User logged out');
         $_SESSION = [];

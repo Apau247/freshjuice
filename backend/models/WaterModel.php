@@ -33,4 +33,34 @@ class WaterModel extends Model {
     public function getMonthlyUsage(): array {
         return $this->db->query("SELECT DATE_FORMAT(Date, '%Y-%m') AS Month, SUM(Quantity) AS Total FROM water_usage GROUP BY Month ORDER BY Month DESC LIMIT 12")->fetchAll();
     }
+
+    public function findUsage(string $id): ?array {
+        return $this->queryOne("SELECT * FROM water_usage WHERE WaterUsageID = ?", [$id]);
+    }
+
+    public function updateUsage(string $id, array $data): bool {
+        $sets = implode(', ', array_map(fn($c) => "{$c} = ?", array_keys($data)));
+        $params = array_values($data);
+        $params[] = $id;
+        return $this->db->prepare("UPDATE water_usage SET {$sets} WHERE WaterUsageID = ?")->execute($params);
+    }
+
+    public function deleteUsage(string $id): bool {
+        return $this->db->prepare("DELETE FROM water_usage WHERE WaterUsageID = ?")->execute([$id]);
+    }
+
+    public function findTest(string $id): ?array {
+        return $this->queryOne("SELECT * FROM water_quality_tests WHERE WaterTestID = ?", [$id]);
+    }
+
+    public function updateTest(string $id, array $data): bool {
+        $sets = implode(', ', array_map(fn($c) => "{$c} = ?", array_keys($data)));
+        $params = array_values($data);
+        $params[] = $id;
+        return $this->db->prepare("UPDATE water_quality_tests SET {$sets} WHERE WaterTestID = ?")->execute($params);
+    }
+
+    public function deleteTest(string $id): bool {
+        return $this->db->prepare("DELETE FROM water_quality_tests WHERE WaterTestID = ?")->execute([$id]);
+    }
 }

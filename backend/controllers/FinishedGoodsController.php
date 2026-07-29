@@ -18,7 +18,7 @@ class FinishedGoodsController extends Controller {
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->create([
-                'FG_ID' => $this->getInput('FG_ID'),
+                'FG_ID' => generateId('FG'),
                 'BatchID' => $this->getInput('batch_id') ?: null,
                 'Flavour' => $this->getInput('flavour'),
                 'ExpiryDate' => $this->getInput('expiry_date'),

@@ -17,7 +17,7 @@ class MachineController extends Controller {
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->create([
-                'MachineID' => $this->getInput('MachineID'), 'Name' => $this->getInput('name'),
+                'MachineID' => generateId('MCH'), 'Name' => $this->getInput('name'),
                 'Type' => $this->getInput('type'), 'Location' => $this->getInput('location'),
                 'Status' => $this->getInput('status', 'Operational'),
                 'InstallDate' => $this->getInput('install_date'),

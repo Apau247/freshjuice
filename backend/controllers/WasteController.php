@@ -18,7 +18,7 @@ class WasteController extends Controller {
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->create([
-                'WasteID' => $this->getInput('WasteID'),
+                'WasteID' => generateId('WST'),
                 'Date' => $this->getInput('date'),
                 'WasteType' => $this->getInput('waste_type', 'Production'),
                 'Quantity' => (float)$this->getInput('quantity', '0'),

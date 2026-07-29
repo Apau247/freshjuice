@@ -17,7 +17,7 @@ class CertificationController extends Controller {
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->create([
-                'CertID' => $this->getInput('CertID'), 'CertName' => $this->getInput('cert_name'),
+                'CertID' => generateId('CERT'), 'CertName' => $this->getInput('cert_name'),
                 'CertType' => $this->getInput('cert_type'),
                 'IssuingAuthority' => $this->getInput('issuing_authority'),
                 'IssueDate' => $this->getInput('issue_date'), 'ExpiryDate' => $this->getInput('expiry_date'),

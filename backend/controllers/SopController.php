@@ -116,4 +116,10 @@ class SopController extends Controller {
             'users' => (new UserModel())->all(),
         ]);
     }
+
+    public function deleteChecklist(): void {
+        $this->model->deleteChecklist($this->getInput('id'));
+        setFlash('success', 'Checklist deleted.');
+        $this->redirect('sops');
+    }
 }
