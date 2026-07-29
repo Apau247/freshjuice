@@ -32,6 +32,23 @@ class StaffModel extends Model {
         );
     }
 
+    public function findShift(string $id): ?array {
+        $stmt = $this->db->prepare("SELECT * FROM shifts WHERE ShiftID = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch() ?: null;
+    }
+
+    public function findAttendance(string $id): ?array {
+        return $this->query(
+            "SELECT a.*, s.FirstName, s.LastName, sh.ShiftName
+             FROM attendance a
+             JOIN staff s ON a.StaffID = s.StaffID
+             LEFT JOIN shifts sh ON a.ShiftID = sh.ShiftID
+             WHERE a.AttendanceID = ?",
+            [$id]
+        )[0] ?? null;
+    }
+
     public function createShift(array $data): bool {
         $cols = implode(', ', array_keys($data));
         $phs = implode(', ', array_fill(0, count($data), '?'));

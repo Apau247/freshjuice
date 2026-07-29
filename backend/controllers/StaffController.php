@@ -67,6 +67,15 @@ class StaffController extends Controller {
     }
 
     public function attendance(): void {
+        // If route is staff/attendance/form, show the standalone form for adding
+        if (($_GET['route'] ?? '') === 'staff/attendance/form') {
+            $this->render('attendance_form', [
+                'staffList' => $this->model->all(),
+                'shifts' => $this->model->getShifts(),
+                'selectedDate' => $this->getInput('date', date('Y-m-d')),
+            ]);
+            return;
+        }
         $date = $this->getInput('date', date('Y-m-d'));
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = generateId('ATT');
@@ -119,7 +128,9 @@ class StaffController extends Controller {
             $this->redirect('staff/shifts');
             return;
         }
-        $this->redirect('staff/shifts');
+        $shift = $this->model->findShift($id);
+        if (!$shift) { setFlash('error', 'Shift not found.'); $this->redirect('staff/shifts'); return; }
+        $this->render('shift_form', ['shift' => $shift]);
     }
 
     public function deleteShift(): void {
@@ -132,11 +143,12 @@ class StaffController extends Controller {
         $id = $this->getInput('id');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->getDb()->prepare(
-                "UPDATE attendance SET StaffID = ?, ShiftID = ?, ClockIn = ?, Status = ? WHERE AttendanceID = ?"
+                "UPDATE attendance SET StaffID = ?, ShiftID = ?, ClockIn = ?, `Date` = ?, Status = ? WHERE AttendanceID = ?"
             )->execute([
                 $this->getInput('StaffID'),
                 $this->getInput('ShiftID') ?: null,
                 $this->getInput('ClockIn'),
+                $this->getInput('Date'),
                 $this->getInput('Status', 'Present'),
                 $id,
             ]);
@@ -144,7 +156,13 @@ class StaffController extends Controller {
             $this->redirect('staff/attendance');
             return;
         }
-        $this->redirect('staff/attendance');
+        $record = $this->model->findAttendance($id);
+        if (!$record) { setFlash('error', 'Attendance record not found.'); $this->redirect('staff/attendance'); return; }
+        $this->render('attendance_form', [
+            'record' => $record,
+            'staffList' => $this->model->all(),
+            'shifts' => $this->model->getShifts(),
+        ]);
     }
 
     public function deleteAttendance(): void {

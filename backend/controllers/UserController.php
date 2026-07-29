@@ -78,7 +78,7 @@ class UserController extends Controller {
                 $this->redirect('profile');
                 return;
             }
-            $data = ['Name' => $name, 'Email' => $email];
+            $data = ['Name' => $name];
             $this->model->update($userId, $data);
             $_SESSION['user_name'] = $name;
             logAudit($userId, 'UPDATE', 'Users', $userId, 'Updated profile');
