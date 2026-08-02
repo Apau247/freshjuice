@@ -28,7 +28,7 @@ class SafetyController extends Controller
             return;
         }
 
-        $this->requireRole('admin', 'manager', 'supervisor');
+        $this->requireCanCreate('safety');
 
         $id = generateId('SAF');
         $this->model->create([
@@ -66,7 +66,7 @@ class SafetyController extends Controller
             return;
         }
 
-        $this->requireRole('admin', 'manager', 'supervisor');
+        $this->requireCanEdit('safety');
 
         $this->model->update($id, [
             'InspectionDate' => $this->getInput('InspectionDate'),

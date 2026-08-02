@@ -40,7 +40,7 @@
                     <td><?= sanitize($sh['Description'] ?? '') ?></td>
                     <td>
                         <a href="?route=staff/shifts/edit&id=<?= urlencode($sh['ShiftID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                        <a href="?route=staff/shifts/delete&id=<?= urlencode($sh['ShiftID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this shift?')"><i class="bi bi-trash"></i></a>
+                        <a href="?route=staff/shifts/delete&id=<?= urlencode($sh['ShiftID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
                 <?php endforeach; endif; ?>

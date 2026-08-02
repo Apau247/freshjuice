@@ -15,9 +15,39 @@ class EfficiencyController extends Controller
 
     public function index(): void
     {
+        $efficiencies = $this->model->getAllDetailed();
+
+        $machineTotals = [];
+        $machineCounts = [];
+        foreach ($efficiencies as $e) {
+            $name = $e['MachineName'] ?? 'Unknown';
+            $machineTotals[$name] = ($machineTotals[$name] ?? 0) + (float)($e['OEE'] ?? 0);
+            $machineCounts[$name] = ($machineCounts[$name] ?? 0) + 1;
+        }
+
+        $bestMachine = null;
+        $worstMachine = null;
+        $chartLabels = [];
+        $chartData = [];
+        foreach ($machineTotals as $name => $total) {
+            $avg = $machineCounts[$name] > 0 ? $total / $machineCounts[$name] : 0;
+            $chartLabels[] = $name;
+            $chartData[] = round($avg, 1);
+            if ($bestMachine === null || $avg > $bestMachine[1]) $bestMachine = [$name, $avg];
+            if ($worstMachine === null || $avg < $worstMachine[1]) $worstMachine = [$name, $avg];
+        }
+
+        $avgOEE = $this->model->getAverageOEE();
         $data = [
-            'efficiencies' => $this->model->getAllDetailed(),
+            'efficiencies' => $efficiencies,
             'monthlyOEE' => $this->model->getMonthlyOEE(),
+            'avgOEE' => $avgOEE !== null ? number_format($avgOEE, 1) : '0',
+            'bestMachine' => $bestMachine ? $bestMachine[0] : 'N/A',
+            'worstMachine' => $worstMachine ? $worstMachine[0] : 'N/A',
+            'totalRecords' => count($efficiencies),
+            'chartLabels' => $chartLabels,
+            'chartData' => $chartData,
+            'chartColors' => array_fill(0, count($chartLabels), 'rgba(34,197,94,0.7)'),
         ];
         $this->render('index', $data);
     }
@@ -27,14 +57,16 @@ class EfficiencyController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $plannedRunTime = (float)$this->getInput('planned_run_time');
             $actualRunTime = (float)$this->getInput('actual_run_time');
+            $downtimeMinutes = (float)$this->getInput('downtime_minutes', '0');
             $totalProduced = (int)$this->getInput('total_produced');
             $goodProduced = (int)$this->getInput('good_produced');
             $defectCount = $totalProduced - $goodProduced;
 
+            $effectiveRunTime = max(0, $plannedRunTime - $downtimeMinutes);
             $availabilityRate = $plannedRunTime > 0
+                ? round(($effectiveRunTime / $plannedRunTime) * 100, 2) : 0;
+            $performanceRate = $plannedRunTime > 0
                 ? round(($actualRunTime / $plannedRunTime) * 100, 2) : 0;
-            $performanceRate = $totalProduced > 0
-                ? round(($goodProduced / $totalProduced) * 100, 2) : 0;
             $qualityRate = $totalProduced > 0
                 ? round(($goodProduced / $totalProduced) * 100, 2) : 0;
             $oee = round(($availabilityRate * $performanceRate * $qualityRate) / 10000, 2);
@@ -47,7 +79,7 @@ class EfficiencyController extends Controller
                 'MachineID' => $this->getInput('machine_id'),
                 'PlannedRunTime' => $plannedRunTime,
                 'ActualRunTime' => $actualRunTime,
-                'DowntimeMinutes' => (float)$this->getInput('downtime_minutes', '0'),
+                'DowntimeMinutes' => $downtimeMinutes,
                 'TotalProduced' => $totalProduced,
                 'GoodProduced' => $goodProduced,
                 'DefectCount' => $defectCount,
@@ -75,14 +107,16 @@ class EfficiencyController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $plannedRunTime = (float)$this->getInput('planned_run_time');
             $actualRunTime = (float)$this->getInput('actual_run_time');
+            $downtimeMinutes = (float)$this->getInput('downtime_minutes', '0');
             $totalProduced = (int)$this->getInput('total_produced');
             $goodProduced = (int)$this->getInput('good_produced');
             $defectCount = $totalProduced - $goodProduced;
 
+            $effectiveRunTime = max(0, $plannedRunTime - $downtimeMinutes);
             $availabilityRate = $plannedRunTime > 0
+                ? round(($effectiveRunTime / $plannedRunTime) * 100, 2) : 0;
+            $performanceRate = $plannedRunTime > 0
                 ? round(($actualRunTime / $plannedRunTime) * 100, 2) : 0;
-            $performanceRate = $totalProduced > 0
-                ? round(($goodProduced / $totalProduced) * 100, 2) : 0;
             $qualityRate = $totalProduced > 0
                 ? round(($goodProduced / $totalProduced) * 100, 2) : 0;
             $oee = round(($availabilityRate * $performanceRate * $qualityRate) / 10000, 2);
@@ -93,7 +127,7 @@ class EfficiencyController extends Controller
                 'MachineID' => $this->getInput('machine_id'),
                 'PlannedRunTime' => $plannedRunTime,
                 'ActualRunTime' => $actualRunTime,
-                'DowntimeMinutes' => (float)$this->getInput('downtime_minutes', '0'),
+                'DowntimeMinutes' => $downtimeMinutes,
                 'TotalProduced' => $totalProduced,
                 'GoodProduced' => $goodProduced,
                 'DefectCount' => $defectCount,

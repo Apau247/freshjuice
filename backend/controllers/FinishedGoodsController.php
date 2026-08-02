@@ -47,7 +47,7 @@ class FinishedGoodsController extends Controller {
             $this->redirect('finished-goods');
             return;
         }
-        $this->render('form', ['good' => $item]);
+        $this->render('form', ['good' => $item, 'batches' => (new ProductionBatchModel())->all()]);
     }
 
     public function delete(): void {

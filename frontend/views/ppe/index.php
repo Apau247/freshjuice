@@ -78,7 +78,7 @@
                                 <td>
                                     <?php if (canEdit('ppe')): ?>
                                     <a href="?route=ppe/edit&id=<?php echo sanitize($row['PPE_ID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
-                                    <a href="?route=ppe/delete&id=<?php echo sanitize($row['PPE_ID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this PPE record?')"><i class="bi bi-trash"></i></a>
+                                    <a href="?route=ppe/delete&id=<?php echo sanitize($row['PPE_ID']); ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
                                     <?php endif; ?>
                                 </td>
                             </tr>

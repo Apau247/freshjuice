@@ -80,7 +80,7 @@
                                 <td>
                                     <?php if (canEdit('permits')): ?>
                                     <a href="?route=permits/edit&id=<?php echo sanitize($row['PermitID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
-                                    <a href="?route=permits/delete&id=<?php echo sanitize($row['PermitID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this permit?')"><i class="bi bi-trash"></i></a>
+                                    <a href="?route=permits/delete&id=<?php echo sanitize($row['PermitID']); ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
                                     <?php endif; ?>
                                 </td>
                             </tr>

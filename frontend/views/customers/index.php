@@ -24,7 +24,7 @@
                     </td>
                     <td>
                         <a href="?route=customers/edit&id=<?= urlencode($c['CustomerID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                        <a href="?route=customers/delete&id=<?= urlencode($c['CustomerID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this customer?')"><i class="bi bi-trash"></i></a>
+                        <a href="?route=customers/delete&id=<?= urlencode($c['CustomerID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

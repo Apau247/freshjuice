@@ -24,7 +24,7 @@
                     </td>
                     <td>
                         <a href="?route=machines/edit&id=<?= urlencode($m['MachineID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                        <a href="?route=machines/delete&id=<?= urlencode($m['MachineID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this machine?')"><i class="bi bi-trash"></i></a>
+                        <a href="?route=machines/delete&id=<?= urlencode($m['MachineID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

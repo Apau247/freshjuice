@@ -28,7 +28,7 @@
                     </td>
                     <td>
                         <a href="?route=production/edit&id=<?= urlencode($b['BatchID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                        <a href="?route=production/delete&id=<?= urlencode($b['BatchID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this batch?')"><i class="bi bi-trash"></i></a>
+                        <a href="?route=production/delete&id=<?= urlencode($b['BatchID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

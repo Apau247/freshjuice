@@ -26,7 +26,7 @@ class AccidentController extends Controller
             return;
         }
 
-        $this->requireRole('admin', 'manager', 'supervisor');
+        $this->requireCanCreate('accidents');
 
         $id = generateId('ACC');
         $this->model->create([
@@ -63,7 +63,7 @@ class AccidentController extends Controller
             return;
         }
 
-        $this->requireRole('admin', 'manager', 'supervisor');
+        $this->requireCanEdit('accidents');
 
         $this->model->update($id, [
             'IncidentDate' => $this->getInput('IncidentDate'),

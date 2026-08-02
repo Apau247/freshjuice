@@ -78,10 +78,11 @@
 function calcOEE() {
     var p = parseFloat(document.querySelector('[name=planned_run_time]').value) || 0;
     var a = parseFloat(document.querySelector('[name=actual_run_time]').value) || 0;
+    var d = parseFloat(document.querySelector('[name=downtime_minutes]').value) || 0;
     var t = parseFloat(document.querySelector('[name=total_produced]').value) || 0;
     var g = parseFloat(document.querySelector('[name=good_produced]').value) || 0;
-    var avail = p > 0 ? (a / p * 100) : 0;
-    var perf = t > 0 && a > 0 ? (g / t * 100) : 0;
+    var avail = p > 0 ? (Math.max(0, p - d) / p * 100) : 0;
+    var perf = p > 0 ? (a / p * 100) : 0;
     var qual = t > 0 ? (g / t * 100) : 0;
     var oee = (avail * perf * qual) / 10000;
     document.getElementById('availDisplay').textContent = avail.toFixed(1) + '%';

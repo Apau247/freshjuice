@@ -14,10 +14,16 @@ class ImprovementController extends Controller
 
     public function index(): void
     {
+        $statusCounts = $this->model->getStatusCounts();
+        $overdue = $this->model->getOverdue();
         $data = [
             'initiatives' => $this->model->getAllDetailed(),
-            'statusCounts' => $this->model->getStatusCounts(),
-            'overdue' => $this->model->getOverdue(),
+            'statusCounts' => $statusCounts,
+            'overdue' => $overdue,
+            'proposedCount' => $statusCounts['Proposed'] ?? 0,
+            'inProgressCount' => $statusCounts['In Progress'] ?? 0,
+            'completedCount' => $statusCounts['Completed'] ?? 0,
+            'overdueCount' => count($overdue),
         ];
         $this->render('index', $data);
     }

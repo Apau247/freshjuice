@@ -91,7 +91,7 @@
                                 </td>
                                 <td>
                                     <a href="?route=safety/hazards/edit&id=<?php echo sanitize($row['HazardID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
-                                    <a href="?route=safety/hazards/delete&id=<?php echo sanitize($row['HazardID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this hazard?')"><i class="bi bi-trash"></i></a>
+                                    <a href="?route=safety/hazards/delete&id=<?php echo sanitize($row['HazardID']); ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

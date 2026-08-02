@@ -80,7 +80,7 @@
                                 <td>
                                     <?php if (canEdit('training')): ?>
                                     <a href="?route=training/edit&id=<?php echo sanitize($row['TrainingID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
-                                    <a href="?route=training/delete&id=<?php echo sanitize($row['TrainingID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this training record?')"><i class="bi bi-trash"></i></a>
+                                    <a href="?route=training/delete&id=<?php echo sanitize($row['TrainingID']); ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
                                     <?php endif; ?>
                                 </td>
                             </tr>

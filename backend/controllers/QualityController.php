@@ -4,6 +4,7 @@ require_once __DIR__ . '/Controller.php';
 require_once __DIR__ . '/../models/QualityInspectionModel.php';
 require_once __DIR__ . '/../models/ProductionBatchModel.php';
 require_once __DIR__ . '/../models/FinishedGoodModel.php';
+require_once __DIR__ . '/../models/UserModel.php';
 
 class QualityController extends Controller {
     public function __construct() {
@@ -31,7 +32,7 @@ class QualityController extends Controller {
                 'DefectsFound' => $this->getInput('defects_found'),
                 'TestResults' => $this->getInput('test_results'),
                 'CAPA' => $this->getInput('capa'),
-                'InspectorID' => $_SESSION['user_id'] ?? null,
+                'InspectorID' => $this->getInput('inspector_id') ?: ($_SESSION['user_id'] ?? null),
                 'Status' => $result === 'Pass' ? 'Closed' : 'Open',
             ]);
 
@@ -47,7 +48,7 @@ class QualityController extends Controller {
         $batches = (new ProductionBatchModel())->query(
             "SELECT * FROM production_batches WHERE Status IN ('Pending','In Progress') ORDER BY BatchNumber"
         );
-        $this->render('form', ['batches' => $batches]);
+        $this->render('form', ['batches' => $batches, 'users' => (new UserModel())->all()]);
     }
 
     public function edit(): void {
@@ -56,12 +57,14 @@ class QualityController extends Controller {
         if (!$item) { setFlash('error', 'Not found.'); $this->redirect('quality'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = $this->getInput('result');
+            $statusInput = $this->getInput('status');
             $this->model->update($id, [
                 'InspectionType' => $this->getInput('inspection_type'),
                 'Result' => $result, 'DefectsFound' => $this->getInput('defects_found'),
                 'TestResults' => $this->getInput('test_results'),
                 'CAPA' => $this->getInput('capa'),
-                'Status' => $result === 'Pass' ? 'Closed' : 'Open',
+                'InspectorID' => $this->getInput('inspector_id') ?: ($item['InspectorID'] ?? null),
+                'Status' => $statusInput ?: ($result === 'Pass' ? 'Closed' : 'Open'),
             ]);
 
             if ($result === 'Pass' && $item['BatchID']) {
@@ -74,7 +77,7 @@ class QualityController extends Controller {
             return;
         }
         $batches = (new ProductionBatchModel())->all();
-        $this->render('form', ['inspection' => $item, 'batches' => $batches]);
+        $this->render('form', ['inspection' => $item, 'batches' => $batches, 'users' => (new UserModel())->all()]);
     }
 
     public function delete(): void {

@@ -42,7 +42,7 @@
                             <td><?= sanitize($t['CreatedByName'] ?? $t['created_by_name'] ?? '') ?></td>
                             <td>
                                 <a href="?route=sops/template/edit&id=<?= urlencode($t['SOP_ID'] ?? '') ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                                <a href="?route=sops/template/delete&id=<?= urlencode($t['SOP_ID'] ?? '') ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this template?')"><i class="bi bi-trash"></i></a>
+                                <a href="?route=sops/template/delete&id=<?= urlencode($t['SOP_ID'] ?? '') ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                             </td>
                         </tr>
                         <?php endforeach; endif; ?>
@@ -74,7 +74,7 @@
                             </td>
                             <td>
                                 <a href="?route=sops/checklist/edit&id=<?= urlencode($cl['ChecklistID'] ?? '') ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                                <a href="?route=sops/checklist/delete&id=<?= urlencode($cl['ChecklistID'] ?? '') ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this checklist?')"><i class="bi bi-trash"></i></a>
+                                <a href="?route=sops/checklist/delete&id=<?= urlencode($cl['ChecklistID'] ?? '') ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                             </td>
                         </tr>
                         <?php endforeach; endif; ?>
@@ -84,11 +84,3 @@
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    if (typeof $.fn.DataTable !== 'undefined') {
-        $('#checklistDataTable').DataTable({ order: [], pageLength: 100, lengthMenu: [10, 25, 50, 100], language: { search: '', searchPlaceholder: 'Search...' }, responsive: true });
-    }
-});
-</script>

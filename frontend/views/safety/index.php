@@ -87,7 +87,7 @@
                                 <td>
                                     <?php if (canEdit('safety')): ?>
                                     <a href="?route=safety/edit&id=<?php echo sanitize($row['SafetyID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
-                                    <a href="?route=safety/delete&id=<?php echo sanitize($row['SafetyID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this inspection?')"><i class="bi bi-trash"></i></a>
+                                    <a href="?route=safety/delete&id=<?php echo sanitize($row['SafetyID']); ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
                                     <?php endif; ?>
                                 </td>
                             </tr>

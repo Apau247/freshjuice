@@ -67,7 +67,24 @@ class StaffController extends Controller {
     }
 
     public function attendance(): void {
-        // If route is staff/attendance/form, show the standalone form for adding
+        // Handle POST from both staff/attendance (inline form) and staff/attendance/form (standalone form)
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = generateId('ATT');
+            $this->model->getDb()->prepare(
+                "INSERT INTO attendance (AttendanceID, StaffID, ShiftID, Date, ClockIn, Status) VALUES (?,?,?,?,?,?)"
+            )->execute([
+                $id,
+                $this->getInput('StaffID'),
+                $this->getInput('ShiftID') ?: null,
+                $this->getInput('Date', date('Y-m-d')),
+                $this->getInput('ClockIn'),
+                $this->getInput('Status', 'Present'),
+            ]);
+            setFlash('success', 'Attendance recorded.');
+            $this->redirect('staff/attendance');
+            return;
+        }
+        // Route staff/attendance/form -> show standalone add form
         if (($_GET['route'] ?? '') === 'staff/attendance/form') {
             $this->render('attendance_form', [
                 'staffList' => $this->model->all(),
@@ -77,19 +94,6 @@ class StaffController extends Controller {
             return;
         }
         $date = $this->getInput('date', date('Y-m-d'));
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = generateId('ATT');
-            $this->model->getDb()->prepare(
-                "INSERT INTO attendance (AttendanceID, StaffID, ShiftID, Date, ClockIn, Status) VALUES (?,?,?,?,?,?)"
-            )->execute([
-                $id, $this->getInput('StaffID'),
-                $this->getInput('ShiftID') ?: null, $date,
-                $this->getInput('ClockIn'), $this->getInput('Status', 'Present'),
-            ]);
-            setFlash('success', 'Attendance recorded.');
-            $this->redirect('staff/attendance');
-            return;
-        }
         $this->render('attendance', [
             'attendanceRecords' => $this->model->getAttendance($date),
             'staffList' => $this->model->all(),

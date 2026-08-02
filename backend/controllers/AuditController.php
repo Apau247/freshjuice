@@ -13,7 +13,7 @@ class AuditController extends Controller
 
     public function index(): void
     {
-        $this->requireRole('admin', 'manager', 'ROLE-001', 'ROLE-002');
+        $this->requireRole('ROLE-001', 'ROLE-002');
         $model = new AuditTrailModel();
         $module = $this->getInput('module') ?? '';
         $action = $this->getInput('action') ?? '';

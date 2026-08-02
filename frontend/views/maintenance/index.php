@@ -28,7 +28,7 @@
                     <td><?= sanitize($r['NextServiceDate'] ?? '') ?></td>
                     <td>
                         <a href="?route=maintenance/edit&id=<?= urlencode($r['MaintenanceID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                        <a href="?route=maintenance/delete&id=<?= urlencode($r['MaintenanceID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this record?')"><i class="bi bi-trash"></i></a>
+                        <a href="?route=maintenance/delete&id=<?= urlencode($r['MaintenanceID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

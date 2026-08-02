@@ -79,7 +79,7 @@
                                 <td>
                                     <?php if (canEdit('improvement')): ?>
                                     <a href="?route=improvement/edit&id=<?php echo sanitize($row['InitiativeID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
-                                    <a href="?route=improvement/delete&id=<?php echo sanitize($row['InitiativeID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this initiative?')"><i class="bi bi-trash"></i></a>
+                                    <a href="?route=improvement/delete&id=<?php echo sanitize($row['InitiativeID']); ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
                                     <?php endif; ?>
                                 </td>
                             </tr>

@@ -26,7 +26,7 @@ class DrillController extends Controller
             return;
         }
 
-        $this->requireRole('admin', 'manager', 'supervisor');
+        $this->requireCanCreate('drills');
 
         $id = generateId('DRL');
         $this->model->create([
@@ -64,7 +64,7 @@ class DrillController extends Controller
             return;
         }
 
-        $this->requireRole('admin', 'manager', 'supervisor');
+        $this->requireCanEdit('drills');
 
         $this->model->update($id, [
             'DrillType' => sanitize($this->getInput('DrillType')),

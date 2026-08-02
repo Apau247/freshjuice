@@ -43,7 +43,7 @@
                                 </td>
                                 <td>
                                     <a href="?route=supplier-evaluations/edit&id=<?php echo sanitize($row['EvaluationID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
-                                    <a href="?route=supplier-evaluations/delete&id=<?php echo sanitize($row['EvaluationID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this evaluation?')"><i class="bi bi-trash"></i></a>
+                                    <a href="?route=supplier-evaluations/delete&id=<?php echo sanitize($row['EvaluationID']); ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

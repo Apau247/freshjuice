@@ -22,7 +22,7 @@
                     <td><?= sanitize($u['created_at'] ?? '') ?></td>
                     <td>
                         <a href="?route=users/edit&id=<?= urlencode($u['UserID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                        <a href="?route=users/delete&id=<?= urlencode($u['UserID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this user?')"><i class="bi bi-trash"></i></a>
+                        <a href="?route=users/delete&id=<?= urlencode($u['UserID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
                 <?php endforeach; endif; ?>

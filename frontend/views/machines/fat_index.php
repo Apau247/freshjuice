@@ -49,7 +49,7 @@
                                 </td>
                                 <td>
                                     <a href="?route=fat/edit&id=<?php echo sanitize($row['FAT_ID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
-                                    <a href="?route=fat/delete&id=<?php echo sanitize($row['FAT_ID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this FAT record?')"><i class="bi bi-trash"></i></a>
+                                    <a href="?route=fat/delete&id=<?php echo sanitize($row['FAT_ID']); ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

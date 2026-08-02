@@ -14,9 +14,14 @@ class PpeController extends Controller
 
     public function index()
     {
+        $expiringSoon = $this->model->getExpiringSoon();
         $data = [
             'ppeItems' => $this->model->getAllDetailed(),
-            'expiringSoon' => $this->model->getExpiringSoon(),
+            'expiringSoon' => $expiringSoon,
+            'activeCount' => $this->model->count('ExpiryDate >= CURDATE()'),
+            'expiringSoonCount' => count($expiringSoon),
+            'replacementNeededCount' => count($this->model->getReplacementNeeded()),
+            'totalCount' => $this->model->count(),
         ];
         $this->render('index', $data);
     }
@@ -28,7 +33,7 @@ class PpeController extends Controller
             return;
         }
 
-        $this->requireRole('admin', 'manager', 'supervisor');
+        $this->requireCanCreate('ppe');
 
         $id = generateId('PPE');
         $this->model->create([
@@ -63,7 +68,7 @@ class PpeController extends Controller
             return;
         }
 
-        $this->requireRole('admin', 'manager', 'supervisor');
+        $this->requireCanEdit('ppe');
 
         $this->model->update($id, [
             'StaffID' => sanitize($this->getInput('StaffID')),

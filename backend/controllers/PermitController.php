@@ -13,9 +13,14 @@ class PermitController extends Controller
 
     public function index()
     {
+        $expiringSoon = $this->model->getExpiringSoon();
         $data = [
             'permits' => $this->model->all(),
-            'expiringSoon' => $this->model->getExpiringSoon(),
+            'expiringSoon' => $expiringSoon,
+            'activeCount' => $this->model->getActiveCount(),
+            'expiringSoonCount' => count($expiringSoon),
+            'expiredCount' => $this->model->count("Status = 'Expired'"),
+            'totalCount' => $this->model->count(),
         ];
         $this->render('index', $data);
     }
@@ -27,7 +32,7 @@ class PermitController extends Controller
             return;
         }
 
-        $this->requireRole('admin', 'manager');
+        $this->requireCanCreate('permits');
 
         $id = generateId('PRM');
         $this->model->create([
@@ -63,7 +68,7 @@ class PermitController extends Controller
             return;
         }
 
-        $this->requireRole('admin', 'manager');
+        $this->requireCanEdit('permits');
 
         $this->model->update($id, [
             'PermitType' => sanitize($this->getInput('PermitType')),

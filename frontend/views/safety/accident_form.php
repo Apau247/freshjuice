@@ -9,7 +9,7 @@
             <?= csrfField() ?>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Incident Date & Time <span class="text-danger">*</span></label>
-                <input type="datetime-local" name="IncidentDate" class="form-control" value="<?= sanitize($accident['AccidentDate'] ?? '') ?>" required>
+                <input type="datetime-local" name="IncidentDate" class="form-control" value="<?= sanitize($accident['IncidentDate'] ?? '') ?>" required>
             </div>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Location <span class="text-danger">*</span></label>

@@ -39,7 +39,7 @@
                     </td>
                     <td>
                         <a href="?route=certifications/edit&id=<?= urlencode($c['CertID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                        <a href="?route=certifications/delete&id=<?= urlencode($c['CertID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this certification?')"><i class="bi bi-trash"></i></a>
+                        <a href="?route=certifications/delete&id=<?= urlencode($c['CertID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

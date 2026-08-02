@@ -27,7 +27,7 @@
                     </td>
                     <td>
                         <a href="?route=invoicing/edit&id=<?= urlencode($inv['InvoiceID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                        <a href="?route=invoicing/delete&id=<?= urlencode($inv['InvoiceID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this invoice?')"><i class="bi bi-trash"></i></a>
+                        <a href="?route=invoicing/delete&id=<?= urlencode($inv['InvoiceID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

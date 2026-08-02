@@ -33,7 +33,7 @@
                             <td><small class="text-muted"><?= sanitize(substr($u['Notes'] ?? '', 0, 50)) ?></small></td>
                             <td>
                                 <a href="?route=power/usage/edit&id=<?= urlencode($u['PowerUsageID'] ?? $u['power_usage_id']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                                <a href="?route=power/usage/delete&id=<?= urlencode($u['PowerUsageID'] ?? $u['power_usage_id']) ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this record?')"><i class="bi bi-trash"></i></a>
+                                <a href="?route=power/usage/delete&id=<?= urlencode($u['PowerUsageID'] ?? $u['power_usage_id']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                             </td>
                         </tr>
                         <?php endforeach; endif; ?>
@@ -59,7 +59,7 @@
                             <td><?= sanitize($l['Reason'] ?? '') ?></td>
                             <td>
                                 <a href="?route=power/generator/edit&id=<?= urlencode($l['LogID'] ?? $l['log_id']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                                <a href="?route=power/generator/delete&id=<?= urlencode($l['LogID'] ?? $l['log_id']) ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this log?')"><i class="bi bi-trash"></i></a>
+                                <a href="?route=power/generator/delete&id=<?= urlencode($l['LogID'] ?? $l['log_id']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                             </td>
                         </tr>
                         <?php endforeach; endif; ?>
@@ -69,11 +69,3 @@
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    if (typeof $.fn.DataTable !== 'undefined') {
-        $('#genDataTable').DataTable({ order: [], pageLength: 100, lengthMenu: [10, 25, 50, 100], language: { search: '', searchPlaceholder: 'Search...' }, responsive: true });
-    }
-});
-</script>

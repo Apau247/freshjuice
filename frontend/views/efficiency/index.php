@@ -85,7 +85,7 @@
                                 <td>
                                     <?php if (canEdit('efficiency')): ?>
                                     <a href="?route=efficiency/edit&id=<?php echo sanitize($row['EfficiencyID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
-                                    <a href="?route=efficiency/delete&id=<?php echo sanitize($row['EfficiencyID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this record?')"><i class="bi bi-trash"></i></a>
+                                    <a href="?route=efficiency/delete&id=<?php echo sanitize($row['EfficiencyID']); ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
                                     <?php endif; ?>
                                 </td>
                             </tr>

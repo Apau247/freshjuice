@@ -25,7 +25,7 @@
                     </td>
                     <td>
                         <a href="?route=materials/raw/edit&id=<?= urlencode($m['MaterialID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                        <a href="?route=materials/raw/delete&id=<?= urlencode($m['MaterialID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this raw material?')"><i class="bi bi-trash"></i></a>
+                        <a href="?route=materials/raw/delete&id=<?= urlencode($m['MaterialID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

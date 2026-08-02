@@ -24,7 +24,7 @@
                     <td><?= sanitize($w['RecordedByName'] ?? $w['recorded_by_name'] ?? '') ?></td>
                     <td>
                         <a href="?route=waste/edit&id=<?= urlencode($w['WasteID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                        <a href="?route=waste/delete&id=<?= urlencode($w['WasteID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this record?')"><i class="bi bi-trash"></i></a>
+                        <a href="?route=waste/delete&id=<?= urlencode($w['WasteID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

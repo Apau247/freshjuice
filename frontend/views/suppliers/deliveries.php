@@ -22,7 +22,7 @@
                     </td>
                     <td>
                         <a href="?route=suppliers/delivery/edit&id=<?= urlencode($d['DeliveryID'] ?? $d['delivery_id']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                        <a href="?route=suppliers/delivery/delete&id=<?= urlencode($d['DeliveryID'] ?? $d['delivery_id']) ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this delivery record?')"><i class="bi bi-trash"></i></a>
+                        <a href="?route=suppliers/delivery/delete&id=<?= urlencode($d['DeliveryID'] ?? $d['delivery_id']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

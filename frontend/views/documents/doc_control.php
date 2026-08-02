@@ -132,7 +132,7 @@
                                 <td>
                                     <a href="?route=documents/edit&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
                                     <a href="?route=documents/download&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-info"><i class="bi bi-download"></i></a>
-                                    <a href="?route=documents/delete&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this document?')"><i class="bi bi-trash"></i></a>
+                                    <a href="?route=documents/delete&id=<?php echo sanitize($row['DocID']); ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

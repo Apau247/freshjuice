@@ -41,6 +41,22 @@ abstract class Controller
         }
     }
 
+    protected function requireCanCreate(string $module): void
+    {
+        if (!canCreate($module)) {
+            setFlash('error', 'Access denied. Insufficient permissions.');
+            $this->redirect('dashboard');
+        }
+    }
+
+    protected function requireCanEdit(string $module): void
+    {
+        if (!canEdit($module)) {
+            setFlash('error', 'Access denied. Insufficient permissions.');
+            $this->redirect('dashboard');
+        }
+    }
+
     protected function validatePostCsrf(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && !validateCsrf()) {

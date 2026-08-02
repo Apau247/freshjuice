@@ -34,7 +34,7 @@
                             <td><?= sanitize($u['RecordedByName'] ?? $u['recorded_by_name'] ?? '') ?></td>
                             <td>
                                 <a href="?route=water/usage/edit&id=<?= urlencode($u['WaterUsageID'] ?? $u['water_usage_id']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                                <a href="?route=water/usage/delete&id=<?= urlencode($u['WaterUsageID'] ?? $u['water_usage_id']) ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this record?')"><i class="bi bi-trash"></i></a>
+                                <a href="?route=water/usage/delete&id=<?= urlencode($u['WaterUsageID'] ?? $u['water_usage_id']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                             </td>
                         </tr>
                         <?php endforeach; endif; ?>
@@ -66,7 +66,7 @@
                             <td><?= sanitize($t['TestedByName'] ?? $t['tested_by_name'] ?? '') ?></td>
                             <td>
                                 <a href="?route=water/test/edit&id=<?= urlencode($t['WaterTestID'] ?? $t['water_test_id']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
-                                <a href="?route=water/test/delete&id=<?= urlencode($t['WaterTestID'] ?? $t['water_test_id']) ?>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this test?')"><i class="bi bi-trash"></i></a>
+                                <a href="?route=water/test/delete&id=<?= urlencode($t['WaterTestID'] ?? $t['water_test_id']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
                             </td>
                         </tr>
                         <?php endforeach; endif; ?>
@@ -76,11 +76,3 @@
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    if (typeof $.fn.DataTable !== 'undefined') {
-        $('#qualityDataTable').DataTable({ order: [], pageLength: 100, lengthMenu: [10, 25, 50, 100], language: { search: '', searchPlaceholder: 'Search...' }, responsive: true });
-    }
-});
-</script>

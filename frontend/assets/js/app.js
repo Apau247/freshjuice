@@ -2,17 +2,49 @@
 document.addEventListener('DOMContentLoaded', function () {
 
     /* ═══════════════════════════════════════════
-       SCROLL POSITION — Save/Restore across page loads
+       SCROLL POSITION — Preserve page + sidebar scroll
+       across in-app navigation (don't jump to top)
        ═══════════════════════════════════════════ */
-    var scrollKey = 'fj_scroll_' + window.location.search;
-    var savedScroll = sessionStorage.getItem(scrollKey);
-    if (savedScroll) {
-        window.scrollTo(0, parseInt(savedScroll, 10));
-        sessionStorage.removeItem(scrollKey);
+    var SCROLL_KEY = 'fj_scroll_pos';
+    var SIDEBAR_SCROLL_KEY = 'fj_sidebar_scroll_pos';
+
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
     }
-    window.addEventListener('beforeunload', function () {
-        sessionStorage.setItem(scrollKey, window.scrollY);
-    });
+
+    var primaryNav = document.querySelector('.sidebar-nav .primary-nav');
+    var savedScroll = parseInt(sessionStorage.getItem(SCROLL_KEY), 10) || 0;
+
+    var restoreScroll = function () {
+        if (savedScroll > 0 && (window.scrollY || document.documentElement.scrollTop) === 0) {
+            window.scrollTo(0, savedScroll);
+        }
+    };
+    restoreScroll();
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', restoreScroll);
+    }
+    window.addEventListener('load', restoreScroll);
+
+    var savedSidebarScroll = parseInt(sessionStorage.getItem(SIDEBAR_SCROLL_KEY), 10) || 0;
+    if (primaryNav && savedSidebarScroll > 0) {
+        primaryNav.scrollTop = savedSidebarScroll;
+    }
+
+    var scrollTimer = null;
+    var saveScroll = function () {
+        if (scrollTimer) clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(function () {
+            sessionStorage.setItem(SCROLL_KEY, String(window.scrollY || document.documentElement.scrollTop || 0));
+            if (primaryNav) {
+                sessionStorage.setItem(SIDEBAR_SCROLL_KEY, String(primaryNav.scrollTop || 0));
+            }
+        }, 120);
+    };
+    window.addEventListener('scroll', saveScroll, { passive: true });
+    if (primaryNav) {
+        primaryNav.addEventListener('scroll', saveScroll, { passive: true });
+    }
 
     /* ═══════════════════════════════════════════
        SIDEBAR — Collapsible + Mobile Menu
@@ -108,6 +140,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('a[href*="auth/logout"]').forEach(function (link) {
         link.addEventListener('click', function (e) {
             e.preventDefault();
+            sessionStorage.removeItem('fj_scroll_pos');
+            sessionStorage.removeItem('fj_sidebar_scroll_pos');
             var form = document.createElement('form');
             form.method = 'POST';
             form.action = this.getAttribute('href');

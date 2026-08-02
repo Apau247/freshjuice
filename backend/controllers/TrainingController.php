@@ -14,9 +14,14 @@ class TrainingController extends Controller
 
     public function index()
     {
+        $completionStats = $this->model->getCompletionStats();
         $data = [
             'trainings' => $this->model->getAllDetailed(),
-            'completionStats' => $this->model->getCompletionStats(),
+            'completionStats' => $completionStats,
+            'completedCount' => (int)($completionStats['completed'] ?? 0),
+            'scheduledCount' => (int)($completionStats['scheduled'] ?? 0),
+            'expiringCertCount' => count($this->model->getExpiringCerts()),
+            'totalCount' => $this->model->count(),
         ];
         $this->render('index', $data);
     }
@@ -28,7 +33,7 @@ class TrainingController extends Controller
             return;
         }
 
-        $this->requireRole('admin', 'manager', 'supervisor');
+        $this->requireCanCreate('training');
 
         $id = generateId('TRN');
         $this->model->create([
@@ -64,7 +69,7 @@ class TrainingController extends Controller
             return;
         }
 
-        $this->requireRole('admin', 'manager', 'supervisor');
+        $this->requireCanEdit('training');
 
         $this->model->update($id, [
             'StaffID' => sanitize($this->getInput('StaffID')),
