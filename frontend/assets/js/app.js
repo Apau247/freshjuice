@@ -13,38 +13,68 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     var primaryNav = document.querySelector('.sidebar-nav .primary-nav');
-    var savedScroll = parseInt(sessionStorage.getItem(SCROLL_KEY), 10) || 0;
+    var scrollTimer = null;
+    var isLoggingOut = false;
+
+    var saveScroll = function () {
+        if (isLoggingOut) return;
+        sessionStorage.setItem(SCROLL_KEY, String(window.scrollY || document.documentElement.scrollTop || 0));
+        if (primaryNav) {
+            sessionStorage.setItem(SIDEBAR_SCROLL_KEY, String(primaryNav.scrollTop || 0));
+        }
+    };
+
+    var scheduleSave = function () {
+        if (scrollTimer) clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(saveScroll, 60);
+    };
 
     var restoreScroll = function () {
+        var savedScroll = parseInt(sessionStorage.getItem(SCROLL_KEY), 10) || 0;
         if (savedScroll > 0 && (window.scrollY || document.documentElement.scrollTop) === 0) {
             window.scrollTo(0, savedScroll);
         }
+        if (primaryNav) {
+            var savedSidebarScroll = parseInt(sessionStorage.getItem(SIDEBAR_SCROLL_KEY), 10) || 0;
+            if (savedSidebarScroll > 0) {
+                primaryNav.scrollTop = savedSidebarScroll;
+            }
+            var activeLink = primaryNav.querySelector('.nav-link.active');
+            if (activeLink) {
+                var navRect = primaryNav.getBoundingClientRect();
+                var linkRect = activeLink.getBoundingClientRect();
+                if (linkRect.bottom > navRect.bottom) {
+                    primaryNav.scrollTop += (linkRect.bottom - navRect.bottom) + 8;
+                }
+            }
+        }
     };
+
     restoreScroll();
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', restoreScroll);
     }
     window.addEventListener('load', restoreScroll);
+    window.addEventListener('pageshow', function (e) {
+        if (e.persisted) restoreScroll();
+    });
 
-    var savedSidebarScroll = parseInt(sessionStorage.getItem(SIDEBAR_SCROLL_KEY), 10) || 0;
-    if (primaryNav && savedSidebarScroll > 0) {
-        primaryNav.scrollTop = savedSidebarScroll;
-    }
-
-    var scrollTimer = null;
-    var saveScroll = function () {
-        if (scrollTimer) clearTimeout(scrollTimer);
-        scrollTimer = setTimeout(function () {
-            sessionStorage.setItem(SCROLL_KEY, String(window.scrollY || document.documentElement.scrollTop || 0));
-            if (primaryNav) {
-                sessionStorage.setItem(SIDEBAR_SCROLL_KEY, String(primaryNav.scrollTop || 0));
-            }
-        }, 120);
-    };
-    window.addEventListener('scroll', saveScroll, { passive: true });
+    window.addEventListener('scroll', scheduleSave, { passive: true });
     if (primaryNav) {
-        primaryNav.addEventListener('scroll', saveScroll, { passive: true });
+        primaryNav.addEventListener('scroll', scheduleSave, { passive: true });
     }
+
+    // Flush the saved position the instant the user leaves the page.
+    // This guarantees the sidebar keeps its place on back/forward
+    // navigation even if the debounced scroll save hadn't fired yet.
+    window.addEventListener('pagehide', saveScroll);
+    window.addEventListener('beforeunload', saveScroll);
+    document.addEventListener('click', function (e) {
+        var link = e.target && e.target.closest ? e.target.closest('a') : null;
+        if (link && link.hostname === window.location.hostname) {
+            saveScroll();
+        }
+    }, true);
 
     /* ═══════════════════════════════════════════
        SIDEBAR — Collapsible + Mobile Menu
@@ -140,6 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('a[href*="auth/logout"]').forEach(function (link) {
         link.addEventListener('click', function (e) {
             e.preventDefault();
+            isLoggingOut = true;
             sessionStorage.removeItem('fj_scroll_pos');
             sessionStorage.removeItem('fj_sidebar_scroll_pos');
             var form = document.createElement('form');
