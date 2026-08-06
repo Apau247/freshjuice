@@ -41,8 +41,10 @@
                             </td>
                             <td><?= sanitize($t['CreatedByName'] ?? $t['created_by_name'] ?? '') ?></td>
                             <td>
+                                <?php if (canEdit('sops')): ?>
                                 <a href="?route=sops/template/edit&id=<?= urlencode($t['SOP_ID'] ?? '') ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                                 <a href="?route=sops/template/delete&id=<?= urlencode($t['SOP_ID'] ?? '') ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <?php endforeach; endif; ?>
@@ -73,8 +75,10 @@
                                 <span class="badge bg-<?= $map[$as] ?? 'secondary' ?>"><?= sanitize($as) ?></span>
                             </td>
                             <td>
+                                <?php if (canEdit('sops')): ?>
                                 <a href="?route=sops/checklist/edit&id=<?= urlencode($cl['ChecklistID'] ?? '') ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                                 <a href="?route=sops/checklist/delete&id=<?= urlencode($cl['ChecklistID'] ?? '') ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <?php endforeach; endif; ?>

@@ -23,8 +23,10 @@
                         <span class="badge bg-<?= $map[$st] ?? 'secondary' ?>"><?= sanitize($st) ?></span>
                     </td>
                     <td>
+                        <?php if (canEdit('machines')): ?>
                         <a href="?route=machines/edit&id=<?= urlencode($m['MachineID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                         <a href="?route=machines/delete&id=<?= urlencode($m['MachineID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

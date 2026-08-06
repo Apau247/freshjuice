@@ -44,7 +44,9 @@ A comprehensive **web-based Factory Management System** for a Fresh Fruit Juice 
 - **Rate Limiting** -- Max 5 login attempts per user, 15-minute lockout window
 - **Input Sanitization** -- All output escaped via `htmlspecialchars()`
 - **Prepared Statements** -- PDO with `ERRMODE_EXCEPTION`, emulated prepares disabled
-- **RBAC** -- 8 roles with per-module access control
+- **RBAC** -- 8 roles with per-module access control, enforced in the router:
+  read access is checked for every mapped route, and `create`/`edit`/`delete`
+  routes additionally require the module's write level
 - **Audit Trail** -- All CRUD operations logged with user, timestamp, and IP
 
 ## User Roles
@@ -75,12 +77,14 @@ A comprehensive **web-based Factory Management System** for a Fresh Fruit Juice 
 ```
 
 ### 2. Create Database
+The schema does not create the database itself, so create it first:
 ```bash
-mysql -u root -p < sql/schema.sql
-mysql -u root -p < sql/sample_data.sql
+mysql -u root -p -e "CREATE DATABASE freshjuice CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -u root -p freshjuice < database/schema.sql
+mysql -u root -p freshjuice < database/sample_data.sql
 ```
 
-### 3. Configure (optional)
+### 3. Configure
 Copy `.env.example` to `.env` and edit your settings:
 ```ini
 DB_HOST=localhost
@@ -89,12 +93,23 @@ DB_USER=root
 DB_PASS=
 APP_URL=http://localhost/freshjuice
 ```
-Or edit `config/database.php` directly.
+Or edit `backend/config/database.php` directly. Without a `.env` the defaults in
+that file are used (`localhost` / `freshjuice` / `root` / empty password).
 
 ### 4. Access
 ```
-http://localhost/freshjuice/freshjuice
+http://localhost/freshjuice
 ```
+Requests are rewritten to `public/index.php` by the root `.htaccess`, so
+`mod_rewrite` must be enabled. If it is not, use `http://localhost/freshjuice/public/`.
+
+### 5. Optional: email delivery
+Password-reset emails use PHPMailer when it is installed:
+```bash
+composer require phpmailer/phpmailer
+```
+Without it the app falls back to PHP's `mail()`; if neither can deliver, the
+reset link is shown directly in the browser so accounts stay recoverable.
 
 ## Default Login
 
@@ -119,49 +134,36 @@ http://localhost/freshjuice/freshjuice
 
 ```
 freshjuice/
-|-- config/
-|   |-- database.php          # DB config, session, CSRF, helpers
-|   +-- permissions.php       # RBAC permission matrix
-|-- models/                   # 20+ model files
-|-- controllers/              # 25+ controller files
-|-- auth/
-|   +-- AuthController.php    # Login/logout with CSRF & rate limiting
-|-- views/
-|   |-- layouts/main.php      # Sidebar, navbar, flash messages
+|-- backend/
+|   |-- config/
+|   |   |-- database.php      # DB config, session, CSRF, helpers
+|   |   +-- permissions.php   # RBAC permission matrix + route->module map
 |   |-- auth/
-|   |-- dashboard/
-|   |-- suppliers/
-|   |-- materials/
-|   |-- production/
-|   |-- quality/
-|   |-- finished_goods/
-|   |-- customers/
-|   |-- sales/
-|   |-- invoicing/
-|   |-- staff/
-|   |-- machines/
-|   |-- maintenance/
-|   |-- waste/
-|   |-- water/
-|   |-- power/
-|   |-- certifications/
-|   |-- sops/
-|   |-- safety/
-|   |-- improvement/
-|   |-- efficiency/
-|   |-- documents/
-|   |-- permits/
-|   |-- training/
-|   |-- ppe/
-|   +-- users/
-|-- assets/
-|   |-- css/style.css
-|   +-- js/app.js
+|   |   |-- AuthController.php  # Login/logout with CSRF & rate limiting
+|   |   +-- MailHelper.php      # Password-reset mail (PHPMailer optional)
+|   |-- models/               # 35+ model files
+|   +-- controllers/          # 34 controller files
+|-- frontend/
+|   |-- views/
+|   |   |-- layouts/main.php  # Sidebar, navbar, flash messages
+|   |   |-- auth/  dashboard/  suppliers/  materials/  production/
+|   |   |-- quality/  finished_goods/  customers/  sales/  invoicing/
+|   |   |-- staff/  machines/  maintenance/  waste/  water/  power/
+|   |   |-- certifications/  sops/  safety/  improvement/  efficiency/
+|   |   +-- documents/  permits/  training/  ppe/  users/  audit/  notifications/
+|   +-- assets/
+|       |-- css/glass.css     # Sidebar + glassmorphism UI
+|       |-- css/style.css
+|       +-- js/app.js
 |-- public/
-|   +-- index.php             # Router with CSRF enforcement
-|-- sql/
+|   +-- index.php             # Router: CSRF, auth and RBAC enforcement
+|-- database/
 |   |-- schema.sql
 |   +-- sample_data.sql
+|-- bin/
+|   |-- validate.php          # Syntax + route/controller consistency check
+|   +-- integration_test.php
+|-- uploads/documents/        # Uploaded controlled documents
 |-- .env.example              # Environment config template
 |-- .gitignore
 |-- .htaccess

@@ -2,7 +2,9 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4><i class="bi bi-star me-2"></i>Supplier Evaluations</h4>
+        <?php if (canCreate('supplier_eval')): ?>
         <a href="?route=supplier-evaluations/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>New Evaluation</a>
+        <?php endif; ?>
     </div>
 
     <div class="card">
@@ -42,8 +44,10 @@
                                     <span class="badge bg-<?php echo $overallBadge; ?>"><?php echo number_format($overall, 1); ?>/5</span>
                                 </td>
                                 <td>
+                                    <?php if (canEdit('supplier_eval')): ?>
                                     <a href="?route=supplier-evaluations/edit&id=<?php echo sanitize($row['EvaluationID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
                                     <a href="?route=supplier-evaluations/delete&id=<?php echo sanitize($row['EvaluationID']); ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

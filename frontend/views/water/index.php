@@ -2,8 +2,10 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h5 class="fw-bold mb-0"><i class="bi bi-droplet me-2"></i><?= $pageTitle ?></h5>
     <div>
+        <?php if (canCreate('water')): ?>
         <a href="?route=water/usage/form" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> Add Usage</a>
         <a href="?route=water/test/form" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-lg"></i> Add Test</a>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -33,8 +35,10 @@
                             <td><?= sanitize($u['Purpose'] ?? '') ?></td>
                             <td><?= sanitize($u['RecordedByName'] ?? $u['recorded_by_name'] ?? '') ?></td>
                             <td>
+                                <?php if (canEdit('water')): ?>
                                 <a href="?route=water/usage/edit&id=<?= urlencode($u['WaterUsageID'] ?? $u['water_usage_id']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                                 <a href="?route=water/usage/delete&id=<?= urlencode($u['WaterUsageID'] ?? $u['water_usage_id']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <?php endforeach; endif; ?>
@@ -65,8 +69,10 @@
                             </td>
                             <td><?= sanitize($t['TestedByName'] ?? $t['tested_by_name'] ?? '') ?></td>
                             <td>
+                                <?php if (canEdit('water')): ?>
                                 <a href="?route=water/test/edit&id=<?= urlencode($t['WaterTestID'] ?? $t['water_test_id']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                                 <a href="?route=water/test/delete&id=<?= urlencode($t['WaterTestID'] ?? $t['water_test_id']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <?php endforeach; endif; ?>

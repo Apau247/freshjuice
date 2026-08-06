@@ -2,7 +2,9 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4><i class="bi bi-alarm me-2"></i>Emergency Drills</h4>
+        <?php if (canCreate('drills')): ?>
         <a href="?route=safety/drills/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Schedule Drill</a>
+        <?php endif; ?>
     </div>
 
     <div class="card">
@@ -41,8 +43,10 @@
                                     <span class="badge bg-<?php echo $statusBadge; ?>"><?php echo $status; ?></span>
                                 </td>
                                 <td>
+                                    <?php if (canEdit('drills')): ?>
                                     <a href="?route=safety/drills/edit&id=<?php echo sanitize($row['DrillID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
                                     <a href="?route=safety/drills/delete&id=<?php echo sanitize($row['DrillID']); ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

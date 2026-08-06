@@ -79,6 +79,7 @@ $MODULE_ROUTES = [
     'documents/create'              => 'documents',
     'documents/edit'                => 'documents',
     'documents/delete'              => 'documents',
+    'documents/download'            => 'documents',
     'staff'                         => 'staff',
     'staff/create'                  => 'staff',
     'staff/edit'                    => 'staff',
@@ -158,7 +159,15 @@ $MODULE_ROUTES = [
     'users/create'                  => 'users',
     'users/edit'                    => 'users',
     'users/delete'                  => 'users',
+    'audit'                         => 'audit',
 ];
+
+/*
+ * Routes deliberately left unmapped (available to every signed-in user because
+ * they only ever expose that user's own context):
+ *   profile        -- the signed-in user's own account page
+ *   notifications  -- factory-wide alerts derived from modules the user can see
+ */
 
 $ROLE_PERMISSIONS = [
     'ROLE-001' => [
@@ -172,6 +181,7 @@ $ROLE_PERMISSIONS = [
         'fat'             => 'full', 'waste'         => 'full', 'water'         => 'full',
         'power'           => 'full', 'improvement'   => 'full', 'supplier_eval' => 'full',
         'efficiency'      => 'full', 'sops'          => 'full', 'users'         => 'full',
+        'audit'           => 'full',
     ],
     'ROLE-002' => [
         'dashboard'       => 'full', 'suppliers'     => 'full', 'materials'     => 'full',
@@ -184,6 +194,7 @@ $ROLE_PERMISSIONS = [
         'fat'             => 'no',   'waste'         => 'full', 'water'         => 'full',
         'power'           => 'full', 'improvement'   => 'full', 'supplier_eval' => 'full',
         'efficiency'      => 'full', 'sops'          => 'no',   'users'         => 'no',
+        'audit'           => 'view',
     ],
     'ROLE-003' => [
         'dashboard'       => 'full', 'suppliers'     => 'view', 'materials'     => 'full',
@@ -196,6 +207,7 @@ $ROLE_PERMISSIONS = [
         'fat'             => 'no',   'waste'         => 'view', 'water'         => 'view',
         'power'           => 'view', 'improvement'   => 'participate', 'supplier_eval' => 'no',
         'efficiency'      => 'full', 'sops'          => 'no',   'users'         => 'no',
+        'audit'           => 'no',
     ],
     'ROLE-004' => [
         'dashboard'       => 'full', 'suppliers'     => 'full', 'materials'     => 'full',
@@ -208,6 +220,7 @@ $ROLE_PERMISSIONS = [
         'fat'             => 'no',   'waste'         => 'view', 'water'         => 'view',
         'power'           => 'view', 'improvement'   => 'no',   'supplier_eval' => 'full',
         'efficiency'      => 'view', 'sops'          => 'no',   'users'         => 'no',
+        'audit'           => 'no',
     ],
     'ROLE-005' => [
         'dashboard'       => 'full', 'suppliers'     => 'view', 'materials'     => 'no',
@@ -220,6 +233,7 @@ $ROLE_PERMISSIONS = [
         'fat'             => 'no',   'waste'         => 'view', 'water'         => 'view',
         'power'           => 'view', 'improvement'   => 'full', 'supplier_eval' => 'no',
         'efficiency'      => 'full', 'sops'          => 'no',   'users'         => 'no',
+        'audit'           => 'no',
     ],
     'ROLE-006' => [
         'dashboard'       => 'full', 'suppliers'     => 'no',   'materials'     => 'no',
@@ -232,6 +246,7 @@ $ROLE_PERMISSIONS = [
         'fat'             => 'no',   'waste'         => 'no',   'water'         => 'no',
         'power'           => 'no',   'improvement'   => 'no',   'supplier_eval' => 'no',
         'efficiency'      => 'no',   'sops'          => 'no',   'users'         => 'no',
+        'audit'           => 'no',
     ],
     'ROLE-007' => [
         'dashboard'       => 'full', 'suppliers'     => 'view', 'materials'     => 'view',
@@ -244,6 +259,7 @@ $ROLE_PERMISSIONS = [
         'fat'             => 'no',   'waste'         => 'view', 'water'         => 'view',
         'power'           => 'view', 'improvement'   => 'no',   'supplier_eval' => 'no',
         'efficiency'      => 'view', 'sops'          => 'no',   'users'         => 'no',
+        'audit'           => 'no',
     ],
     'ROLE-008' => [
         'dashboard'       => 'full', 'suppliers'     => 'no',   'materials'     => 'no',
@@ -256,6 +272,7 @@ $ROLE_PERMISSIONS = [
         'fat'             => 'full', 'waste'         => 'full', 'water'         => 'full',
         'power'           => 'full', 'improvement'   => 'participate', 'supplier_eval' => 'no',
         'efficiency'      => 'full', 'sops'          => 'no',   'users'         => 'no',
+        'audit'           => 'no',
     ],
 ];
 

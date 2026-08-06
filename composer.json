@@ -7,6 +7,9 @@
         "ext-pdo": "*",
         "ext-mbstring": "*"
     },
+    "suggest": {
+        "phpmailer/phpmailer": "Enables SMTP delivery of password-reset emails; without it the app falls back to PHP mail()."
+    },
     "license": "proprietary",
     "autoload": {
         "files": [

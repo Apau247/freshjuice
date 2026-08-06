@@ -110,7 +110,13 @@ class AuthController
                 exit;
             }
 
-            $stmt = $this->db->prepare("SELECT UserID, Name FROM users WHERE UserID = ? AND Status = 'Active'");
+            // users has no Email column -- the address lives on the linked staff record.
+            $stmt = $this->db->prepare(
+                "SELECT u.UserID, u.Name, s.Email
+                   FROM users u
+                   LEFT JOIN staff s ON s.UserID = u.UserID
+                  WHERE u.UserID = ? AND u.Status = 'Active'"
+            );
             $stmt->execute([$userId]);
             $user = $stmt->fetch();
 
@@ -123,13 +129,18 @@ class AuthController
 
                 logAudit($user['UserID'], 'PASSWORD_RESET_REQUEST', 'Auth', $user['UserID'], 'Password reset requested');
 
-                $resetUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http')
-                    . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
-                    . rtrim(dirname(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php')), '/')
-                    . '?route=auth/reset&token=' . $token;
+                $resetUrl = appBaseUrl() . '/?route=auth/reset&token=' . $token;
 
-                MailHelper::sendPasswordReset($user['Name'], $user['UserID'], $resetUrl);
+                $sent = MailHelper::sendPasswordReset($user['Name'], (string)($user['Email'] ?? ''), $resetUrl);
 
+                if ($sent) {
+                    setFlash('success', 'A password reset link has been sent to your registered email address.');
+                    header('Location: ?route=auth/login');
+                    exit;
+                }
+
+                // No mail delivery configured (local/dev install): hand the link over
+                // directly so the account is still recoverable.
                 setFlash('success', 'Password reset link has been generated. You can now reset your password.');
                 header('Location: ?route=auth/reset&token=' . $token);
                 exit;

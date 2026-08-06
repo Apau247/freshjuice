@@ -23,8 +23,10 @@
                         <span class="badge bg-<?= $st === 'Active' ? 'success' : 'secondary' ?>"><?= sanitize($st) ?></span>
                     </td>
                     <td>
+                        <?php if (canEdit('customers')): ?>
                         <a href="?route=customers/edit&id=<?= urlencode($c['CustomerID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                         <a href="?route=customers/delete&id=<?= urlencode($c['CustomerID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

@@ -2,7 +2,9 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4><i class="bi bi-activity me-2"></i>Accident / Incident Reports</h4>
+        <?php if (canCreate('accidents')): ?>
         <a href="?route=safety/accidents/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Report Incident</a>
+        <?php endif; ?>
     </div>
 
     <div class="card">
@@ -39,8 +41,10 @@
                                 </td>
                                 <td><?php echo sanitize($row['ReportedByName'] ?? $row['ReportedBy']); ?></td>
                                 <td>
+                                    <?php if (canEdit('accidents')): ?>
                                     <a href="?route=safety/accidents/edit&id=<?php echo sanitize($row['AccidentID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
                                     <a href="?route=safety/accidents/delete&id=<?php echo sanitize($row['AccidentID']); ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

@@ -1,8 +1,4 @@
-<?php
-$assetBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http')
-    . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
-    . rtrim(dirname(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php')), '/');
-?>
+<?php $assetBase = appBaseUrl(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,8 +44,15 @@ $assetBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' 
                     <span class="nav-tooltip">Dashboard</span>
                 </li>
                 <?php endif; ?>
+                <li class="nav-item">
+                    <a href="?route=notifications" class="nav-link<?= str_starts_with($currentRoute, 'notifications') ? ' active' : '' ?>">
+                        <i class="nav-icon bi bi-bell"></i>
+                        <span class="nav-label">Notifications</span>
+                    </a>
+                    <span class="nav-tooltip">Notifications</span>
+                </li>
 
-                <?php if (can('suppliers') || can('materials')): ?>
+                <?php if (can('suppliers') || can('materials') || can('supplier_eval')): ?>
                 <li class="nav-item"><span class="nav-section">SUPPLIERS & MATERIALS</span></li>
                 <?php if (can('suppliers')): ?>
                 <li class="nav-item">
@@ -65,6 +68,15 @@ $assetBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' 
                         <span class="nav-label">Deliveries</span>
                     </a>
                     <span class="nav-tooltip">Deliveries</span>
+                </li>
+                <?php endif; ?>
+                <?php if (can('supplier_eval')): ?>
+                <li class="nav-item">
+                    <a href="?route=supplier-evaluations" class="nav-link<?= str_starts_with($currentRoute, 'supplier-evaluations') ? ' active' : '' ?>">
+                        <i class="nav-icon bi bi-clipboard-data"></i>
+                        <span class="nav-label">Supplier Evaluations</span>
+                    </a>
+                    <span class="nav-tooltip">Supplier Evaluations</span>
                 </li>
                 <?php endif; ?>
                 <?php if (can('materials')): ?>
@@ -156,7 +168,7 @@ $assetBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' 
                 <?php endif; ?>
                 <?php endif; ?>
 
-                <?php if (can('safety') || can('hazards') || can('accidents') || can('drills') || can('permits') || can('documents')): ?>
+                <?php if (can('safety') || can('hazards') || can('accidents') || can('drills') || can('permits') || can('certifications') || can('documents')): ?>
                 <li class="nav-item"><span class="nav-section">SAFETY & COMPLIANCE</span></li>
                 <?php if (can('safety')): ?>
                 <li class="nav-item">
@@ -201,6 +213,15 @@ $assetBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' 
                         <span class="nav-label">Permits</span>
                     </a>
                     <span class="nav-tooltip">Permits</span>
+                </li>
+                <?php endif; ?>
+                <?php if (can('certifications')): ?>
+                <li class="nav-item">
+                    <a href="?route=certifications" class="nav-link<?= str_starts_with($currentRoute, 'certifications') ? ' active' : '' ?>">
+                        <i class="nav-icon bi bi-award"></i>
+                        <span class="nav-label">Certifications</span>
+                    </a>
+                    <span class="nav-tooltip">Certifications</span>
                 </li>
                 <?php endif; ?>
                 <?php if (can('documents')): ?>
@@ -303,9 +324,8 @@ $assetBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' 
                 <?php endif; ?>
                 <?php endif; ?>
 
-                <?php if (can('improvement') || can('supplier_eval')): ?>
-                <li class="nav-item"><span class="nav-section">IMPROVEMENT</span></li>
                 <?php if (can('improvement')): ?>
+                <li class="nav-item"><span class="nav-section">IMPROVEMENT</span></li>
                 <li class="nav-item">
                     <a href="?route=improvement" class="nav-link<?= str_starts_with($currentRoute, 'improvement') ? ' active' : '' ?>">
                         <i class="nav-icon bi bi-lightbulb"></i>
@@ -314,30 +334,10 @@ $assetBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' 
                     <span class="nav-tooltip">CAPA</span>
                 </li>
                 <?php endif; ?>
-                <?php if (can('supplier_eval')): ?>
-                <li class="nav-item">
-                    <a href="?route=supplier-evaluations" class="nav-link<?= str_starts_with($currentRoute, 'supplier-evaluations') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-clipboard-data"></i>
-                        <span class="nav-label">Evaluations</span>
-                    </a>
-                    <span class="nav-tooltip">Evaluations</span>
-                </li>
-                <?php endif; ?>
-                <?php endif; ?>
 
-                <?php if (can('certifications')): ?>
-                <li class="nav-item"><span class="nav-section">COMPLIANCE</span></li>
-                <li class="nav-item">
-                    <a href="?route=certifications" class="nav-link<?= str_starts_with($currentRoute, 'certifications') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-award"></i>
-                        <span class="nav-label">Certifications</span>
-                    </a>
-                    <span class="nav-tooltip">Certifications</span>
-                </li>
-                <?php endif; ?>
-
-                <?php if (can('users') || can('sops')): ?>
+                <?php if (can('users') || can('sops') || can('audit')): ?>
                 <li class="nav-item"><span class="nav-section">ADMIN</span></li>
+                <?php if (can('audit')): ?>
                 <li class="nav-item">
                     <a href="?route=audit" class="nav-link<?= str_starts_with($currentRoute, 'audit') ? ' active' : '' ?>">
                         <i class="nav-icon bi bi-journal-text"></i>
@@ -345,6 +345,7 @@ $assetBase = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' 
                     </a>
                     <span class="nav-tooltip">Audit Trail</span>
                 </li>
+                <?php endif; ?>
                 <?php if (can('users')): ?>
                 <li class="nav-item">
                     <a href="?route=users" class="nav-link<?= str_starts_with($currentRoute, 'users') ? ' active' : '' ?>">

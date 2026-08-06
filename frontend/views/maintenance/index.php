@@ -27,8 +27,10 @@
                     </td>
                     <td><?= sanitize($r['NextServiceDate'] ?? '') ?></td>
                     <td>
+                        <?php if (canEdit('maintenance')): ?>
                         <a href="?route=maintenance/edit&id=<?= urlencode($r['MaintenanceID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                         <a href="?route=maintenance/delete&id=<?= urlencode($r['MaintenanceID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

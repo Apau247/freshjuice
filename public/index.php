@@ -231,6 +231,25 @@ if (isset($map[$route])) {
             header('Location: ?route=dashboard');
             exit;
         }
+
+        // can() only proves read access. Write routes need the write level too --
+        // enforced here so every module is covered, rather than relying on each
+        // controller to remember to call requireCanEdit()/requireCanCreate().
+        if ($module) {
+            $isCreate = str_ends_with($route, '/create') || str_ends_with($route, '/form');
+            $isWrite  = str_ends_with($route, '/edit') || str_ends_with($route, '/delete');
+
+            if ($isCreate && !canCreate($module)) {
+                setFlash('error', 'You do not have permission to create records in this module.');
+                header('Location: ?route=dashboard');
+                exit;
+            }
+            if ($isWrite && !canEdit($module)) {
+                setFlash('error', 'You do not have permission to modify records in this module.');
+                header('Location: ?route=dashboard');
+                exit;
+            }
+        }
     }
 
     $fileMap = [

@@ -25,8 +25,10 @@
                         <span class="badge bg-<?= $map[$s] ?? 'secondary' ?>"><?= sanitize($s) ?></span>
                     </td>
                     <td>
+                        <?php if (canEdit('sales')): ?>
                         <a href="?route=sales/edit&id=<?= urlencode($o['OrderID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                         <a href="?route=sales/delete&id=<?= urlencode($o['OrderID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

@@ -34,8 +34,10 @@
                         <?php endif; ?>
                     </td>
                     <td>
+                        <?php if (canEdit('finished_goods')): ?>
                         <a href="?route=finished-goods/edit&id=<?= urlencode($g['FG_ID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                         <a href="?route=finished-goods/delete&id=<?= urlencode($g['FG_ID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

@@ -41,6 +41,14 @@ abstract class Controller
         }
     }
 
+    protected function requireCan(string $module): void
+    {
+        if (!can($module)) {
+            setFlash('error', 'Access denied. Insufficient permissions.');
+            $this->redirect('dashboard');
+        }
+    }
+
     protected function requireCanCreate(string $module): void
     {
         if (!canCreate($module)) {

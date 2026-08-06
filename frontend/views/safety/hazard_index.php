@@ -2,7 +2,9 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4><i class="bi bi-exclamation-triangle me-2"></i>Hazard Register</h4>
+        <?php if (canCreate('hazards')): ?>
         <a href="?route=safety/hazards/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Hazard</a>
+        <?php endif; ?>
     </div>
 
     <?php if (!empty($highRisk)): ?>
@@ -35,7 +37,9 @@
                             <td><span class="badge bg-danger"><?php echo sanitize($row['RiskRating']); ?></span></td>
                             <td><span class="badge bg-danger"><?php echo sanitize($row['Status']); ?></span></td>
                             <td>
+                                <?php if (canEdit('hazards')): ?>
                                 <a href="?route=safety/hazards/edit&id=<?php echo sanitize($row['HazardID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -90,8 +94,10 @@
                                     <span class="badge bg-<?php echo $sBadge; ?>"><?php echo $status; ?></span>
                                 </td>
                                 <td>
+                                    <?php if (canEdit('hazards')): ?>
                                     <a href="?route=safety/hazards/edit&id=<?php echo sanitize($row['HazardID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
                                     <a href="?route=safety/hazards/delete&id=<?php echo sanitize($row['HazardID']); ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

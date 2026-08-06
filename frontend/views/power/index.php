@@ -2,8 +2,10 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h5 class="fw-bold mb-0"><i class="bi bi-lightning me-2"></i><?= $pageTitle ?></h5>
     <div>
+        <?php if (canCreate('power')): ?>
         <a href="?route=power/usage/form" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> Add Usage</a>
         <a href="?route=power/generator/form" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-lg"></i> Add Generator Log</a>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -32,8 +34,10 @@
                             <td>$<?= number_format((float)($u['Cost'] ?? 0), 2) ?></td>
                             <td><small class="text-muted"><?= sanitize(substr($u['Notes'] ?? '', 0, 50)) ?></small></td>
                             <td>
+                                <?php if (canEdit('power')): ?>
                                 <a href="?route=power/usage/edit&id=<?= urlencode($u['PowerUsageID'] ?? $u['power_usage_id']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                                 <a href="?route=power/usage/delete&id=<?= urlencode($u['PowerUsageID'] ?? $u['power_usage_id']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <?php endforeach; endif; ?>
@@ -58,8 +62,10 @@
                             <td><?= number_format((float)($l['FuelUsed'] ?? 0), 1) ?> <?= sanitize($l['FuelUnit'] ?? 'L') ?></td>
                             <td><?= sanitize($l['Reason'] ?? '') ?></td>
                             <td>
+                                <?php if (canEdit('power')): ?>
                                 <a href="?route=power/generator/edit&id=<?= urlencode($l['LogID'] ?? $l['log_id']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                                 <a href="?route=power/generator/delete&id=<?= urlencode($l['LogID'] ?? $l['log_id']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <?php endforeach; endif; ?>

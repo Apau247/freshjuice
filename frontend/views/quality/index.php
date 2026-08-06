@@ -26,8 +26,10 @@
                     <td><?= sanitize($i['InspectorName'] ?? $i['inspector_name'] ?? '') ?></td>
                     <td><small class="text-muted"><?= sanitize(substr($i['DefectsFound'] ?? $i['defects_found'] ?? '', 0, 50)) ?></small></td>
                     <td>
+                        <?php if (canEdit('quality')): ?>
                         <a href="?route=quality/edit&id=<?= urlencode($i['InspectionID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                         <a href="?route=quality/delete&id=<?= urlencode($i['InspectionID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

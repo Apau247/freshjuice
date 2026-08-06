@@ -52,10 +52,66 @@ function getDb(): PDO {
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES   => false,
+            PDO::ATTR_TIMEOUT            => 5,
         ];
-         $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+        try {
+            $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+        } catch (PDOException $e) {
+            // Never let the raw exception surface: it prints the DSN, the DB user
+            // and the full server paths straight into the browser.
+            error_log('Database connection failed: ' . $e->getMessage());
+            dbConnectionFailure();
+        }
     }
     return $pdo;
+}
+
+/** Render a clean "database unavailable" page and stop. Never echoes credentials. */
+function dbConnectionFailure(): never {
+    if (php_sapi_name() === 'cli') {
+        fwrite(STDERR, "Database connection failed. Check DB_HOST/DB_NAME/DB_USER in .env and that MySQL is running.\n");
+        exit(1);
+    }
+    if (!headers_sent()) {
+        http_response_code(503);
+        header('Content-Type: text/html; charset=UTF-8');
+        header('Retry-After: 30');
+    }
+    $appName = defined('APP_NAME') ? APP_NAME : 'FreshJuice Factory';
+    echo '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">'
+       . '<meta name="viewport" content="width=device-width,initial-scale=1">'
+       . '<title>Service unavailable - ' . htmlspecialchars($appName, ENT_QUOTES, 'UTF-8') . '</title>'
+       . '<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;'
+       . 'font-family:Inter,system-ui,sans-serif;background:#f1f5f9;color:#334155;padding:24px}'
+       . '.card{max-width:460px;background:#fff;border-radius:16px;padding:36px;text-align:center;'
+       . 'box-shadow:0 4px 24px rgba(0,0,0,.08)}h1{font-size:1.15rem;margin:0 0 12px}'
+       . 'p{font-size:.9rem;line-height:1.6;color:#64748b;margin:0 0 8px}'
+       . 'code{background:#f1f5f9;padding:2px 6px;border-radius:6px;font-size:.82rem}</style></head><body>'
+       . '<div class="card"><h1>We can&rsquo;t reach the database right now</h1>'
+       . '<p>The application is running, but it could not connect to its database. '
+       . 'Please try again in a moment.</p>'
+       . '<p>If you administer this system: confirm MySQL is running and that '
+       . '<code>DB_HOST</code>, <code>DB_NAME</code>, <code>DB_USER</code> and <code>DB_PASS</code> '
+       . 'in your <code>.env</code> are correct. Details have been written to the PHP error log.</p>'
+       . '</div></body></html>';
+    exit;
+}
+
+/**
+ * Public base URL of the app (scheme + host + the directory containing the
+ * front controller's parent), e.g. "http://localhost/freshjuice".
+ *
+ * dirname() uses the platform separator, so on Windows dirname('/public')
+ * returns "\" -- which rtrim($x, '/') does not strip. Left unnormalised that
+ * trailing backslash ends up in every asset URL and the whole UI loads
+ * unstyled when the app is served from the web root.
+ */
+function appBaseUrl(): string {
+    $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $dir    = str_replace('\\', '/', dirname(dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php')));
+    $dir    = rtrim($dir, '/');
+    return $scheme . '://' . $host . $dir;
 }
 
 function isLoggedIn(): bool {

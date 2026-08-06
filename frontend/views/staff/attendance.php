@@ -15,9 +15,11 @@
             <div class="col-md-2">
                 <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Filter</button>
             </div>
+            <?php if (canCreate('staff')): ?>
             <div class="col-md-2">
                 <a href="?route=staff/attendance/form" class="btn btn-success w-100"><i class="bi bi-plus-lg"></i> Add</a>
             </div>
+            <?php endif; ?>
         </form>
     </div>
 </div>
@@ -39,8 +41,10 @@
                         <span class="badge bg-<?= $map[$st] ?? 'secondary' ?>"><?= sanitize($st) ?></span>
                     </td>
                     <td>
+                        <?php if (canEdit('staff')): ?>
                         <a href="?route=staff/attendance/edit&id=<?= urlencode($a['AttendanceID'] ?? $a['attendance_id']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                         <a href="?route=staff/attendance/delete&id=<?= urlencode($a['AttendanceID'] ?? $a['attendance_id']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; endif; ?>

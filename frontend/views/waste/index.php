@@ -23,8 +23,10 @@
                     <td><?= sanitize($w['DisposalMethod'] ?? $w['disposal_method'] ?? '') ?></td>
                     <td><?= sanitize($w['RecordedByName'] ?? $w['recorded_by_name'] ?? '') ?></td>
                     <td>
+                        <?php if (canEdit('waste')): ?>
                         <a href="?route=waste/edit&id=<?= urlencode($w['WasteID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                         <a href="?route=waste/delete&id=<?= urlencode($w['WasteID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

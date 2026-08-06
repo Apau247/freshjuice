@@ -28,12 +28,17 @@ class NotificationModel extends Model
         );
     }
 
+    /**
+     * Alerts scoped to what the signed-in user is allowed to see. Notifications
+     * is open to every role, so each section has to be filtered by its own
+     * module rather than the page as a whole.
+     */
     public function getAll(): array
     {
         return [
-            'low_stock'       => $this->getLowStockAlerts(),
-            'expiring_certs'  => $this->getExpiringCerts(),
-            'expiring_permits' => $this->getExpiringPermits(),
+            'low_stock'        => can('materials')      ? $this->getLowStockAlerts()  : [],
+            'expiring_certs'   => can('certifications') ? $this->getExpiringCerts()   : [],
+            'expiring_permits' => can('permits')        ? $this->getExpiringPermits() : [],
         ];
     }
 }

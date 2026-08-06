@@ -424,6 +424,7 @@ $user = currentUser();
 <!-- ═══════════════════════════════════════════════════════════
      KPI ROW 1 — SUPPLY CHAIN & PRODUCTION (Modules 1–6)
      ═══════════════════════════════════════════════════════════ -->
+<?php if (can('suppliers') || can('materials') || can('production') || can('quality') || can('finished_goods')): ?>
 <div class="dash-section-hdr">
     <span class="dash-dot" style="background:var(--dj-green);"></span>
     <span class="dash-section-title">Supply Chain & Production</span>
@@ -431,13 +432,16 @@ $user = currentUser();
 </div>
 <div class="dash-kpi-grid">
     <!-- M1: Supplier Management -->
+    <?php if (can('suppliers')): ?>
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#22c55e,#16a34a);">
         <div class="dash-kpi-icon"><i class="bi bi-truck"></i></div>
         <div class="dash-kpi-value"><?= $stats['totalSuppliers'] ?? 0 ?></div>
         <div class="dash-kpi-label">Total Suppliers</div>
         <div class="dash-kpi-trend neutral"><i class="bi bi-people"></i> Registered</div>
     </div>
+    <?php endif; ?>
     <!-- M2: Raw Material Inventory -->
+    <?php if (can('materials')): ?>
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#22c55e,#06b6d4);">
         <div class="dash-kpi-icon"><i class="bi bi-box-seam"></i></div>
         <div class="dash-kpi-value"><?= number_format($stats['rawStock'] ?? 0, 1) ?></div>
@@ -451,15 +455,18 @@ $user = currentUser();
         <div class="dash-kpi-label">Packaging Stock</div>
         <div class="dash-kpi-trend neutral"><i class="bi bi-boxes"></i> Units</div>
     </div>
+    <?php endif; ?>
     <!-- M4: Production Management -->
+    <?php if (can('production')): ?>
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#2563eb,#1d4ed8);">
         <div class="dash-kpi-icon"><i class="bi bi-gear-wide-connected"></i></div>
         <div class="dash-kpi-value"><?= $stats['activeBatches'] ?? 0 ?></div>
         <div class="dash-kpi-label">Active Batches</div>
         <div class="dash-kpi-trend neutral"><i class="bi bi-arrow-right"></i> In progress</div>
     </div>
+    <?php endif; ?>
     <!-- M5: QA/QC -->
-    <?php $pendingQI = $stats['pendingQI'] ?? 0; ?>
+    <?php if (can('quality')): $pendingQI = $stats['pendingQI'] ?? 0; ?>
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#f59e0b,#d97706);">
         <div class="dash-kpi-icon"><i class="bi bi-clipboard-check"></i></div>
         <div class="dash-kpi-value"><?= $pendingQI ?></div>
@@ -469,19 +476,24 @@ $user = currentUser();
             <?= $pendingQI > 0 ? 'Awaiting review' : 'All clear' ?>
         </div>
     </div>
+    <?php endif; ?>
     <!-- M6: Finished Goods -->
+    <?php if (can('finished_goods')): ?>
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#8b5cf6,#6366f1);">
         <div class="dash-kpi-icon"><i class="bi bi-cup-straw"></i></div>
         <div class="dash-kpi-value"><?= number_format($stats['totalFG'] ?? 0, 1) ?></div>
         <div class="dash-kpi-label">Finished Goods</div>
         <div class="dash-kpi-trend neutral"><i class="bi bi-box"></i> Units</div>
     </div>
+    <?php endif; ?>
 </div>
+<?php endif; ?>
 
 
 <!-- ═══════════════════════════════════════════════════════════
      KPI ROW 2 — SALES, WORKFORCE & COMPLIANCE (Modules 7–9, 13–14)
      ═══════════════════════════════════════════════════════════ -->
+<?php if (can('sales') || can('training') || can('maintenance') || can('certifications') || can('sops')): ?>
 <div class="dash-section-hdr">
     <span class="dash-dot" style="background:linear-gradient(135deg,#0ea5e9,#2563eb);"></span>
     <span class="dash-section-title">Sales, Workforce & Compliance</span>
@@ -489,7 +501,7 @@ $user = currentUser();
 </div>
 <div class="dash-kpi-grid">
     <!-- M7: Sales & Invoicing — Pending Orders -->
-    <?php $pendingCount = $stats['pendingOrders'] ?? 0; ?>
+    <?php if (can('sales')): $pendingCount = $stats['pendingOrders'] ?? 0; ?>
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#f59e0b,#d97706);">
         <div class="dash-kpi-icon"><i class="bi bi-clock-history"></i></div>
         <div class="dash-kpi-value"><?= $pendingCount ?></div>
@@ -506,8 +518,9 @@ $user = currentUser();
         <div class="dash-kpi-label">Revenue</div>
         <div class="dash-kpi-trend neutral"><i class="bi bi-graph-up"></i> Cumulative</div>
     </div>
+    <?php endif; ?>
     <!-- M8: Staff & Shift — Training -->
-    <?php $trainingPend = $stats['trainingPending'] ?? 0; ?>
+    <?php if (can('training')): $trainingPend = $stats['trainingPending'] ?? 0; ?>
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#8b5cf6,#7c3aed);">
         <div class="dash-kpi-icon"><i class="bi bi-person-video3"></i></div>
         <div class="dash-kpi-value"><?= $trainingPend ?></div>
@@ -517,8 +530,9 @@ $user = currentUser();
             <?= $trainingPend > 0 ? 'Upcoming sessions' : 'None pending' ?>
         </div>
     </div>
+    <?php endif; ?>
     <!-- M9: Maintenance — Machines Down -->
-    <?php $mDown = $stats['mDown'] ?? 0; $mTotal = $stats['mTotal'] ?? 0; ?>
+    <?php if (can('maintenance') || can('machines')): $mDown = $stats['mDown'] ?? 0; $mTotal = $stats['mTotal'] ?? 0; ?>
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#f97316,#ef4444);">
         <div class="dash-kpi-icon"><i class="bi bi-cpu"></i></div>
         <div class="dash-kpi-value"><?= $mDown ?> / <?= $mTotal ?></div>
@@ -528,8 +542,9 @@ $user = currentUser();
             <?= $mDown > 0 ? $mDown . ' offline' : 'All operational' ?>
         </div>
     </div>
+    <?php endif; ?>
     <!-- M13: Certification Management -->
-    <?php $certsExpiring = $stats['certsExpiring'] ?? 0; ?>
+    <?php if (can('certifications')): $certsExpiring = $stats['certsExpiring'] ?? 0; ?>
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#f43f5e,#e11d48);">
         <div class="dash-kpi-icon"><i class="bi bi-award"></i></div>
         <div class="dash-kpi-value"><?= $certsExpiring ?></div>
@@ -539,8 +554,9 @@ $user = currentUser();
             <?= $certsExpiring > 0 ? 'Renew soon' : 'All valid' ?>
         </div>
     </div>
+    <?php endif; ?>
     <!-- M14: SOP Checklists -->
-    <?php $sopPend = $stats['sopPending'] ?? 0; ?>
+    <?php if (can('sops')): $sopPend = $stats['sopPending'] ?? 0; ?>
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#6366f1,#4f46e5);">
         <div class="dash-kpi-icon"><i class="bi bi-list-check"></i></div>
         <div class="dash-kpi-value"><?= $sopPend ?></div>
@@ -550,12 +566,15 @@ $user = currentUser();
             <?= $sopPend > 0 ? 'Awaiting approval' : 'All approved' ?>
         </div>
     </div>
+    <?php endif; ?>
 </div>
+<?php endif; ?>
 
 
 <!-- ═══════════════════════════════════════════════════════════
      KPI ROW 3 — UTILITIES, SAFETY & EFFICIENCY (Modules 4, 10–12 + Safety)
      ═══════════════════════════════════════════════════════════ -->
+<?php if (can('efficiency') || can('waste') || can('water') || can('power') || can('accidents') || can('improvement')): ?>
 <div class="dash-section-hdr">
     <span class="dash-dot" style="background:linear-gradient(135deg,#f43f5e,#e11d48);"></span>
     <span class="dash-section-title">Utilities, Safety & Efficiency</span>
@@ -563,7 +582,7 @@ $user = currentUser();
 </div>
 <div class="dash-kpi-grid">
     <!-- M4: Production Efficiency (OEE) -->
-    <?php $avgOEE = $stats['avgOEE'] ?? 0; ?>
+    <?php if (can('efficiency')): $avgOEE = $stats['avgOEE'] ?? 0; ?>
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#0ea5e9,#2563eb);">
         <div class="dash-kpi-icon"><i class="bi bi-speedometer2"></i></div>
         <div class="dash-kpi-value"><?= number_format($avgOEE, 1) ?>%</div>
@@ -573,8 +592,9 @@ $user = currentUser();
             <?= $avgOEE >= 85 ? 'World class' : ($avgOEE >= 65 ? 'Acceptable' : 'Below target') ?>
         </div>
     </div>
+    <?php endif; ?>
     <!-- M10: Waste Management -->
-    <?php $wastePct = $stats['wastePct'] ?? 0; ?>
+    <?php if (can('waste')): $wastePct = $stats['wastePct'] ?? 0; ?>
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#f43f5e,#e11d48);">
         <div class="dash-kpi-icon"><i class="bi bi-trash3"></i></div>
         <div class="dash-kpi-value"><?= $wastePct ?>%</div>
@@ -584,22 +604,27 @@ $user = currentUser();
             <?= $wastePct > 10 ? 'Needs attention' : ($wastePct > 0 ? 'Within target' : 'No waste') ?>
         </div>
     </div>
+    <?php endif; ?>
     <!-- M11: Water Management -->
+    <?php if (can('water')): ?>
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#22c55e,#06b6d4);">
         <div class="dash-kpi-icon"><i class="bi bi-droplet"></i></div>
         <div class="dash-kpi-value"><?= number_format($stats['waterTotal'] ?? 0, 0) ?>L</div>
         <div class="dash-kpi-label">Water (Monthly)</div>
         <div class="dash-kpi-trend neutral"><i class="bi bi-droplet-half"></i> Consumption</div>
     </div>
+    <?php endif; ?>
     <!-- M12: Power Management -->
+    <?php if (can('power')): ?>
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#8b5cf6,#6366f1);">
         <div class="dash-kpi-icon"><i class="bi bi-lightning"></i></div>
         <div class="dash-kpi-value"><?= number_format($stats['powerTotal'] ?? 0, 0) ?></div>
         <div class="dash-kpi-label">kWh (Monthly)</div>
         <div class="dash-kpi-trend neutral"><i class="bi bi-lightning-charge"></i> Consumption</div>
     </div>
+    <?php endif; ?>
     <!-- Safety: Open Incidents -->
-    <?php $incidents = $stats['accidentsOpen'] ?? 0; ?>
+    <?php if (can('accidents')): $incidents = $stats['accidentsOpen'] ?? 0; ?>
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#ef4444,#dc2626);">
         <div class="dash-kpi-icon"><i class="bi bi-exclamation-triangle"></i></div>
         <div class="dash-kpi-value"><?= $incidents ?></div>
@@ -609,8 +634,9 @@ $user = currentUser();
             <?= $incidents > 0 ? 'Action needed' : 'All clear' ?>
         </div>
     </div>
+    <?php endif; ?>
     <!-- CAPA Initiatives -->
-    <?php $capaOpen = $stats['capaOpen'] ?? 0; $capaOverdue = $stats['capaOverdue'] ?? 0; ?>
+    <?php if (can('improvement')): $capaOpen = $stats['capaOpen'] ?? 0; $capaOverdue = $stats['capaOverdue'] ?? 0; ?>
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#f59e0b,#d97706);">
         <div class="dash-kpi-icon"><i class="bi bi-lightbulb"></i></div>
         <div class="dash-kpi-value"><?= $capaOpen ?> / <?= $capaOverdue ?></div>
@@ -620,18 +646,22 @@ $user = currentUser();
             <?= $capaOverdue > 0 ? 'Overdue items' : 'On track' ?>
         </div>
     </div>
+    <?php endif; ?>
 </div>
+<?php endif; ?>
 
 
 <!-- ═══════════════════════════════════════════════════════════
      CHARTS ROW
      ═══════════════════════════════════════════════════════════ -->
+<?php if (can('production') || can('waste') || can('efficiency')): ?>
 <div class="dash-section-hdr">
     <span class="dash-dot" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);"></span>
     <span class="dash-section-title">Analytics</span>
 </div>
 <div class="row g-3 mb-4">
     <!-- Production by Flavour -->
+    <?php if (can('production')): ?>
     <div class="col-lg-3 col-md-6">
         <div class="dash-chart-card">
             <div class="card-header">
@@ -663,7 +693,9 @@ $user = currentUser();
             </div>
         </div>
     </div>
+    <?php endif; ?>
     <!-- Waste by Type -->
+    <?php if (can('waste')): ?>
     <div class="col-lg-3 col-md-6">
         <div class="dash-chart-card">
             <div class="card-header">
@@ -685,7 +717,9 @@ $user = currentUser();
             </div>
         </div>
     </div>
+    <?php endif; ?>
     <!-- OEE by Machine -->
+    <?php if (can('efficiency')): ?>
     <div class="col-lg-3 col-md-6">
         <div class="dash-chart-card">
             <div class="card-header">
@@ -701,13 +735,17 @@ $user = currentUser();
             </div>
         </div>
     </div>
+    <?php endif; ?>
 </div>
+<?php endif; ?>
 
 
 <!-- ═══════════════════════════════════════════════════════════
      RECENT TABLES — Row 1
      ═══════════════════════════════════════════════════════════ -->
+<?php if (can('production') || can('sales')): ?>
 <div class="row g-3 mb-3">
+    <?php if (can('production')): ?>
     <div class="col-lg-6">
         <div class="dash-data-card">
             <div class="card-header">
@@ -739,6 +777,8 @@ $user = currentUser();
             </div>
         </div>
     </div>
+    <?php endif; ?>
+    <?php if (can('sales')): ?>
     <div class="col-lg-6">
         <div class="dash-data-card">
             <div class="card-header">
@@ -770,13 +810,17 @@ $user = currentUser();
             </div>
         </div>
     </div>
+    <?php endif; ?>
 </div>
+<?php endif; ?>
 
 
 <!-- ═══════════════════════════════════════════════════════════
      RECENT TABLES — Row 2
      ═══════════════════════════════════════════════════════════ -->
+<?php if (can('safety') || can('improvement')): ?>
 <div class="row g-3">
+    <?php if (can('safety')): ?>
     <div class="col-lg-6">
         <div class="dash-data-card">
             <div class="card-header">
@@ -811,6 +855,8 @@ $user = currentUser();
             </div>
         </div>
     </div>
+    <?php endif; ?>
+    <?php if (can('improvement')): ?>
     <div class="col-lg-6">
         <div class="dash-data-card">
             <div class="card-header">
@@ -841,7 +887,9 @@ $user = currentUser();
             </div>
         </div>
     </div>
+    <?php endif; ?>
 </div>
+<?php endif; ?>
 
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -894,7 +942,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var noGrid = { display: false };
 
     /* ── Production by Flavour (Bar) ── */
-    <?php if (!empty($productionByFlavour)): ?>
+    <?php if (can('production') && !empty($productionByFlavour)): ?>
     new Chart(document.getElementById('flavourChart'), {
         type: 'bar',
         data: {
@@ -920,7 +968,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <?php endif; ?>
 
     /* ── Monthly Production (Line) ── */
-    <?php if (!empty($monthlyProduction)): $months = array_reverse($monthlyProduction); ?>
+    <?php if (can('production') && !empty($monthlyProduction)): $months = array_reverse($monthlyProduction); ?>
     new Chart(document.getElementById('monthlyChart'), {
         type: 'line',
         data: {
@@ -952,7 +1000,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <?php endif; ?>
 
     /* ── Waste by Type (Doughnut) ── */
-    <?php if (!empty($wasteData)): ?>
+    <?php if (can('waste') && !empty($wasteData)): ?>
     new Chart(document.getElementById('wasteChart'), {
         type: 'doughnut',
         data: {
@@ -978,7 +1026,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <?php endif; ?>
 
     /* ── OEE by Machine (Horizontal Bar) ── */
-    <?php if (!empty($oeeByMachine)): ?>
+    <?php if (can('efficiency') && !empty($oeeByMachine)): ?>
     new Chart(document.getElementById('oeeChart'), {
         type: 'bar',
         data: {

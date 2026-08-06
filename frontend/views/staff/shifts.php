@@ -7,9 +7,12 @@
 <div class="card border-0 shadow-sm mb-4">
     <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center">
         <span><i class="bi bi-list me-2"></i>Shift List</span>
+        <?php if (canCreate('staff')): ?>
         <button type="button" class="btn btn-success btn-sm" data-bs-toggle="collapse" data-bs-target="#shiftForm"><i class="bi bi-plus-lg"></i> Add Shift</button>
+        <?php endif; ?>
     </div>
     <div class="card-body">
+        <?php if (canCreate('staff')): ?>
         <form id="shiftForm" class="collapse mb-3 row g-3" method="POST" action="?route=staff/shifts/create">
             <?= csrfField() ?>
             <div class="col-md-3">
@@ -28,6 +31,7 @@
                 <button type="submit" class="btn btn-success w-100"><i class="bi bi-check-lg"></i> Save</button>
             </div>
         </form>
+        <?php endif; ?>
         <table id="dataTable" class="table table-hover align-middle">
             <thead class="table-light"><tr><th>ID</th><th>Shift Name</th><th>Start</th><th>End</th><th>Description</th><th>Actions</th></tr></thead>
             <tbody>
@@ -39,8 +43,10 @@
                     <td><?= sanitize($sh['EndTime'] ?? '') ?></td>
                     <td><?= sanitize($sh['Description'] ?? '') ?></td>
                     <td>
+                        <?php if (canEdit('staff')): ?>
                         <a href="?route=staff/shifts/edit&id=<?= urlencode($sh['ShiftID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                         <a href="?route=staff/shifts/delete&id=<?= urlencode($sh['ShiftID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; endif; ?>

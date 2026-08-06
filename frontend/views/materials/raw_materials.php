@@ -1,7 +1,9 @@
 <?php $pageTitle = 'Raw Materials'; ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h5 class="fw-bold mb-0"><i class="bi bi-bar-chart-steps me-2"></i><?= $pageTitle ?></h5>
+    <?php if (canCreate('materials')): ?>
     <a href="?route=materials/raw/create" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> New Raw Material</a>
+    <?php endif; ?>
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
@@ -24,8 +26,10 @@
                         <span class="badge bg-<?= $st === 'Active' ? 'success' : 'secondary' ?>"><?= sanitize($st) ?></span>
                     </td>
                     <td>
+                        <?php if (canEdit('materials')): ?>
                         <a href="?route=materials/raw/edit&id=<?= urlencode($m['MaterialID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                         <a href="?route=materials/raw/delete&id=<?= urlencode($m['MaterialID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

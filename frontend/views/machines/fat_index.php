@@ -2,7 +2,9 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4><i class="bi bi-flask me-2"></i>Factory Acceptance Testing</h4>
+        <?php if (canCreate('fat')): ?>
         <a href="?route=fat/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>New FAT Record</a>
+        <?php endif; ?>
     </div>
 
     <div class="card">
@@ -48,8 +50,10 @@
                                     <span class="badge bg-<?php echo $sBadge; ?>"><?php echo $status; ?></span>
                                 </td>
                                 <td>
+                                    <?php if (canEdit('fat')): ?>
                                     <a href="?route=fat/edit&id=<?php echo sanitize($row['FAT_ID']); ?>" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
                                     <a href="?route=fat/delete&id=<?php echo sanitize($row['FAT_ID']); ?>" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

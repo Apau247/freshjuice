@@ -148,7 +148,9 @@ document.addEventListener('DOMContentLoaded', function () {
     /* ═══════════════════════════════════════════
        DATATABLES
        ═══════════════════════════════════════════ */
-    if (typeof $.fn.DataTable !== 'undefined') {
+    // Guard on jQuery itself: if the CDN is blocked, a bare $.fn lookup throws a
+    // ReferenceError and every handler registered below this point is lost.
+    if (typeof $ !== 'undefined' && $.fn && typeof $.fn.DataTable !== 'undefined') {
         $('.table').each(function () {
             if ($(this).find('th').length > 0 && !$(this).closest('.no-datatable').length) {
                 try {
