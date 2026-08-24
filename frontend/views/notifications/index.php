@@ -5,9 +5,10 @@
 
 <?php
 $lowStock = $notifications['low_stock'] ?? [];
+$lowPackaging = $notifications['low_packaging'] ?? [];
 $expiringCerts = $notifications['expiring_certs'] ?? [];
 $expiringPermits = $notifications['expiring_permits'] ?? [];
-$total = count($lowStock) + count($expiringCerts) + count($expiringPermits);
+$total = count($lowStock) + count($lowPackaging) + count($expiringCerts) + count($expiringPermits);
 ?>
 
 <?php if ($total === 0): ?>
@@ -33,6 +34,32 @@ $total = count($lowStock) + count($expiringCerts) + count($expiringPermits);
             </thead>
             <tbody>
                 <?php foreach ($lowStock as $item): ?>
+                <tr>
+                    <td class="fw-semibold"><?= sanitize($item['Name'] ?? '') ?></td>
+                    <td><span class="badge bg-danger"><?= sanitize($item['CurrentStock'] ?? 0) ?></span></td>
+                    <td><?= sanitize($item['MinStock'] ?? 0) ?></td>
+                    <td><?= sanitize($item['Unit'] ?? '') ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<?php endif; ?>
+
+<?php if (count($lowPackaging) > 0): ?>
+<div class="card border-0 shadow-sm mb-3 border-start border-4 border-danger">
+    <div class="card-body">
+        <h6 class="fw-bold mb-3">
+            <i class="bi bi-box text-danger me-2"></i>Packaging Reorder Alerts
+            <span class="badge bg-danger ms-2"><?= count($lowPackaging) ?></span>
+        </h6>
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr><th>Material</th><th>Current Stock</th><th>Min Stock</th><th>Unit</th></tr>
+            </thead>
+            <tbody>
+                <?php foreach ($lowPackaging as $item): ?>
                 <tr>
                     <td class="fw-semibold"><?= sanitize($item['Name'] ?? '') ?></td>
                     <td><span class="badge bg-danger"><?= sanitize($item['CurrentStock'] ?? 0) ?></span></td>

@@ -1,0 +1,6 @@
+1. Work breakdown
+2. SRS
+3. Project chapter 
+4. Prototype 
+5. Gantt chat 
+6. User Manual

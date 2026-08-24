@@ -12,7 +12,10 @@ class MaintenanceController extends Controller {
     }
 
     public function index(): void {
-        $this->render('index', ['records' => $this->model->getAllDetailed()]);
+        $this->render('index', [
+            'records'  => $this->model->getAllDetailed(),
+            'upcoming' => $this->model->getUpcoming(),
+        ]);
     }
 
     public function create(): void {

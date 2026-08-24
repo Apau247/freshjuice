@@ -82,16 +82,62 @@ class SalesController extends Controller {
         $order = $this->model->find($id);
         if (!$order) { setFlash('error', 'Not found.'); $this->redirect('sales'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->model->update($id, [
-                'OrderDate' => $this->getInput('order_date'),
-                'TotalAmount' => (float)$this->getInput('total_amount', '0'),
-                'Status' => $this->getInput('status'),
-                'CustomerID' => $this->getInput('customer_id'),
-                'FG_ID' => $this->getInput('fg_id') ?: null,
-                'Notes' => $this->getInput('notes'),
-            ]);
-            logAudit($_SESSION['user_id'], 'UPDATE', 'Sales', $id, 'Updated sales order');
-            setFlash('success', 'Order updated.');
+            $customer = $this->getInput('customer_id', (string)$order['CustomerID']);
+            $qty = (float)$this->getInput('quantity', (string)$order['Quantity']);
+            $newStatus = $this->getInput('status', (string)$order['Status']);
+            $newFgId = $this->getInput('fg_id') ?: null;
+
+            if (empty($customer)) {
+                setFlash('error', 'Customer is required.');
+                $this->redirect('sales');
+                return;
+            }
+            if ($qty <= 0) {
+                setFlash('error', 'Quantity must be greater than zero.');
+                $this->redirect('sales');
+                return;
+            }
+
+            // Keep finished-goods stock in step with the order lifecycle:
+            // a Completed order holds a reservation, everything else releases it.
+            $db = getDb();
+            $db->beginTransaction();
+            try {
+                $fgModel = new FinishedGoodModel();
+
+                if ($order['Status'] === 'Completed' && $order['FG_ID']) {
+                    $fgModel->restoreStock((string)$order['FG_ID'], (float)$order['Quantity']);
+                }
+
+                if ($newStatus === 'Completed' && $newFgId) {
+                    $fg = $fgModel->find($newFgId);
+                    if ($fg && (float)$fg['QuantityAvailable'] < $qty) {
+                        $db->rollBack();
+                        setFlash('error', 'Insufficient finished goods stock. Available: ' . $fg['QuantityAvailable']);
+                        $this->redirect('sales');
+                        return;
+                    }
+                    $fgModel->reduceStock($newFgId, $qty);
+                }
+
+                $this->model->update($id, [
+                    'OrderDate' => $this->getInput('order_date'),
+                    'TotalAmount' => (float)$this->getInput('total_amount', '0'),
+                    'Quantity' => $qty,
+                    'Status' => $newStatus,
+                    'CustomerID' => $customer,
+                    'FG_ID' => $newFgId,
+                    'Notes' => $this->getInput('notes'),
+                ]);
+
+                $db->commit();
+                logAudit($_SESSION['user_id'], 'UPDATE', 'Sales', $id, 'Updated sales order');
+                setFlash('success', 'Order updated.');
+            } catch (\Exception $e) {
+                $db->rollBack();
+                error_log('Sales update failed: ' . $e->getMessage());
+                setFlash('error', 'Failed to update order. Please try again.');
+            }
             $this->redirect('sales');
             return;
         }
@@ -104,9 +150,24 @@ class SalesController extends Controller {
 
     public function delete(): void {
         $id = $this->getInput('id');
-        $this->model->delete($id);
-        logAudit($_SESSION['user_id'], 'DELETE', 'Sales', $id, 'Deleted sales order');
-        setFlash('success', 'Order deleted.');
+        $order = $this->model->find($id);
+
+        $db = getDb();
+        $db->beginTransaction();
+        try {
+            // A deleted Completed order gives its reserved stock back.
+            if ($order && $order['Status'] === 'Completed' && $order['FG_ID']) {
+                (new FinishedGoodModel())->restoreStock((string)$order['FG_ID'], (float)$order['Quantity']);
+            }
+            $this->model->delete($id);
+            $db->commit();
+            logAudit($_SESSION['user_id'], 'DELETE', 'Sales', $id, 'Deleted sales order');
+            setFlash('success', 'Order deleted.');
+        } catch (\Exception $e) {
+            $db->rollBack();
+            error_log('Sales delete failed: ' . $e->getMessage());
+            setFlash('error', 'Failed to delete order. Please try again.');
+        }
         $this->redirect('sales');
     }
 }

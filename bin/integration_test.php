@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * FreshJuice Integration Test Suite
+ * Factory Management System - Integration Test Suite
  * Runs against live MySQL database.
  * Creates temporary records and cleans up on completion.
  */
@@ -69,7 +69,7 @@ function rowCount(string $table): int {
 }
 
 // ==================================================================
-echo "=== FreshJuice Integration Test Suite ===\n\n";
+echo "=== Factory Management System Integration Test Suite ===\n\n";
 echo "PHP:       " . PHP_VERSION . "\n";
 echo "DB:        " . DB_HOST . '/' . DB_NAME . "\n";
 echo "APP_ROOT:  " . APP_ROOT . "\n\n";

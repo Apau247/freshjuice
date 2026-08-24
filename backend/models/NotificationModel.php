@@ -14,6 +14,13 @@ class NotificationModel extends Model
         );
     }
 
+    public function getLowPackagingAlerts(): array
+    {
+        return $this->query(
+            "SELECT * FROM packaging_materials WHERE CurrentStock <= MinStock ORDER BY CurrentStock ASC"
+        );
+    }
+
     public function getExpiringCerts(): array
     {
         return $this->query(
@@ -36,9 +43,10 @@ class NotificationModel extends Model
     public function getAll(): array
     {
         return [
-            'low_stock'        => can('materials')      ? $this->getLowStockAlerts()  : [],
-            'expiring_certs'   => can('certifications') ? $this->getExpiringCerts()   : [],
-            'expiring_permits' => can('permits')        ? $this->getExpiringPermits() : [],
+            'low_stock'        => can('materials')      ? $this->getLowStockAlerts()     : [],
+            'low_packaging'    => can('materials')      ? $this->getLowPackagingAlerts() : [],
+            'expiring_certs'   => can('certifications') ? $this->getExpiringCerts()      : [],
+            'expiring_permits' => can('permits')        ? $this->getExpiringPermits()    : [],
         ];
     }
 }

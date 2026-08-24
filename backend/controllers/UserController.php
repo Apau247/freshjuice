@@ -72,7 +72,6 @@ class UserController extends Controller {
                 return;
             }
             $name = $this->getInput('name');
-            $email = $this->getInput('email');
             if (empty($name)) {
                 setFlash('error', 'Name is required.');
                 $this->redirect('profile');
@@ -80,6 +79,13 @@ class UserController extends Controller {
             }
             $data = ['Name' => $name];
             $this->model->update($userId, $data);
+
+            // The users table has no Email column; the address lives on the
+            // linked staff record, so persist it there (no-op when unlinked).
+            $email = trim($_POST['email'] ?? '');
+            $this->model->getDb()->prepare("UPDATE staff SET Email = ? WHERE UserID = ?")
+                ->execute([$email !== '' ? $email : null, $userId]);
+
             $_SESSION['user_name'] = $name;
             logAudit($userId, 'UPDATE', 'Users', $userId, 'Updated profile');
             setFlash('success', 'Profile updated.');
@@ -88,7 +94,8 @@ class UserController extends Controller {
         }
         $user = $this->model->find($userId);
         if (!$user) { setFlash('error', 'User not found.'); $this->redirect('dashboard'); return; }
-        $this->render('profile', ['profileUser' => $user]);
+        $staffEmail = $this->model->queryScalar("SELECT Email FROM staff WHERE UserID = ?", [$userId]);
+        $this->render('profile', ['profileUser' => $user, 'staffEmail' => (string)($staffEmail ?: '')]);
     }
 
     private function changePassword(string $userId): void {

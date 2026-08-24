@@ -79,8 +79,9 @@ class DocumentController extends Controller
             ];
 
             if (!empty($_FILES['document_file']['name'])) {
-                if ($doc['FilePath'] && file_exists(APP_ROOT . '/' . $doc['FilePath'])) {
-                    unlink(APP_ROOT . '/' . $doc['FilePath']);
+                $oldFile = $this->resolveStoredPath((string)($doc['FilePath'] ?? ''));
+                if ($oldFile !== null) {
+                    unlink($oldFile);
                 }
                 $data['FilePath'] = $this->handleUpload();
             }
@@ -98,8 +99,11 @@ class DocumentController extends Controller
     {
         $id = $this->getInput('id');
         $doc = $this->model->find($id);
-        if ($doc && $doc['FilePath'] && file_exists(APP_ROOT . '/' . $doc['FilePath'])) {
-            unlink(APP_ROOT . '/' . $doc['FilePath']);
+        if ($doc) {
+            $file = $this->resolveStoredPath((string)($doc['FilePath'] ?? ''));
+            if ($file !== null) {
+                unlink($file);
+            }
         }
         $this->model->delete($id);
         logAudit($_SESSION['user_id'], 'DELETE', 'Documents', $id, 'Deleted document');
@@ -117,9 +121,12 @@ class DocumentController extends Controller
             return;
         }
 
-        $fullPath = APP_ROOT . '/' . $doc['FilePath'];
-        if (!file_exists($fullPath)) {
-            setFlash('error', 'File not found on disk.');
+        // Only files that actually live inside uploads/documents may be served.
+        // Stored paths are user-influenceable data; without this containment
+        // check the download endpoint becomes an arbitrary-file-read primitive.
+        $fullPath = $this->resolveStoredPath((string)$doc['FilePath']);
+        if ($fullPath === null) {
+            setFlash('error', 'File not found.');
             $this->redirect('documents');
             return;
         }
@@ -147,7 +154,13 @@ class DocumentController extends Controller
     private function handleUpload(): string
     {
         if (empty($_FILES['document_file']['name'])) {
-            return $this->getInput('file_path');
+            // No file chosen. A manually POSTed file_path value must never be
+            // trusted: it is persisted and later streamed back by download(),
+            // which would turn it into an arbitrary-file-read hole.
+            $claimed = $this->getInput('file_path');
+            return ($claimed !== '' && $this->resolveStoredPath($claimed) !== null)
+                ? $claimed
+                : '';
         }
 
         $file = $_FILES['document_file'];
@@ -195,5 +208,42 @@ class DocumentController extends Controller
         }
 
         return 'uploads/documents/' . $newName;
+    }
+
+    /**
+     * Resolve a stored FilePath to an absolute path, but only when the target
+     * really exists inside uploads/documents and has an allowed extension.
+     * Returns null for anything that escapes the upload directory (../..,
+     * absolute paths, stream wrappers) or points at a missing file.
+     */
+    private function resolveStoredPath(string $stored): ?string
+    {
+        if ($stored === '') {
+            return null;
+        }
+
+        // Normalise both sides before comparing so "uploads/documents/../x"
+        // style tricks cannot survive.
+        $base = realpath(self::UPLOAD_DIR);
+        if ($base === false) {
+            return null;
+        }
+
+        $candidate = realpath(APP_ROOT . '/' . ltrim(str_replace('\\', '/', $stored), '/'));
+        if ($candidate === false || !is_file($candidate)) {
+            return null;
+        }
+
+        $prefix = rtrim($base, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        if (strncmp($candidate, $prefix, strlen($prefix)) !== 0) {
+            return null;
+        }
+
+        $ext = strtolower(pathinfo($candidate, PATHINFO_EXTENSION));
+        if (!in_array($ext, self::ALLOWED_EXTENSIONS, true)) {
+            return null;
+        }
+
+        return $candidate;
     }
 }

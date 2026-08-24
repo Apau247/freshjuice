@@ -71,7 +71,10 @@ class SopController extends Controller {
                 'SOP_ID' => $this->getInput('sop_id'),
                 'BatchID' => $this->getInput('batch_id') ?: null,
                 'Date' => $this->getInput('date'),
-                'ChecklistItems' => $this->getInput('ChecklistItems'),
+                // ChecklistItems is a MySQL JSON column: an empty string fails the
+                // JSON validity check and aborts the INSERT with a PDOException.
+                // Store a valid JSON array (or NULL when nothing was submitted).
+                'ChecklistItems' => $this->checklistItemsJson(),
                 'CompletedItems' => (int)$this->getInput('completed_items', '0'),
                 'TotalItems' => (int)$this->getInput('total_items', '0'),
                 'SupervisorID' => $this->getInput('supervisor_id') ?: ($_SESSION['user_id'] ?? null),
@@ -121,5 +124,33 @@ class SopController extends Controller {
         $this->model->deleteChecklist($this->getInput('id'));
         setFlash('success', 'Checklist deleted.');
         $this->redirect('sops');
+    }
+
+    /**
+     * Normalise the submitted checklist payload into valid JSON for the
+     * sop_checklists.ChecklistItems JSON column. Accepts either an array of
+     * item strings (e.g. items[] checkboxes) or a JSON/text blob; anything
+     * empty becomes NULL so MySQL's JSON validation never rejects the row.
+     */
+    private function checklistItemsJson(): ?string {
+        $raw = $_POST['ChecklistItems'] ?? $_POST['checklist_items'] ?? null;
+
+        if (is_array($raw)) {
+            $items = array_values(array_filter(array_map(
+                fn($v) => trim((string)$v), $raw
+            ), fn($v) => $v !== ''));
+        } else {
+            $text = trim((string)$raw);
+            if ($text === '') {
+                return null;
+            }
+            $decoded = json_decode($text, true);
+            $items = is_array($decoded) ? $decoded : array_values(array_filter(
+                array_map('trim', preg_split('/\r\n|\r|\n/', $text) ?: []),
+                fn($v) => $v !== ''
+            ));
+        }
+
+        return empty($items) ? null : json_encode($items, JSON_UNESCAPED_UNICODE);
     }
 }

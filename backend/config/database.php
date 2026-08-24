@@ -21,7 +21,7 @@ if (!defined('DB_NAME')) define('DB_NAME', 'freshjuice');
 if (!defined('DB_USER')) define('DB_USER', 'root');
 if (!defined('DB_PASS')) define('DB_PASS', '');
 if (!defined('DB_CHARSET')) define('DB_CHARSET', 'utf8mb4');
-if (!defined('APP_NAME')) define('APP_NAME', 'FreshJuice Factory');
+if (!defined('APP_NAME')) define('APP_NAME', 'Fresh Fruit Juice Production Factory');
 if (!defined('APP_URL')) define('APP_URL', 'http://localhost/freshjuice');
 if (!defined('APP_ROOT')) define('APP_ROOT', dirname(__DIR__, 2));
 
@@ -77,7 +77,7 @@ function dbConnectionFailure(): never {
         header('Content-Type: text/html; charset=UTF-8');
         header('Retry-After: 30');
     }
-    $appName = defined('APP_NAME') ? APP_NAME : 'FreshJuice Factory';
+    $appName = defined('APP_NAME') ? APP_NAME : 'Fresh Fruit Juice Production Factory';
     echo '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">'
        . '<meta name="viewport" content="width=device-width,initial-scale=1">'
        . '<title>Service unavailable - ' . htmlspecialchars($appName, ENT_QUOTES, 'UTF-8') . '</title>'

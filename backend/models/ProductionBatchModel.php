@@ -28,4 +28,11 @@ class ProductionBatchModel extends Model {
     public function getTotalProduction(): float {
         return (float) $this->queryScalar("SELECT COALESCE(SUM(Quantity), 0) FROM production_batches WHERE Status = 'Completed'");
     }
+
+    public function suggestBatchNumber(): string {
+        $count = (int) $this->queryScalar(
+            "SELECT COUNT(*) FROM production_batches WHERE ProductionDate = CURDATE()"
+        );
+        return sprintf('BN-%s-%03d', date('Ymd'), $count + 1);
+    }
 }

@@ -5,6 +5,19 @@
     <a href="?route=maintenance/create" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> New Record</a>
     <?php endif; ?>
 </div>
+<?php $upcoming = $upcoming ?? []; if (count($upcoming) > 0): ?>
+<div class="alert alert-warning d-flex align-items-center shadow-sm" role="alert">
+    <i class="bi bi-bell fs-4 me-3"></i>
+    <div>
+        <strong>Service reminders:</strong>
+        <?= count($upcoming) ?> machine service<?= count($upcoming) > 1 ? 's' : '' ?> due within the next 14 days &mdash;
+        <?php foreach (array_slice($upcoming, 0, 4) as $u): ?>
+            <span class="badge bg-warning text-dark fw-normal"><?= sanitize($u['MachineName'] ?? 'Unassigned') ?>: <?= sanitize($u['NextServiceDate']) ?></span>
+        <?php endforeach; ?>
+        <?= count($upcoming) > 4 ? '<span class="text-muted">+' . (count($upcoming) - 4) . ' more</span>' : '' ?>
+    </div>
+</div>
+<?php endif; ?>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
         <table id="dataTable" class="table table-hover align-middle">

@@ -9,7 +9,7 @@
             <?= csrfField() ?>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Batch Number <span class="text-danger">*</span></label>
-                <input type="text" name="batch_number" class="form-control" value="<?= sanitize($batch['BatchNumber'] ?? '') ?>" required>
+                <input type="text" name="batch_number" class="form-control" value="<?= sanitize($batch['BatchNumber'] ?? $suggestedBatchNumber ?? '') ?>" required>
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Production Date <span class="text-danger">*</span></label>

@@ -1,4 +1,4 @@
-# FreshJuice Factory Management System
+# Factory Management System for Fresh Fruit Juice Production Factory
 
 A comprehensive **web-based Factory Management System** for a Fresh Fruit Juice Production Factory. Built with **PHP 8.2+**, **MySQL (PDO)**, **Bootstrap 5**, **DataTables**, **SweetAlert2**, and **Chart.js**.
 

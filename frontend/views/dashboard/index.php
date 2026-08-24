@@ -22,7 +22,7 @@ $user = currentUser();
 
 <style>
 /* ═══════════════════════════════════════════════════════════
-   FreshJuice Dashboard — Scoped Styles
+    Factory Management System Dashboard — Scoped Styles
    ═══════════════════════════════════════════════════════════ */
 :root {
     --dj-accent: #22c55e;
@@ -403,7 +403,7 @@ $user = currentUser();
                         </linearGradient>
                     </defs>
                 </svg>
-                <span class="dash-hero-brand-name">FreshJuice Factory</span>
+                <span class="dash-hero-brand-name">Fresh Fruit Juice Production Factory</span>
             </div>
             <h1 class="dash-hero-greeting"><?= $greeting ?>, <?= sanitize($user['name']) ?></h1>
             <div class="dash-hero-date"><i class="bi bi-calendar3 me-1"></i><?= $today ?></div>

@@ -11,7 +11,7 @@
                     <?= strtoupper(substr($profileUser['Name'], 0, 1)) ?>
                 </div>
                 <h5 class="fw-bold mb-1"><?= sanitize($profileUser['Name']) ?></h5>
-                <p class="text-muted mb-2" style="font-size:0.85rem;"><?= sanitize($profileUser['Email'] ?? '') ?></p>
+                <p class="text-muted mb-2" style="font-size:0.85rem;"><?= sanitize($staffEmail ?? '') ?></p>
                 <span class="badge bg-primary bg-opacity-10 text-primary"><?= sanitize($profileUser['RoleName'] ?? $profileUser['RoleID'] ?? '') ?></span>
             </div>
         </div>
@@ -57,7 +57,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Email</label>
-                        <input type="email" name="email" class="form-control" value="<?= sanitize($profileUser['Email'] ?? '') ?>">
+                        <input type="email" name="email" class="form-control" value="<?= sanitize($staffEmail ?? '') ?>">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">User ID</label>
