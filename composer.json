@@ -1,6 +1,6 @@
 {
     "name": "freshjuice/factory-management",
-    "description": "FreshJuice Factory Management System - PHP 8.2+ MySQL application",
+    "description": "Factory Management System for Fresh Fruit Juice Production - PHP 8.2+ MySQL application",
     "type": "project",
     "require": {
         "php": ">=8.2",

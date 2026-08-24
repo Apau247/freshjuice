@@ -55,7 +55,7 @@ class MailHelper
         }
 
         $fromEmail = defined('MAIL_FROM') && MAIL_FROM !== '' ? MAIL_FROM : 'noreply@localhost';
-        $fromName  = defined('APP_NAME') ? APP_NAME : 'FreshJuice Factory';
+        $fromName  = defined('APP_NAME') ? APP_NAME : 'Fresh Fruit Juice Production Factory';
         $subject   = $fromName . ' - Password Reset';
         $body      = self::buildBody($toName, $resetUrl, $fromName);
         $altBody   = "Hello {$toName},\n\nYou requested a password reset.\nReset link: {$resetUrl}\n\nThis link expires in 1 hour.\n";

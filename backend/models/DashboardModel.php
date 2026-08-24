@@ -36,7 +36,9 @@ class DashboardModel extends Model {
         // Safety & Compliance
         $safetyOpen     = (int)   @$db->query("SELECT COUNT(*) FROM safety_inspections WHERE Status='Open'")->fetchColumn() ?: 0;
         $safetyClosed   = (int)   @$db->query("SELECT COUNT(*) FROM safety_inspections WHERE Status='Closed'")->fetchColumn() ?: 0;
-        $accidentsOpen  = (int)   @$db->query("SELECT COUNT(*) FROM accident_reports WHERE Status IN ('Open','In Progress')")->fetchColumn() ?: 0;
+        // accident_reports.Status is ENUM('Reported','Under Investigation','Closed');
+        // 'Open'/'In Progress' belong to safety_inspections and would always count 0 here.
+        $accidentsOpen  = (int)   @$db->query("SELECT COUNT(*) FROM accident_reports WHERE Status IN ('Reported','Under Investigation')")->fetchColumn() ?: 0;
         $hazardsHigh    = (int)   @$db->query("SELECT COUNT(*) FROM hazard_register WHERE RiskRating >= 12 AND Status='Active'")->fetchColumn() ?: 0;
         $permitsExpiring= (int)   @$db->query("SELECT COUNT(*) FROM permits WHERE ExpiryDate <= DATE_ADD(CURDATE(), INTERVAL 90 DAY) AND Status='Active'")->fetchColumn() ?: 0;
         $trainingPending= (int)   @$db->query("SELECT COUNT(*) FROM training_records WHERE Status='Scheduled'")->fetchColumn() ?: 0;

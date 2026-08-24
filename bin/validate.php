@@ -5,7 +5,7 @@ $root = dirname(__DIR__);
 $errors = 0;
 $warnings = 0;
 
-echo "=== FreshJuice Validation Script ===\n\n";
+echo "=== Factory Management System Validation Script ===\n\n";
 
 // 1. PHP syntax check on all .php files
 echo "--- PHP Syntax Check ---\n";

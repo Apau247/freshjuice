@@ -19,10 +19,11 @@ class AccidentModel extends Model
 
     public function getStats(): array
     {
+        // accident_reports.Status is ENUM('Reported','Under Investigation','Closed')
         $sql = "
             SELECT
                 COUNT(*) AS total,
-                SUM(CASE WHEN Status = 'Open' THEN 1 ELSE 0 END) AS openCount,
+                SUM(CASE WHEN Status IN ('Reported','Under Investigation') THEN 1 ELSE 0 END) AS openCount,
                 SUM(CASE WHEN Status = 'Closed' THEN 1 ELSE 0 END) AS closedCount
             FROM {$this->table}
         ";

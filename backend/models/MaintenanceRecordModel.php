@@ -17,7 +17,15 @@ class MaintenanceRecordModel extends Model {
     }
 
     public function getUpcoming(): array {
-        return $this->query("SELECT * FROM maintenance_records WHERE NextServiceDate <= DATE_ADD(CURDATE(), INTERVAL 14 DAY) AND Status = 'Completed' ORDER BY NextServiceDate ASC");
+        return $this->query(
+            "SELECT mr.*, m.Name AS MachineName
+             FROM maintenance_records mr
+             LEFT JOIN machines m ON mr.MachineID = m.MachineID
+             WHERE mr.NextServiceDate IS NOT NULL
+               AND mr.NextServiceDate <= DATE_ADD(CURDATE(), INTERVAL 14 DAY)
+               AND mr.Status <> 'Cancelled'
+             ORDER BY mr.NextServiceDate ASC"
+        );
     }
 
     public function getTotalDowntime(): float {

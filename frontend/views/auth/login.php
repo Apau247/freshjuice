@@ -40,7 +40,7 @@
             margin-bottom:0.75rem; box-shadow:0 8px 24px rgba(34,197,94,0.3);
         }
         .login-brand-icon svg { width:32px; height:32px; }
-        .login-brand h3 { color:white; font-size:1.3rem; font-weight:800; letter-spacing:-0.03em; }
+        .login-brand h3 { color:white; font-size:1.05rem; font-weight:800; letter-spacing:-0.01em; line-height:1.25; }
         .login-brand p { color:rgba(255,255,255,0.45); font-size:0.82rem; margin-top:0.25rem; }
         .form-group { margin-bottom:1.15rem; }
         .form-label {
@@ -93,12 +93,6 @@
         <?php $flash = getFlash(); if ($flash): ?>
         <div class="login-error">
             <i class="bi bi-exclamation-circle"></i> <?= sanitize($flash['message']) ?>
-        </div>
-        <?php endif; ?>
-
-        <?php if ($error = getFlash('login_error')): ?>
-        <div class="login-error">
-            <i class="bi bi-exclamation-circle"></i> <?= sanitize($error) ?>
         </div>
         <?php endif; ?>
 
