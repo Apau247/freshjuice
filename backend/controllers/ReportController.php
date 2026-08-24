@@ -20,7 +20,7 @@ class ReportController extends Controller {
     public function index(): void {
         // Describe each report card with the modules the signed-in user can see.
         $types = ReportModel::TYPES;
-        $visible = array_filter($types, fn($t) => self::moduleFor($t) === null || can(self::moduleFor($t)), ARRAY_FILTER_USE_KEY);
+        $visible = array_filter($types, fn($t) => ReportModel::moduleFor($t) === null || can(ReportModel::moduleFor($t)), ARRAY_FILTER_USE_KEY);
         $this->render('index', ['types' => $visible]);
     }
 
