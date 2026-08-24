@@ -97,7 +97,7 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="<?= appBaseUrl() ?>/frontend/assets/vendor/chartjs/chart.umd.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var ctx = document.getElementById('oeeChart');

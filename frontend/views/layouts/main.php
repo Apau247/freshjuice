@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<?= generateCsrfToken() ?>">
     <title><?= sanitize($pageTitle ?? APP_NAME) ?> - <?= APP_NAME ?></title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="<?= $assetBase ?>/frontend/assets/vendor/fonts/inter.css" rel="stylesheet">
+    <link href="<?= $assetBase ?>/frontend/assets/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="<?= $assetBase ?>/frontend/assets/vendor/icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="<?= $assetBase ?>/frontend/assets/vendor/datatables/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="<?= $assetBase ?>/frontend/assets/css/glass.css" rel="stylesheet">
     <link href="<?= $assetBase ?>/frontend/assets/css/style.css" rel="stylesheet">
 </head>
@@ -516,12 +516,12 @@
 <?php else: ?>
 <?= $content ?>
 <?php endif; ?>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="<?= $assetBase ?>/frontend/assets/vendor/jquery/jquery-3.6.0.min.js"></script>
+<script src="<?= $assetBase ?>/frontend/assets/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="<?= $assetBase ?>/frontend/assets/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="<?= $assetBase ?>/frontend/assets/vendor/datatables/dataTables.bootstrap5.min.js"></script>
+<script src="<?= $assetBase ?>/frontend/assets/vendor/sweetalert2/sweetalert2.all.min.js"></script>
+<script src="<?= $assetBase ?>/frontend/assets/vendor/chartjs/chart.umd.min.js"></script>
 <script src="<?= $assetBase ?>/frontend/assets/js/app.js"></script>
 <script>
     document.addEventListener('keydown', function(e) {
