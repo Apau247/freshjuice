@@ -24,8 +24,8 @@ class InvoiceController extends Controller {
                 'Tax' => (float)$this->getInput('tax', '0'),
                 'TotalDue' => (float)$this->getInput('total_due', '0'),
                 'PaymentStatus' => $this->getInput('payment_status', 'Unpaid'),
-                'DueDate' => $this->getInput('due_date'),
-                'OrderID' => $this->getInput('order_id'),
+                'DueDate' => $this->getInput('due_date') ?: null,
+                'OrderID' => $this->getInput('order_id') ?: null,
             ]);
             setFlash('success', 'Invoice created.');
             $this->redirect('invoicing');
@@ -45,8 +45,8 @@ class InvoiceController extends Controller {
                 'Tax' => (float)$this->getInput('tax', '0'),
                 'TotalDue' => (float)$this->getInput('total_due', '0'),
                 'PaymentStatus' => $this->getInput('payment_status'),
-                'DueDate' => $this->getInput('due_date'),
-                'OrderID' => $this->getInput('order_id'),
+                'DueDate' => $this->getInput('due_date') ?: null,
+                'OrderID' => $this->getInput('order_id') ?: null,
             ]);
             setFlash('success', 'Invoice updated.');
             $this->redirect('invoicing');
