@@ -294,7 +294,7 @@ class ProductionController extends Controller {
     <button class="print" onclick="window.print()">Print Label</button>
     <a class="back" href="?route=production">Back to Batches</a>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="<?= $assetBase ?>/frontend/assets/vendor/jsbarcode/JsBarcode.all.min.js"></script>
 <script>
     if (typeof JsBarcode !== 'undefined') {
         JsBarcode('#barcode', <?= json_encode((string)$batch['BatchNumber']) ?>, { format: 'CODE128', height: 50, fontSize: 14, margin: 4 });

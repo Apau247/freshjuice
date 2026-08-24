@@ -22,8 +22,8 @@ $map = [
     'auth/reset'                => ['auth',   'AuthController',   'resetPassword'],
     'dashboard'                 => ['dash',   'DashboardController','index'],
 
-    'alerts/low-stock'          => ['inv',    'InventoryController','lowStock'],
-    'alerts/expiry'             => ['inv',    'InventoryController','expiry'],
+    'alerts/low-stock'          => ['stock',  'InventoryController','lowStock'],
+    'alerts/expiry'             => ['stock',  'InventoryController','expiry'],
 
     'reports'                   => ['rep',    'ReportController',   'index'],
     'reports/view'              => ['rep',    'ReportController',   'show'],
@@ -270,7 +270,7 @@ if (isset($map[$route])) {
     $fileMap = [
         'auth'     => 'AuthController',
         'dash'     => 'DashboardController',
-        'inv'      => 'InventoryController',
+        'stock'    => 'InventoryController',
         'rep'      => 'ReportController',
         'set'      => 'SettingsController',
         'scan'     => 'ScanController',

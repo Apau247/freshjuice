@@ -25,7 +25,7 @@ class ScanController extends Controller {
 
         // Exact identifier matches first, then batch numbers.
         $checks = [
-            ['SELECT BatchID FROM production_batches WHERE BatchID = ? OR BatchNumber = ?', [$code], 'production', '?route=production&q=' . urlencode($code)],
+            ['SELECT BatchID FROM production_batches WHERE BatchID = ? OR BatchNumber = ?', [$code, $code], 'production', '?route=production&q=' . urlencode($code)],
             ['SELECT MaterialID FROM raw_materials WHERE MaterialID = ?', [$code], 'materials', '?route=materials/raw&q=' . urlencode($code)],
             ['SELECT PackageID FROM packaging_materials WHERE PackageID = ?', [$code], 'materials', '?route=materials/packaging&q=' . urlencode($code)],
             ['SELECT FG_ID FROM finished_goods WHERE FG_ID = ?', [$code], 'finished_goods', '?route=finished-goods&q=' . urlencode($code)],

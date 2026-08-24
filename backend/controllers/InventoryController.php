@@ -12,6 +12,7 @@ require_once __DIR__ . '/../models/PackagingMaterialModel.php';
 class InventoryController extends Controller {
     public function __construct() {
         parent::__construct();
+        $this->model = new RawMaterialModel();
         $this->viewPath = 'inventory';
     }
 

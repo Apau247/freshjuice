@@ -895,7 +895,7 @@ $user = currentUser();
 <!-- ═══════════════════════════════════════════════════════════
      JAVASCRIPT — Charts & Interactions
      ═══════════════════════════════════════════════════════════ -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="<?= appBaseUrl() ?>/frontend/assets/vendor/chartjs/chart.umd.min.js"></script>
 <script>
 /* ── Fullscreen Toggle ── */
 function toggleDashboardFullscreen() {
