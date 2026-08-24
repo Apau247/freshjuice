@@ -31,7 +31,7 @@
                     <td class="fw-semibold"><?= sanitize($r['MachineName'] ?? $r['machine_name'] ?? '') ?></td>
                     <td><span class="badge bg-info bg-opacity-10 text-info"><?= sanitize($r['MaintenanceType'] ?? $r['maintenance_type'] ?? '') ?></span></td>
                     <td><?= sanitize($r['MaintenanceDate'] ?? $r['maintenance_date'] ?? '') ?></td>
-                    <td>$<?= number_format((float)($r['Cost'] ?? 0), 2) ?></td>
+                    <td><?= money((float)($r['Cost'] ?? 0)) ?></td>
                     <td><?= number_format((float)($r['Downtime'] ?? 0), 1) ?> hrs</td>
                     <td><?= sanitize($r['TechnicianName'] ?? $r['technician_name'] ?? '') ?></td>
                     <td>

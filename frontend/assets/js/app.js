@@ -117,6 +117,61 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    /* ═══════════════════════════════════════════
+       SIDEBAR — Accordion Menu Sections
+       Groups expand/collapse independently; open state is
+       remembered per browser. The section containing the
+       current page is force-opened server-side.
+       ═══════════════════════════════════════════ */
+    var ACC_KEY = 'fj_nav_open_groups';
+
+    var readOpenGroups = function () {
+        try { return JSON.parse(localStorage.getItem(ACC_KEY) || '[]'); } catch (e) { return []; }
+    };
+    var writeOpenGroups = function (keys) {
+        try { localStorage.setItem(ACC_KEY, JSON.stringify(keys)); } catch (e) {}
+    };
+
+    if (sidebar) {
+        // Re-open sections the user left open on the previous page.
+        readOpenGroups().forEach(function (key) {
+            var g = sidebar.querySelector('.nav-group[data-group="' + key + '"]');
+            if (g && !g.classList.contains('open')) {
+                g.classList.add('open');
+                var t = g.querySelector('.nav-group-toggle');
+                if (t) t.setAttribute('aria-expanded', 'true');
+            }
+        });
+
+        sidebar.querySelectorAll('.nav-group-toggle').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var group = btn.closest('.nav-group');
+                if (!group) return;
+
+                // Collapsed desktop rail: first click widens the sidebar,
+                // revealing labels; a second click then opens the section.
+                if (sidebar.classList.contains('collapsed') && window.innerWidth > 1024) {
+                    sidebar.classList.remove('collapsed');
+                    if (wrapper) wrapper.classList.remove('sidebar-collapsed');
+                    return;
+                }
+
+                var isOpen = group.classList.toggle('open');
+                btn.setAttribute('aria-expanded', String(isOpen));
+
+                var key = group.getAttribute('data-group');
+                var keys = readOpenGroups().filter(function (k) { return k !== key; });
+                if (isOpen) keys.push(key);
+                writeOpenGroups(keys);
+
+                // Mobile drawer: re-measure so newly revealed links aren't clipped.
+                if (window.innerWidth <= 1024 && sidebar.classList.contains('menu-active')) {
+                    toggleMenu(true);
+                }
+            });
+        });
+    }
+
     // Window resize handler
     window.addEventListener('resize', function () {
         if (!sidebar) return;

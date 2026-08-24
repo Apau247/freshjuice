@@ -17,9 +17,9 @@
                     <td class="fw-semibold"><?= sanitize($inv['InvoiceID']) ?></td>
                     <td><?= sanitize($inv['InvoiceDate'] ?? '') ?></td>
                     <td><?= sanitize($inv['CustomerName'] ?? $inv['customer_name'] ?? '') ?></td>
-                    <td>$<?= number_format((float)($inv['Amount'] ?? 0), 2) ?></td>
-                    <td>$<?= number_format((float)($inv['Tax'] ?? 0), 2) ?></td>
-                    <td class="fw-bold">$<?= number_format((float)($inv['TotalDue'] ?? 0), 2) ?></td>
+                    <td><?= money((float)($inv['Amount'] ?? 0)) ?></td>
+                    <td><?= money((float)($inv['Tax'] ?? 0)) ?></td>
+                    <td class="fw-bold"><?= money((float)($inv['TotalDue'] ?? 0)) ?></td>
                     <td><?= sanitize($inv['DueDate'] ?? $inv['due_date'] ?? '') ?></td>
                     <td>
                         <?php $ps = $inv['PaymentStatus'] ?? ''; $map = ['Paid'=>'success','Partial'=>'warning','Unpaid'=>'danger','Overdue'=>'dark']; ?>

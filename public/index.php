@@ -70,6 +70,19 @@ $map = [
     'finished-goods/edit'       => ['fg',     'FinishedGoodsController','edit'],
     'finished-goods/delete'     => ['fg',     'FinishedGoodsController','delete'],
 
+    'prices'                    => ['price',  'PricingController','index'],
+    'prices/save'               => ['price',  'PricingController','save'],
+
+    'payroll'                   => ['pay',    'PayrollController','index'],
+    'payroll/generate'          => ['pay',    'PayrollController','generate'],
+    'payroll/pay'               => ['pay',    'PayrollController','pay'],
+    'payroll/revert'            => ['pay',    'PayrollController','revert'],
+    'payroll/edit'              => ['pay',    'PayrollController','edit'],
+    'payroll/delete'            => ['pay',    'PayrollController','delete'],
+    'payroll/settings'          => ['pay',    'PayrollController','settings'],
+    'payroll/report'            => ['pay',    'PayrollController','report'],
+    'payroll/report/print'      => ['pay',    'PayrollController','printReport'],
+
     'customers'                 => ['cust',   'CustomerController','index'],
     'customers/create'          => ['cust',   'CustomerController','create'],
     'customers/edit'            => ['cust',   'CustomerController','edit'],
@@ -307,6 +320,8 @@ if (isset($map[$route])) {
         'fat'      => 'FatController',
         'notif'    => 'NotificationController',
         'audit'    => 'AuditController',
+        'pay'      => 'PayrollController',
+        'price'    => 'PricingController',
     ];
     if ($prefix === 'auth') {
         require_once APP_ROOT . '/backend/auth/' . $fileMap[$prefix] . '.php';

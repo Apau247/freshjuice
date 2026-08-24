@@ -33,7 +33,148 @@
 
         <nav class="sidebar-nav">
             <ul class="nav-list primary-nav">
-                <?php $currentRoute = $_GET['route'] ?? 'dashboard'; ?>
+                <?php
+                $currentRoute = $_GET['route'] ?? 'dashboard';
+                // Route matcher: exact match OR prefix match (e.g. "sales" hits "sales/receipt").
+                $on = function (string ...$patterns) use ($currentRoute): bool {
+                    foreach ($patterns as $p) {
+                        if ($p === $currentRoute || str_starts_with($currentRoute, $p)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                };
+
+                /*
+                 * Accordion menu definition.
+                 * Each group = one collapsible section in the sidebar; children
+                 * are the links inside it. 'show' gates visibility by permission,
+                 * 'on' decides whether a child is highlighted as active.
+                 */
+                $groups = [
+                    'inventory' => [
+                        'label' => 'Inventory Management', 'icon' => 'bi-boxes',
+                        'show' => can('inventory_alerts'),
+                        'items' => [
+                            ['href' => 'alerts/low-stock',    'label' => 'Low Stock Alerts',    'icon' => 'bi-exclamation-octagon', 'show' => true, 'on' => fn () => $on('alerts/low-stock')],
+                            ['href' => 'alerts/expiry',       'label' => 'Expiry Alerts',       'icon' => 'bi-hourglass-split',     'show' => true, 'on' => fn () => $on('alerts/expiry')],
+                            ['href' => 'materials/raw',       'label' => 'Raw Materials',       'icon' => 'bi-bar-chart-steps',     'show' => can('materials'), 'on' => fn () => $on('materials/raw')],
+                            ['href' => 'materials/packaging', 'label' => 'Packaging Materials', 'icon' => 'bi-box',                 'show' => can('materials'), 'on' => fn () => $on('materials/packaging')],
+                            ['href' => 'finished-goods',      'label' => 'Finished Goods',      'icon' => 'bi-cup-straw',           'show' => can('finished_goods'), 'on' => fn () => $on('finished-goods')],
+                            ['href' => 'prices',              'label' => 'Product Prices',      'icon' => 'bi-tags',                'show' => can('pricing'),   'on' => fn () => $on('prices')],
+                        ],
+                    ],
+                    'production' => [
+                        'label' => 'Production', 'icon' => 'bi-gear-wide-connected',
+                        'show' => can('production'),
+                        'items' => [
+                            ['href' => 'production', 'label' => 'Batch Management', 'icon' => 'bi-box-seam', 'show' => true, 'on' => fn () => $on('production')],
+                        ],
+                    ],
+                    'quality' => [
+                        'label' => 'Quality Control', 'icon' => 'bi-patch-check',
+                        'show' => can('quality') || can('improvement') || can('sops'),
+                        'items' => [
+                            ['href' => 'quality',                'label' => 'Inspections',       'icon' => 'bi-patch-check',   'show' => can('quality'),     'on' => fn () => $on('quality') && !$on('quality/traceability')],
+                            ['href' => 'quality/traceability',   'label' => 'Traceability Logs', 'icon' => 'bi-diagram-3',     'show' => can('quality'),     'on' => fn () => $on('quality/traceability')],
+                            ['href' => 'improvement',            'label' => 'CAPA',              'icon' => 'bi-lightbulb',     'show' => can('improvement'), 'on' => fn () => $on('improvement')],
+                            ['href' => 'sops',                   'label' => 'SOP Checklists',    'icon' => 'bi-file-text',     'show' => can('sops'),        'on' => fn () => $on('sops')],
+                        ],
+                    ],
+                    'safety' => [
+                        'label' => 'Safety', 'icon' => 'bi-shield-check',
+                        'show' => can('safety') || can('hazards') || can('accidents') || can('drills'),
+                        'items' => [
+                            ['href' => 'safety',           'label' => 'Inspections', 'icon' => 'bi-shield-check',        'show' => can('safety'),    'on' => fn () => $on('safety') && !$on('safety/hazards') && !$on('safety/accidents') && !$on('safety/drills')],
+                            ['href' => 'safety/hazards',   'label' => 'Hazards',     'icon' => 'bi-exclamation-triangle','show' => can('hazards'),   'on' => fn () => $on('safety/hazards')],
+                            ['href' => 'safety/accidents', 'label' => 'Accidents',   'icon' => 'bi-activity',            'show' => can('accidents'), 'on' => fn () => $on('safety/accidents')],
+                            ['href' => 'safety/drills',    'label' => 'Drills',      'icon' => 'bi-alarm',               'show' => can('drills'),    'on' => fn () => $on('safety/drills')],
+                        ],
+                    ],
+                    'staff' => [
+                        'label' => 'Staff Management', 'icon' => 'bi-person-badge',
+                        'show' => can('staff') || can('training') || can('ppe'),
+                        'items' => [
+                            ['href' => 'staff',             'label' => 'Staff Records',  'icon' => 'bi-person-badge',   'show' => can('staff'),     'on' => fn () => $on('staff') && !$on('staff/shifts') && !$on('staff/attendance')],
+                            ['href' => 'staff/shifts',      'label' => 'Shift Schedule', 'icon' => 'bi-clock-history',  'show' => can('staff'),     'on' => fn () => $on('staff/shifts')],
+                            ['href' => 'staff/attendance',  'label' => 'Attendance',     'icon' => 'bi-calendar-check', 'show' => can('staff'),     'on' => fn () => $on('staff/attendance')],
+                            ['href' => 'training',          'label' => 'Training',       'icon' => 'bi-mortarboard',    'show' => can('training'),  'on' => fn () => $on('training')],
+                            ['href' => 'ppe',               'label' => 'PPE',            'icon' => 'bi-shield-fill',    'show' => can('ppe'),       'on' => fn () => $on('ppe')],
+                        ],
+                    ],
+                    'payroll' => [
+                        'label' => 'Payroll', 'icon' => 'bi-cash-coin',
+                        'show' => can('payroll'),
+                        'items' => [
+                            ['href' => 'payroll',          'label' => 'Payslips & Payments', 'icon' => 'bi-cash-stack',        'show' => true,             'on' => fn () => $on('payroll') && !$on('payroll/settings') && !$on('payroll/report')],
+                            ['href' => 'payroll/report',   'label' => 'Payment Report',      'icon' => 'bi-file-earmark-bar-graph', 'show' => true,        'on' => fn () => $on('payroll/report')],
+                            ['href' => 'payroll/settings', 'label' => 'Salary Settings',     'icon' => 'bi-sliders',           'show' => canEdit('payroll'), 'on' => fn () => $on('payroll/settings') || $on('payroll/generate')],
+                        ],
+                    ],
+                    'sales' => [
+                        'label' => 'Sales & Customers', 'icon' => 'bi-cart3',
+                        'show' => can('customers') || can('sales') || can('invoicing'),
+                        'items' => [
+                            ['href' => 'customers', 'label' => 'Customer Records', 'icon' => 'bi-people',  'show' => can('customers'),  'on' => fn () => $on('customers')],
+                            ['href' => 'sales',     'label' => 'Sales Orders',     'icon' => 'bi-cart3',   'show' => can('sales'),      'on' => fn () => $on('sales')],
+                            ['href' => 'invoicing', 'label' => 'Invoices',         'icon' => 'bi-receipt', 'show' => can('invoicing'),  'on' => fn () => $on('invoicing')],
+                        ],
+                    ],
+                    'suppliers' => [
+                        'label' => 'Supplier Management', 'icon' => 'bi-truck',
+                        'show' => can('suppliers') || can('supplier_eval'),
+                        'items' => [
+                            ['href' => 'suppliers',              'label' => 'Supplier Records',     'icon' => 'bi-truck',          'show' => can('suppliers'),      'on' => fn () => $on('suppliers') && !$on('suppliers/deliveries')],
+                            ['href' => 'suppliers/deliveries',   'label' => 'Fruit Deliveries',     'icon' => 'bi-box-seam',       'show' => can('suppliers'),      'on' => fn () => $on('suppliers/deliveries')],
+                            ['href' => 'supplier-evaluations',   'label' => 'Supplier Evaluations', 'icon' => 'bi-clipboard-data', 'show' => can('supplier_eval'),  'on' => fn () => $on('supplier-evaluations')],
+                        ],
+                    ],
+                    'facilities' => [
+                        'label' => 'Facilities & Utilities', 'icon' => 'bi-building-gear',
+                        'show' => can('waste') || can('water') || can('power'),
+                        'items' => [
+                            ['href' => 'waste', 'label' => 'Waste Tracking',         'icon' => 'bi-trash',     'show' => can('waste'), 'on' => fn () => $on('waste')],
+                            ['href' => 'water', 'label' => 'Water Usage & Quality',  'icon' => 'bi-droplet',   'show' => can('water'), 'on' => fn () => $on('water')],
+                            ['href' => 'power', 'label' => 'Electricity & Generator','icon' => 'bi-lightning', 'show' => can('power'), 'on' => fn () => $on('power')],
+                        ],
+                    ],
+                    'maintenance' => [
+                        'label' => 'Maintenance', 'icon' => 'bi-wrench',
+                        'show' => can('machines') || can('maintenance') || can('fat'),
+                        'items' => [
+                            ['href' => 'machines',    'label' => 'Machines',              'icon' => 'bi-cpu',               'show' => can('machines'),    'on' => fn () => $on('machines')],
+                            ['href' => 'maintenance', 'label' => 'Maintenance Schedule',  'icon' => 'bi-wrench',            'show' => can('maintenance'), 'on' => fn () => $on('maintenance')],
+                            ['href' => 'fat',         'label' => 'Factory Acceptance Test','icon' => 'bi-clipboard-check',  'show' => can('fat'),         'on' => fn () => $on('fat')],
+                        ],
+                    ],
+                    'compliance' => [
+                        'label' => 'Certification Management', 'icon' => 'bi-award',
+                        'show' => can('certifications') || can('permits') || can('documents'),
+                        'items' => [
+                            ['href' => 'certifications', 'label' => 'Certifications',    'icon' => 'bi-award',              'show' => can('certifications'), 'on' => fn () => $on('certifications')],
+                            ['href' => 'permits',        'label' => 'Permits',           'icon' => 'bi-file-earmark-check', 'show' => can('permits'),        'on' => fn () => $on('permits')],
+                            ['href' => 'documents',      'label' => 'Digital Documents', 'icon' => 'bi-folder2-open',       'show' => can('documents'),      'on' => fn () => $on('documents')],
+                        ],
+                    ],
+                    'reports' => [
+                        'label' => 'Reports', 'icon' => 'bi-file-earmark-bar-graph',
+                        'show' => ((hasRole('ROLE-001', 'ROLE-002')) && can('reports')) || can('efficiency'),
+                        'items' => [
+                            ['href' => 'reports',    'label' => 'All Reports', 'icon' => 'bi-file-earmark-bar-graph', 'show' => (hasRole('ROLE-001', 'ROLE-002')) && can('reports'), 'on' => fn () => $on('reports')],
+                            ['href' => 'efficiency', 'label' => 'OEE',         'icon' => 'bi-speedometer2',           'show' => can('efficiency'),                                   'on' => fn () => $on('efficiency')],
+                        ],
+                    ],
+                    'system' => [
+                        'label' => 'System Settings', 'icon' => 'bi-sliders2',
+                        'show' => can('users') || can('audit') || can('backup'),
+                        'items' => [
+                            ['href' => 'audit',            'label' => 'Audit Trail',      'icon' => 'bi-journal-text',     'show' => can('audit'),  'on' => fn () => $on('audit')],
+                            ['href' => 'users',            'label' => 'User Management',  'icon' => 'bi-person-gear',      'show' => can('users'),  'on' => fn () => $on('users')],
+                            ['href' => 'settings/backup',  'label' => 'Backup & Restore', 'icon' => 'bi-cloud-arrow-down', 'show' => can('backup'), 'on' => fn () => $on('settings/backup') || $on('settings/restore')],
+                        ],
+                    ],
+                ];
+                ?>
 
                 <?php if (can('dashboard')): ?>
                 <li class="nav-item">
@@ -52,392 +193,35 @@
                     <span class="nav-tooltip">Notifications</span>
                 </li>
 
-                <?php if (can('inventory_alerts')): ?>
-                <li class="nav-item"><span class="nav-section">INVENTORY MANAGEMENT</span></li>
-                <?php if (can('materials')): ?>
-                <li class="nav-item">
-                    <a href="?route=materials/raw" class="nav-link<?= str_starts_with($currentRoute, 'materials/raw') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-bar-chart-steps"></i>
-                        <span class="nav-label">Raw Materials</span>
-                    </a>
-                    <span class="nav-tooltip">Raw Materials</span>
+                <?php foreach ($groups as $gKey => $group):
+                    $gItems = array_values(array_filter($group['items'], fn ($it) => $it['show']));
+                    if (!$group['show'] || !$gItems) continue;
+                    $hasActive = false;
+                    foreach ($gItems as $gi => $it) {
+                        $gItems[$gi]['active'] = ($it['on'])();
+                        if ($gItems[$gi]['active']) $hasActive = true;
+                    }
+                    $isOpen = $hasActive; // JS re-applies remembered open states from localStorage
+                ?>
+                <li class="nav-item nav-group<?= $hasActive ? ' has-active' : '' ?><?= $isOpen ? ' open' : '' ?>" data-group="<?= sanitize($gKey) ?>">
+                    <button type="button" class="nav-link nav-group-toggle" aria-expanded="<?= $isOpen ? 'true' : 'false' ?>" aria-controls="submenu-<?= sanitize($gKey) ?>">
+                        <i class="nav-icon bi <?= $group['icon'] ?>"></i>
+                        <span class="nav-label"><?= sanitize($group['label']) ?></span>
+                        <i class="nav-arrow bi bi-chevron-down" aria-hidden="true"></i>
+                    </button>
+                    <span class="nav-tooltip"><?= sanitize($group['label']) ?></span>
+                    <ul class="sub-menu" id="submenu-<?= sanitize($gKey) ?>">
+                        <?php foreach ($gItems as $it): ?>
+                        <li>
+                            <a href="?route=<?= sanitize($it['href']) ?>" class="sub-link<?= $it['active'] ? ' active' : '' ?>">
+                                <i class="sub-icon bi <?= $it['icon'] ?>"></i>
+                                <span><?= sanitize($it['label']) ?></span>
+                            </a>
+                        </li>
+                        <?php endforeach; ?>
+                    </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="?route=materials/packaging" class="nav-link<?= str_starts_with($currentRoute, 'materials/packaging') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-box"></i>
-                        <span class="nav-label">Packaging Materials</span>
-                    </a>
-                    <span class="nav-tooltip">Packaging Materials</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('finished_goods')): ?>
-                <li class="nav-item">
-                    <a href="?route=finished-goods" class="nav-link<?= str_starts_with($currentRoute, 'finished-goods') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-cup-straw"></i>
-                        <span class="nav-label">Finished Goods</span>
-                    </a>
-                    <span class="nav-tooltip">Finished Goods</span>
-                </li>
-                <?php endif; ?>
-                <li class="nav-item">
-                    <a href="?route=alerts/low-stock" class="nav-link<?= str_starts_with($currentRoute, 'alerts/low-stock') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-exclamation-octagon"></i>
-                        <span class="nav-label">Low Stock Alerts</span>
-                    </a>
-                    <span class="nav-tooltip">Low Stock Alerts</span>
-                </li>
-                <li class="nav-item">
-                    <a href="?route=alerts/expiry" class="nav-link<?= str_starts_with($currentRoute, 'alerts/expiry') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-hourglass-split"></i>
-                        <span class="nav-label">Expiry Alerts</span>
-                    </a>
-                    <span class="nav-tooltip">Expiry Alerts</span>
-                </li>
-                <?php endif; ?>
-
-                <?php if (can('production')): ?>
-                <li class="nav-item"><span class="nav-section">PRODUCTION</span></li>
-                <li class="nav-item">
-                    <a href="?route=production" class="nav-link<?= str_starts_with($currentRoute, 'production') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-gear-wide-connected"></i>
-                        <span class="nav-label">Batch Management</span>
-                    </a>
-                    <span class="nav-tooltip">Batch Management</span>
-                </li>
-                <?php endif; ?>
-
-                <?php if (can('quality') || can('improvement')): ?>
-                <li class="nav-item"><span class="nav-section">QUALITY CONTROL</span></li>
-                <?php if (can('quality')): ?>
-                <li class="nav-item">
-                    <a href="?route=quality" class="nav-link<?= str_starts_with($currentRoute, 'quality') && !str_starts_with($currentRoute, 'quality/traceability') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-patch-check"></i>
-                        <span class="nav-label">Inspections</span>
-                    </a>
-                    <span class="nav-tooltip">Inspections</span>
-                </li>
-                <li class="nav-item">
-                    <a href="?route=quality/traceability" class="nav-link<?= str_starts_with($currentRoute, 'quality/traceability') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-diagram-3"></i>
-                        <span class="nav-label">Traceability Logs</span>
-                    </a>
-                    <span class="nav-tooltip">Traceability Logs</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('improvement')): ?>
-                <li class="nav-item">
-                    <a href="?route=improvement" class="nav-link<?= str_starts_with($currentRoute, 'improvement') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-lightbulb"></i>
-                        <span class="nav-label">CAPA</span>
-                    </a>
-                    <span class="nav-tooltip">CAPA</span>
-                </li>
-                <?php endif; ?>
-                <?php endif; ?>
-
-                <?php if (can('sops')): ?>
-                <li class="nav-item"><span class="nav-section">SOP CHECKLISTS</span></li>
-                <li class="nav-item">
-                    <a href="?route=sops" class="nav-link<?= str_starts_with($currentRoute, 'sops') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-file-text"></i>
-                        <span class="nav-label">SOP Checklists</span>
-                    </a>
-                    <span class="nav-tooltip">SOP Checklists</span>
-                </li>
-                <?php endif; ?>
-
-                <?php if (can('safety') || can('hazards') || can('accidents') || can('drills')): ?>
-                <li class="nav-item"><span class="nav-section">SAFETY</span></li>
-                <?php if (can('safety')): ?>
-                <li class="nav-item">
-                    <a href="?route=safety" class="nav-link<?= $currentRoute === 'safety' ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-shield-check"></i>
-                        <span class="nav-label">Inspections</span>
-                    </a>
-                    <span class="nav-tooltip">Inspections</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('hazards')): ?>
-                <li class="nav-item">
-                    <a href="?route=safety/hazards" class="nav-link<?= str_starts_with($currentRoute, 'safety/hazards') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-exclamation-triangle"></i>
-                        <span class="nav-label">Hazards</span>
-                    </a>
-                    <span class="nav-tooltip">Hazards</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('accidents')): ?>
-                <li class="nav-item">
-                    <a href="?route=safety/accidents" class="nav-link<?= str_starts_with($currentRoute, 'safety/accidents') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-activity"></i>
-                        <span class="nav-label">Accidents</span>
-                    </a>
-                    <span class="nav-tooltip">Accidents</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('drills')): ?>
-                <li class="nav-item">
-                    <a href="?route=safety/drills" class="nav-link<?= str_starts_with($currentRoute, 'safety/drills') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-alarm"></i>
-                        <span class="nav-label">Drills</span>
-                    </a>
-                    <span class="nav-tooltip">Drills</span>
-                </li>
-                <?php endif; ?>
-                <?php endif; ?>
-
-                <?php if (can('staff') || can('training') || can('ppe')): ?>
-                <li class="nav-item"><span class="nav-section">STAFF MANAGEMENT</span></li>
-                <?php if (can('staff')): ?>
-                <li class="nav-item">
-                    <a href="?route=staff" class="nav-link<?= $currentRoute === 'staff' || str_starts_with($currentRoute, 'staff/create') || str_starts_with($currentRoute, 'staff/edit') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-person-badge"></i>
-                        <span class="nav-label">Staff Records</span>
-                    </a>
-                    <span class="nav-tooltip">Staff Records</span>
-                </li>
-                <li class="nav-item">
-                    <a href="?route=staff/shifts" class="nav-link<?= str_starts_with($currentRoute, 'staff/shifts') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-clock-history"></i>
-                        <span class="nav-label">Shift Schedule</span>
-                    </a>
-                    <span class="nav-tooltip">Shift Schedule</span>
-                </li>
-                <li class="nav-item">
-                    <a href="?route=staff/attendance" class="nav-link<?= str_starts_with($currentRoute, 'staff/attendance') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-calendar-check"></i>
-                        <span class="nav-label">Attendance</span>
-                    </a>
-                    <span class="nav-tooltip">Attendance</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('training')): ?>
-                <li class="nav-item">
-                    <a href="?route=training" class="nav-link<?= str_starts_with($currentRoute, 'training') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-mortarboard"></i>
-                        <span class="nav-label">Training</span>
-                    </a>
-                    <span class="nav-tooltip">Training</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('ppe')): ?>
-                <li class="nav-item">
-                    <a href="?route=ppe" class="nav-link<?= str_starts_with($currentRoute, 'ppe') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-shield-fill"></i>
-                        <span class="nav-label">PPE</span>
-                    </a>
-                    <span class="nav-tooltip">PPE</span>
-                </li>
-                <?php endif; ?>
-                <?php endif; ?>
-
-                <?php if (can('customers') || can('sales') || can('invoicing')): ?>
-                <li class="nav-item"><span class="nav-section">SALES & CUSTOMERS</span></li>
-                <?php if (can('customers')): ?>
-                <li class="nav-item">
-                    <a href="?route=customers" class="nav-link<?= str_starts_with($currentRoute, 'customers') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-people"></i>
-                        <span class="nav-label">Customer Records</span>
-                    </a>
-                    <span class="nav-tooltip">Customer Records</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('sales')): ?>
-                <li class="nav-item">
-                    <a href="?route=sales" class="nav-link<?= str_starts_with($currentRoute, 'sales') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-cart3"></i>
-                        <span class="nav-label">Sales Orders</span>
-                    </a>
-                    <span class="nav-tooltip">Sales Orders</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('invoicing')): ?>
-                <li class="nav-item">
-                    <a href="?route=invoicing" class="nav-link<?= str_starts_with($currentRoute, 'invoicing') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-receipt"></i>
-                        <span class="nav-label">Invoices</span>
-                    </a>
-                    <span class="nav-tooltip">Invoices</span>
-                </li>
-                <?php endif; ?>
-                <?php endif; ?>
-
-                <?php if (can('suppliers') || can('supplier_eval')): ?>
-                <li class="nav-item"><span class="nav-section">SUPPLIER MANAGEMENT</span></li>
-                <?php if (can('suppliers')): ?>
-                <li class="nav-item">
-                    <a href="?route=suppliers" class="nav-link<?= $currentRoute === 'suppliers' || str_starts_with($currentRoute, 'suppliers/create') || str_starts_with($currentRoute, 'suppliers/edit') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-truck"></i>
-                        <span class="nav-label">Supplier Records</span>
-                    </a>
-                    <span class="nav-tooltip">Supplier Records</span>
-                </li>
-                <li class="nav-item">
-                    <a href="?route=suppliers/deliveries" class="nav-link<?= str_starts_with($currentRoute, 'suppliers/deliveries') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-box-seam"></i>
-                        <span class="nav-label">Fruit Deliveries</span>
-                    </a>
-                    <span class="nav-tooltip">Fruit Deliveries</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('supplier_eval')): ?>
-                <li class="nav-item">
-                    <a href="?route=supplier-evaluations" class="nav-link<?= str_starts_with($currentRoute, 'supplier-evaluations') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-clipboard-data"></i>
-                        <span class="nav-label">Supplier Evaluations</span>
-                    </a>
-                    <span class="nav-tooltip">Supplier Evaluations</span>
-                </li>
-                <?php endif; ?>
-                <?php endif; ?>
-
-                <?php if (can('waste')): ?>
-                <li class="nav-item"><span class="nav-section">WASTE MANAGEMENT</span></li>
-                <li class="nav-item">
-                    <a href="?route=waste" class="nav-link<?= str_starts_with($currentRoute, 'waste') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-trash"></i>
-                        <span class="nav-label">Waste Tracking</span>
-                    </a>
-                    <span class="nav-tooltip">Waste Tracking</span>
-                </li>
-                <?php endif; ?>
-
-                <?php if (can('water')): ?>
-                <li class="nav-item"><span class="nav-section">WATER MANAGEMENT</span></li>
-                <li class="nav-item">
-                    <a href="?route=water" class="nav-link<?= str_starts_with($currentRoute, 'water') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-droplet"></i>
-                        <span class="nav-label">Water Usage & Quality</span>
-                    </a>
-                    <span class="nav-tooltip">Water Usage & Quality</span>
-                </li>
-                <?php endif; ?>
-
-                <?php if (can('machines') || can('maintenance') || can('fat')): ?>
-                <li class="nav-item"><span class="nav-section">MAINTENANCE</span></li>
-                <?php if (can('machines')): ?>
-                <li class="nav-item">
-                    <a href="?route=machines" class="nav-link<?= str_starts_with($currentRoute, 'machines') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-cpu"></i>
-                        <span class="nav-label">Machines</span>
-                    </a>
-                    <span class="nav-tooltip">Machines</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('maintenance')): ?>
-                <li class="nav-item">
-                    <a href="?route=maintenance" class="nav-link<?= str_starts_with($currentRoute, 'maintenance') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-wrench"></i>
-                        <span class="nav-label">Maintenance Schedule</span>
-                    </a>
-                    <span class="nav-tooltip">Maintenance Schedule</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('fat')): ?>
-                <li class="nav-item">
-                    <a href="?route=fat" class="nav-link<?= str_starts_with($currentRoute, 'fat') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-clipboard-check"></i>
-                        <span class="nav-label">FAT</span>
-                    </a>
-                    <span class="nav-tooltip">FAT</span>
-                </li>
-                <?php endif; ?>
-                <?php endif; ?>
-
-                <?php if (can('power')): ?>
-                <li class="nav-item"><span class="nav-section">POWER MANAGEMENT</span></li>
-                <li class="nav-item">
-                    <a href="?route=power" class="nav-link<?= str_starts_with($currentRoute, 'power') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-lightning"></i>
-                        <span class="nav-label">Electricity & Generator</span>
-                    </a>
-                    <span class="nav-tooltip">Electricity & Generator</span>
-                </li>
-                <?php endif; ?>
-
-                <?php if (can('certifications') || can('permits') || can('documents')): ?>
-                <li class="nav-item"><span class="nav-section">CERTIFICATION MANAGEMENT</span></li>
-                <?php if (can('certifications')): ?>
-                <li class="nav-item">
-                    <a href="?route=certifications" class="nav-link<?= $currentRoute === 'certifications' || str_starts_with($currentRoute, 'certifications/create') || str_starts_with($currentRoute, 'certifications/edit') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-award"></i>
-                        <span class="nav-label">Certifications</span>
-                    </a>
-                    <span class="nav-tooltip">Certifications</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('permits')): ?>
-                <li class="nav-item">
-                    <a href="?route=permits" class="nav-link<?= str_starts_with($currentRoute, 'permits') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-file-earmark-check"></i>
-                        <span class="nav-label">Permits</span>
-                    </a>
-                    <span class="nav-tooltip">Permits</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('documents')): ?>
-                <li class="nav-item">
-                    <a href="?route=documents" class="nav-link<?= str_starts_with($currentRoute, 'documents') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-folder2-open"></i>
-                        <span class="nav-label">Digital Documents</span>
-                    </a>
-                    <span class="nav-tooltip">Digital Documents</span>
-                </li>
-                <?php endif; ?>
-                <?php endif; ?>
-
-                <?php if ((hasRole('ROLE-001', 'ROLE-002')) && can('reports') || can('efficiency')): ?>
-                <li class="nav-item"><span class="nav-section">REPORTS</span></li>
-                <?php if ((hasRole('ROLE-001', 'ROLE-002')) && can('reports')): ?>
-                <li class="nav-item">
-                    <a href="?route=reports" class="nav-link<?= str_starts_with($currentRoute, 'reports') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-file-earmark-bar-graph"></i>
-                        <span class="nav-label">All Reports</span>
-                    </a>
-                    <span class="nav-tooltip">All Reports</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('efficiency')): ?>
-                <li class="nav-item">
-                    <a href="?route=efficiency" class="nav-link<?= str_starts_with($currentRoute, 'efficiency') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-speedometer2"></i>
-                        <span class="nav-label">OEE</span>
-                    </a>
-                    <span class="nav-tooltip">OEE</span>
-                </li>
-                <?php endif; ?>
-                <?php endif; ?>
-
-                <?php if (can('users') || can('audit') || can('backup')): ?>
-                <li class="nav-item"><span class="nav-section">SYSTEM SETTINGS</span></li>
-                <?php if (can('audit')): ?>
-                <li class="nav-item">
-                    <a href="?route=audit" class="nav-link<?= str_starts_with($currentRoute, 'audit') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-journal-text"></i>
-                        <span class="nav-label">Audit Trail</span>
-                    </a>
-                    <span class="nav-tooltip">Audit Trail</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('users')): ?>
-                <li class="nav-item">
-                    <a href="?route=users" class="nav-link<?= str_starts_with($currentRoute, 'users') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-person-gear"></i>
-                        <span class="nav-label">User Management</span>
-                    </a>
-                    <span class="nav-tooltip">User Management</span>
-                </li>
-                <?php endif; ?>
-                <?php if (can('backup')): ?>
-                <li class="nav-item">
-                    <a href="?route=settings/backup" class="nav-link<?= str_starts_with($currentRoute, 'settings/backup') || str_starts_with($currentRoute, 'settings/restore') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-cloud-arrow-down"></i>
-                        <span class="nav-label">Backup & Restore</span>
-                    </a>
-                    <span class="nav-tooltip">Backup & Restore</span>
-                </li>
-                <?php endif; ?>
-                <?php endif; ?>
+                <?php endforeach; ?>
             </ul>
 
             <ul class="nav-list secondary-nav">

@@ -23,7 +23,7 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body">
                 <table id="dataTable" class="table table-hover align-middle">
-                    <thead class="table-light"><tr><th>ID</th><th>Date</th><th>Source</th><th>Consumption (kWh)</th><th>Cost ($)</th><th>Notes</th><th>Actions</th></tr></thead>
+                    <thead class="table-light"><tr><th>ID</th><th>Date</th><th>Source</th><th>Consumption (kWh)</th><th>Cost (GH&#8373;)</th><th>Notes</th><th>Actions</th></tr></thead>
                     <tbody>
                         <?php if (isset($usageRecords)): foreach ($usageRecords as $u): ?>
                         <tr>
@@ -31,7 +31,7 @@
                             <td><?= sanitize($u['Date'] ?? '') ?></td>
                             <td><span class="badge bg-info bg-opacity-10 text-info"><?= sanitize($u['Source'] ?? '') ?></span></td>
                             <td class="fw-semibold"><?= number_format((float)($u['ConsumptionKWh'] ?? 0), 1) ?></td>
-                            <td>$<?= number_format((float)($u['Cost'] ?? 0), 2) ?></td>
+                            <td><?= money((float)($u['Cost'] ?? 0)) ?></td>
                             <td><small class="text-muted"><?= sanitize(substr($u['Notes'] ?? '', 0, 50)) ?></small></td>
                             <td>
                                 <?php if (canEdit('power')): ?>

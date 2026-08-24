@@ -28,7 +28,7 @@
                 <input type="number" min="0" step="0.1" name="downtime" class="form-control" value="<?= sanitize((string)($record['Downtime'] ?? '0')) ?>">
             </div>
             <div class="col-md-4">
-                <label class="form-label fw-semibold">Cost ($) <span class="text-danger">*</span></label>
+                <label class="form-label fw-semibold">Cost (GH&#8373;) <span class="text-danger">*</span></label>
                 <input type="number" min="0" step="0.01" name="cost" class="form-control" value="<?= sanitize((string)($record['Cost'] ?? '0')) ?>" required>
             </div>
             <div class="col-md-4">

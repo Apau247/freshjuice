@@ -514,7 +514,7 @@ $user = currentUser();
     <!-- M7: Sales & Invoicing — Revenue -->
     <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#f97316,#ea580c);">
         <div class="dash-kpi-icon"><i class="bi bi-currency-dollar"></i></div>
-        <div class="dash-kpi-value">$<?= number_format($stats['totalRevenue'] ?? 0, 0) ?></div>
+        <div class="dash-kpi-value"><?= money($stats['totalRevenue'] ?? 0) ?></div>
         <div class="dash-kpi-label">Revenue</div>
         <div class="dash-kpi-trend neutral"><i class="bi bi-graph-up"></i> Cumulative</div>
     </div>
@@ -794,7 +794,7 @@ $user = currentUser();
                             <tr>
                                 <td style="font-weight:600;"><?= sanitize($o['OrderID'] ?? '') ?></td>
                                 <td><?= sanitize($o['CustomerName'] ?? '') ?></td>
-                                <td>$<?= number_format((float)($o['TotalAmount'] ?? 0), 2) ?></td>
+                                <td><?= money((float)($o['TotalAmount'] ?? 0)) ?></td>
                                 <td>
                                     <?php $s = $o['Status'] ?? ''; $om = ['Pending'=>'warning','Processing'=>'info','Completed'=>'success','Cancelled'=>'secondary']; ?>
                                     <span class="dash-badge dash-badge-<?= $om[$s] ?? 'secondary' ?>"><?= sanitize($s) ?></span>

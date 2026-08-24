@@ -44,6 +44,17 @@ $MODULE_ROUTES = [
     'finished-goods/create'         => 'finished_goods',
     'finished-goods/edit'           => 'finished_goods',
     'finished-goods/delete'         => 'finished_goods',
+    'prices'                        => 'pricing',
+    'prices/save'                   => 'pricing',
+    'payroll'                       => 'payroll',
+    'payroll/generate'              => 'payroll',
+    'payroll/pay'                   => 'payroll',
+    'payroll/revert'                => 'payroll',
+    'payroll/edit'                  => 'payroll',
+    'payroll/delete'                => 'payroll',
+    'payroll/settings'              => 'payroll',
+    'payroll/report'                => 'payroll',
+    'payroll/report/print'          => 'payroll',
     'quality'                       => 'quality',
     'quality/create'                => 'quality',
     'quality/edit'                  => 'quality',
@@ -182,6 +193,7 @@ $MODULE_ROUTES = [
 
 $ROLE_PERMISSIONS = [
     'ROLE-001' => [
+        'payroll'         => 'full', 'pricing'       => 'full',
         'dashboard'       => 'full', 'inventory_alerts'=> 'full', 'reports'       => 'full',
         'backup'          => 'full', 'suppliers'     => 'full', 'materials'     => 'full',
         'production'      => 'full', 'finished_goods'=> 'full', 'quality'       => 'full',
@@ -196,6 +208,7 @@ $ROLE_PERMISSIONS = [
         'audit'           => 'full',
     ],
     'ROLE-002' => [
+        'payroll'         => 'full', 'pricing'       => 'full',
         'dashboard'       => 'full', 'inventory_alerts'=> 'full', 'reports'       => 'view',
         'backup'          => 'no',   'suppliers'     => 'full', 'materials'     => 'full',
         'production'      => 'full', 'finished_goods'=> 'full', 'quality'       => 'full',
@@ -210,6 +223,7 @@ $ROLE_PERMISSIONS = [
         'audit'           => 'view',
     ],
     'ROLE-003' => [
+        'payroll'         => 'view', 'pricing'       => 'no',
         'dashboard'       => 'full', 'inventory_alerts'=> 'full', 'reports'       => 'view',
         'backup'          => 'no',   'suppliers'     => 'view', 'materials'     => 'full',
         'production'      => 'full', 'finished_goods'=> 'full', 'quality'       => 'view',
@@ -224,6 +238,7 @@ $ROLE_PERMISSIONS = [
         'audit'           => 'no',
     ],
     'ROLE-004' => [
+        'payroll'         => 'view', 'pricing'       => 'no',
         'dashboard'       => 'full', 'inventory_alerts'=> 'full', 'reports'       => 'view',
         'backup'          => 'no',   'suppliers'     => 'full', 'materials'     => 'full',
         'production'      => 'view', 'finished_goods'=> 'full', 'quality'       => 'no',
@@ -238,6 +253,7 @@ $ROLE_PERMISSIONS = [
         'audit'           => 'no',
     ],
     'ROLE-005' => [
+        'payroll'         => 'view', 'pricing'       => 'no',
         'dashboard'       => 'full', 'inventory_alerts'=> 'view', 'reports'       => 'view',
         'backup'          => 'no',   'suppliers'     => 'view', 'materials'     => 'no',
         'production'      => 'view', 'finished_goods'=> 'view', 'quality'       => 'full',
@@ -252,6 +268,7 @@ $ROLE_PERMISSIONS = [
         'audit'           => 'no',
     ],
     'ROLE-006' => [
+        'payroll'         => 'view', 'pricing'       => 'full',
         'dashboard'       => 'full', 'inventory_alerts'=> 'view', 'reports'       => 'view',
         'backup'          => 'no',   'suppliers'     => 'no',   'materials'     => 'no',
         'production'      => 'no',   'finished_goods'=> 'view', 'quality'       => 'no',
@@ -280,6 +297,7 @@ $ROLE_PERMISSIONS = [
         'audit'           => 'no',
     ],
     'ROLE-008' => [
+        'payroll'         => 'view', 'pricing'       => 'no',
         'dashboard'       => 'full', 'inventory_alerts'=> 'view', 'reports'       => 'view',
         'backup'          => 'no',   'suppliers'     => 'no',   'materials'     => 'no',
         'production'      => 'view', 'finished_goods'=> 'no',   'quality'       => 'no',

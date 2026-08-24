@@ -19,7 +19,7 @@
                     <td class="fw-semibold"><?= sanitize($o['CustomerName'] ?? $o['customer_name'] ?? '') ?></td>
                     <td><?= sanitize($o['FG_Flavour'] ?? $o['fg_flavour'] ?? '') ?></td>
                     <td><?= number_format((float)($o['Quantity'] ?? 0), 1) ?></td>
-                    <td>$<?= number_format((float)($o['TotalAmount'] ?? 0), 2) ?></td>
+                    <td><?= money((float)($o['TotalAmount'] ?? 0)) ?></td>
                     <td>
                         <?php $s = $o['Status'] ?? ''; $map = ['Pending'=>'warning','Processing'=>'info','Completed'=>'success','Cancelled'=>'secondary']; ?>
                         <span class="badge bg-<?= $map[$s] ?? 'secondary' ?>"><?= sanitize($s) ?></span>

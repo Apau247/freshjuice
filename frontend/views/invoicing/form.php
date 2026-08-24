@@ -25,15 +25,15 @@
                 <input type="date" name="due_date" class="form-control" value="<?= sanitize($invoice['DueDate'] ?? $invoice['due_date'] ?? '') ?>">
             </div>
             <div class="col-md-4">
-                <label class="form-label fw-semibold">Amount ($) <span class="text-danger">*</span></label>
+                <label class="form-label fw-semibold">Amount (GH&#8373;) <span class="text-danger">*</span></label>
                 <input type="number" min="0" step="0.01" name="amount" class="form-control" value="<?= sanitize((string)($invoice['Amount'] ?? '')) ?>" required>
             </div>
             <div class="col-md-4">
-                <label class="form-label fw-semibold">Tax ($)</label>
+                <label class="form-label fw-semibold">Tax (GH&#8373;)</label>
                 <input type="number" min="0" step="0.01" name="tax" class="form-control" value="<?= sanitize((string)($invoice['Tax'] ?? '0')) ?>">
             </div>
             <div class="col-md-4">
-                <label class="form-label fw-semibold">Total Due ($)</label>
+                <label class="form-label fw-semibold">Total Due (GH&#8373;)</label>
                 <input type="number" min="0" step="0.01" name="total_due" class="form-control" value="<?= sanitize((string)($invoice['TotalDue'] ?? '0')) ?>">
             </div>
             <div class="col-md-6">

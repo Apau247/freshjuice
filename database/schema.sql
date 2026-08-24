@@ -44,6 +44,7 @@ CREATE TABLE staff (
     Phone         VARCHAR(30)  DEFAULT NULL,
     Department    VARCHAR(50)  DEFAULT NULL,
     Position      VARCHAR(100) DEFAULT NULL,
+    MonthlySalary DECIMAL(12,2) DEFAULT 0,      -- admin-set payment amount (payroll)
     DateHired     DATE         DEFAULT NULL,
     Status        ENUM('Active','On Leave','Terminated') DEFAULT 'Active',
     created_at    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
@@ -72,6 +73,30 @@ CREATE TABLE attendance (
     FOREIGN KEY (ShiftID) REFERENCES shifts(ShiftID) ON UPDATE CASCADE ON DELETE SET NULL,
     INDEX idx_att_date (Date),
     INDEX idx_att_staff (StaffID)
+) ENGINE=InnoDB;
+
+-- ================================================================
+--  3b. PAYROLL (employer payroll: monthly payslips, paid vs unpaid)
+-- ================================================================
+CREATE TABLE payroll (
+    PayrollID      VARCHAR(50)    PRIMARY KEY,
+    StaffID        VARCHAR(50)    NOT NULL,
+    PeriodMonth    TINYINT        NOT NULL,              -- 1..12
+    PeriodYear     SMALLINT       NOT NULL,
+    BaseSalary     DECIMAL(12,2)  NOT NULL DEFAULT 0.00, -- copied from staff.MonthlySalary at generation
+    Allowances     DECIMAL(12,2)  DEFAULT 0.00,          -- bonus / overtime / transport
+    Deductions     DECIMAL(12,2)  DEFAULT 0.00,          -- SSNIT, advances, lateness...
+    NetPay         DECIMAL(12,2)  NOT NULL DEFAULT 0.00,
+    Status         ENUM('Unpaid','Paid') DEFAULT 'Unpaid',
+    PaymentDate    DATE           DEFAULT NULL,
+    PaymentMethod  VARCHAR(50)    DEFAULT NULL,
+    Notes          TEXT           DEFAULT NULL,
+    ProcessedBy    VARCHAR(50)    DEFAULT NULL,
+    created_at     TIMESTAMP      DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (StaffID) REFERENCES staff(StaffID) ON UPDATE CASCADE ON DELETE CASCADE,
+    UNIQUE KEY uq_payroll_period (StaffID, PeriodMonth, PeriodYear),
+    INDEX idx_payroll_status (Status),
+    INDEX idx_payroll_period (PeriodYear, PeriodMonth)
 ) ENGINE=InnoDB;
 
 -- ================================================================
@@ -219,6 +244,17 @@ CREATE TABLE finished_goods (
     FOREIGN KEY (BatchID) REFERENCES production_batches(BatchID) ON UPDATE CASCADE ON DELETE SET NULL,
     INDEX idx_fg_expiry (ExpiryDate),
     INDEX idx_fg_flavour(Flavour)
+) ENGINE=InnoDB;
+
+-- ================================================================
+--  11b. PRODUCT PRICES (default selling price per product flavour)
+-- ================================================================
+CREATE TABLE product_prices (
+    Flavour     VARCHAR(100)   PRIMARY KEY,
+    UnitPrice   DECIMAL(12,2)  NOT NULL DEFAULT 0.00,
+    UpdatedBy   VARCHAR(50)    DEFAULT NULL,
+    updated_at  TIMESTAMP      DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (UpdatedBy) REFERENCES users(UserID) ON UPDATE CASCADE ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 -- ================================================================

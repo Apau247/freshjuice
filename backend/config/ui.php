@@ -13,6 +13,14 @@ declare(strict_types=1);
  */
 
 /**
+ * Format an amount in Ghana Cedis (GH₵) for display.
+ * Single source of truth for the currency symbol across views.
+ */
+function money(float|int|string|null $amount): string {
+    return 'GH₵ ' . number_format((float)$amount, 2);
+}
+
+/**
  * Entity selects (machines, materials, customers, ...).
  *
  * @param array  $items       rows, e.g. machines
