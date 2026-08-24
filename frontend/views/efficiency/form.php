@@ -14,20 +14,13 @@
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Shift</label>
                 <select name="shift" class="form-select">
-                    <option value="">Select Shift</option>
-                    <?php $sh = $efficiency['Shift'] ?? ''; ?>
-                    <option value="Morning" <?= $sh === 'Morning' ? 'selected' : '' ?>>Morning</option>
-                    <option value="Afternoon" <?= $sh === 'Afternoon' ? 'selected' : '' ?>>Afternoon</option>
-                    <option value="Night" <?= $sh === 'Night' ? 'selected' : '' ?>>Night</option>
+                    <?= trending_value_options(['Morning', 'Afternoon', 'Night'], $trends['shift'] ?? null, isset($efficiency) ? ($efficiency['Shift'] ?? null) : null, 'Select Shift') ?>
                 </select>
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Machine <span class="text-danger">*</span></label>
                 <select name="machine_id" class="form-select" required>
-                    <option value="">Select Machine</option>
-                    <?php if (!empty($machines)): foreach ($machines as $m): ?>
-                    <option value="<?= sanitize($m['MachineID']) ?>" <?= (isset($efficiency) && ($efficiency['MachineID'] ?? '') === $m['MachineID']) ? 'selected' : '' ?>><?= sanitize($m['Name']) ?></option>
-                    <?php endforeach; endif; ?>
+                    <?= trending_options($machines, 'MachineID', 'Name', $trends['machine'] ?? null, isset($efficiency) ? ($efficiency['MachineID'] ?? null) : null, 'Select Machine') ?>
                 </select>
             </div>
             <div class="col-md-4">

@@ -52,6 +52,34 @@ abstract class Controller
     }
 
     /**
+     * Trend analysis for "new record" forms: which values has the factory been
+     * using lately? Returns [['value' => id-or-string, 'uses' => n], ...]
+     * ordered by most-recently-used, then most-frequently-used. The create
+     * forms feed this into trending_options()/trending_value_options() so the
+     * dropdowns open in the direction the operation is already going.
+     * Table/column names come only from this codebase -- never user input.
+     */
+    protected function trendIds(string $table, string $column, string $dateColumn, int $limit = 5): array
+    {
+        $t = str_replace('`', '', $table);
+        $c = str_replace('`', '', $column);
+        $d = str_replace('`', '', $dateColumn);
+        try {
+            $rows = $this->model->query(
+                "SELECT `$c` AS val, COUNT(*) AS uses, MAX(`$d`) AS latest
+                 FROM `$t`
+                 WHERE `$c` IS NOT NULL AND `$c` <> ''
+                 GROUP BY `$c`
+                 ORDER BY latest DESC, uses DESC
+                 LIMIT " . max(1, $limit)
+            );
+        } catch (\Throwable) {
+            return [];
+        }
+        return array_map(fn($r) => ['value' => (string)$r['val'], 'uses' => (int)$r['uses']], $rows);
+    }
+
+    /**
      * Server-side range check for one numeric field. Returns a human-readable
      * error message, or null when the value is in range. Chain with ?? to
      * validate several fields and keep the first failure:

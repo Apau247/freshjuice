@@ -7,6 +7,11 @@
     <div class="card-body">
         <form method="POST" action="?route=<?= isset($batch) ? 'production/edit&id=' . urlencode($batch['BatchID']) : 'production/create' ?>" class="row g-3">
             <?= csrfField() ?>
+            <div class="col-12">
+                <h6 class="fw-bold text-uppercase text-muted mb-1" style="font-size:0.72rem;letter-spacing:.06em;">
+                    <i class="bi bi-box-seam me-1"></i> Batch Details
+                </h6>
+            </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Batch Number <span class="text-danger">*</span></label>
                 <input type="text" name="batch_number" class="form-control" value="<?= sanitize($batch['BatchNumber'] ?? $suggestedBatchNumber ?? '') ?>" required>
@@ -18,14 +23,12 @@
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Flavour <span class="text-danger">*</span></label>
                 <select name="flavour" class="form-select" required>
-                    <option value="">Select Flavour</option>
-                    <option value="Orange" <?= (isset($batch) && ($batch['Flavour'] ?? '') === 'Orange') ? 'selected' : '' ?>>Orange</option>
-                    <option value="Apple" <?= (isset($batch) && ($batch['Flavour'] ?? '') === 'Apple') ? 'selected' : '' ?>>Apple</option>
-                    <option value="Mango" <?= (isset($batch) && ($batch['Flavour'] ?? '') === 'Mango') ? 'selected' : '' ?>>Mango</option>
-                    <option value="Grape" <?= (isset($batch) && ($batch['Flavour'] ?? '') === 'Grape') ? 'selected' : '' ?>>Grape</option>
-                    <option value="Mixed Fruit" <?= (isset($batch) && ($batch['Flavour'] ?? '') === 'Mixed Fruit') ? 'selected' : '' ?>>Mixed Fruit</option>
-                    <option value="Lemon" <?= (isset($batch) && ($batch['Flavour'] ?? '') === 'Lemon') ? 'selected' : '' ?>>Lemon</option>
-                    <option value="Pineapple" <?= (isset($batch) && ($batch['Flavour'] ?? '') === 'Pineapple') ? 'selected' : '' ?>>Pineapple</option>
+                    <?= trending_value_options(
+                        ['Orange', 'Apple', 'Mango', 'Grape', 'Mixed Fruit', 'Lemon', 'Pineapple'],
+                        $trends['flavour'] ?? null,
+                        isset($batch) ? ($batch['Flavour'] ?? null) : null,
+                        'Select Flavour'
+                    ) ?>
                 </select>
             </div>
             <div class="col-md-4">
@@ -35,8 +38,7 @@
             <div class="col-md-2">
                 <label class="form-label fw-semibold">Unit</label>
                 <select name="unit" class="form-select">
-                    <option value="litres" <?= (isset($batch) && ($batch['Unit'] ?? '') === 'litres') ? 'selected' : '' ?>>litres</option>
-                    <option value="kg" <?= (isset($batch) && ($batch['Unit'] ?? '') === 'kg') ? 'selected' : '' ?>>kg</option>
+                    <?= trending_value_options(['litres', 'kg'], $trends['unit'] ?? null, isset($batch) ? ($batch['Unit'] ?? null) : null) ?>
                 </select>
             </div>
             <div class="col-md-6">
@@ -53,37 +55,65 @@
                 <label class="form-label fw-semibold">Operator / User</label>
                 <select name="user_id" class="form-select">
                     <option value="">Select Operator</option>
-                    <?php if (isset($users)): foreach ($users as $u): ?>
-                    <option value="<?= sanitize($u['UserID']) ?>" <?= (isset($batch) && ($batch['UserID'] ?? '') === $u['UserID']) ? 'selected' : '' ?>><?= sanitize($u['Name']) ?></option>
-                    <?php endforeach; endif; ?>
+                    <?php if (isset($users)): ?>
+                        <?= trending_options($users, 'UserID', 'Name', $trends['operator'] ?? null, isset($batch) ? ($batch['UserID'] ?? null) : null) ?>
+                    <?php endif; ?>
                 </select>
             </div>
-            <div class="col-md-4">
+            <div class="col-12">
+                <hr class="mt-2 mb-3">
+                <h6 class="fw-bold text-uppercase text-muted" style="font-size:0.72rem;letter-spacing:.06em;">
+                    <i class="bi bi-basket3 me-1"></i> Materials Consumed
+                </h6>
+            </div>
+            <div class="col-md-6">
                 <label class="form-label fw-semibold">Raw Material</label>
-                <select name="raw_material_id" class="form-select">
-                    <option value="">Select RM</option>
-                    <?php if (isset($rawMaterials)): foreach ($rawMaterials as $rm): ?>
-                    <option value="<?= sanitize($rm['MaterialID']) ?>" <?= (isset($batch) && ($batch['RawMaterialID'] ?? '') === $rm['MaterialID']) ? 'selected' : '' ?>><?= sanitize($rm['Name']) ?></option>
-                    <?php endforeach; endif; ?>
+                <?php $rawTrend = $trends['raw'] ?? null; ?>
+                <select name="raw_material_id" class="form-select"
+                        data-unit-target="unit"
+                        data-lookup='<?= sanitize(json_encode(array_combine(
+                            array_column($rawMaterials, 'MaterialID'),
+                            array_map(fn($r) => ['unit' => $r['Unit'] ?? '', 'name' => $r['Name'] ?? '', 'stock' => $r['CurrentStock'] ?? 0], $rawMaterials)
+                        ), JSON_HEX_APOS | JSON_HEX_QUOT)) ?>'>
+                    <?= trending_options($rawMaterials, 'MaterialID', 'Name', $rawTrend, isset($batch) ? ($batch['RawMaterialID'] ?? null) : null, 'Select RM') ?>
                 </select>
+                <div class="form-text" data-cascade-note></div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label class="form-label fw-semibold">Packaging Material</label>
                 <select name="packaging_material_id" class="form-select">
-                    <option value="">Select PKG</option>
-                    <?php if (isset($packagingMaterials)): foreach ($packagingMaterials as $pm): ?>
-                    <option value="<?= sanitize($pm['PackageID']) ?>" <?= (isset($batch) && ($batch['PackagingMaterialID'] ?? '') === $pm['PackageID']) ? 'selected' : '' ?>><?= sanitize($pm['Name']) ?></option>
-                    <?php endforeach; endif; ?>
+                    <?= trending_options($packagingMaterials, 'PackageID', 'Name', $trends['pkg'] ?? null, isset($batch) ? ($batch['PackagingMaterialID'] ?? null) : null, 'Select PKG') ?>
                 </select>
             </div>
-            <div class="col-md-4">
-                <label class="form-label fw-semibold">Machine</label>
-                <select name="machine_id" class="form-select">
-                    <option value="">Select Machine</option>
-                    <?php if (isset($machines)): foreach ($machines as $m): ?>
-                    <option value="<?= sanitize($m['MachineID']) ?>" <?= (isset($batch) && ($batch['MachineID'] ?? '') === $m['MachineID']) ? 'selected' : '' ?>><?= sanitize($m['Name']) ?></option>
-                    <?php endforeach; endif; ?>
+
+            <div class="col-12">
+                <hr class="mt-2 mb-3">
+                <h6 class="fw-bold text-uppercase text-muted" style="font-size:0.72rem;letter-spacing:.06em;">
+                    <i class="bi bi-cpu me-1"></i> Equipment Used
+                    <span class="text-muted fw-normal text-lowercase" style="font-size:0.7rem;">(machinery only &mdash; tracked separately from materials)</span>
+                </h6>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Machine / Equipment</label>
+                <?php
+                // Equipment is not "stuff": each machine option carries its type
+                // and live status so the form can warn before an unusable
+                // machine is picked (the server rejects it as a final gate).
+                $machineRows = [];
+                $machineAttrs = [];
+                foreach ($machines as $m) {
+                    $status = (string)($m['Status'] ?? '');
+                    $type = (string)($m['Type'] ?? '');
+                    $m['display'] = $m['Name'] . ($type !== '' ? ' (' . $type . ')' : '')
+                        . (!in_array($status, ['Operational', ''], true) ? ' -- ' . strtoupper($status) : '');
+                    $machineAttrs[(string)$m['MachineID']] = 'data-status="' . sanitize($status) . '" data-mname="' . sanitize((string)$m['Name']) . '"';
+                    $machineRows[] = $m;
+                }
+                ?>
+                <select name="machine_id" class="form-select" data-equipment>
+                    <?= trending_options($machineRows, 'MachineID', 'display', $trends['machine'] ?? null, isset($batch) ? ($batch['MachineID'] ?? null) : null, 'Select Machine', $machineAttrs) ?>
                 </select>
+                <div class="form-text" data-machine-note></div>
             </div>
             <div class="col-12">
                 <label class="form-label fw-semibold">Notes</label>

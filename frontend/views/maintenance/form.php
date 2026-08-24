@@ -10,19 +10,13 @@
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Machine <span class="text-danger">*</span></label>
                 <select name="machine_id" class="form-select" required>
-                    <option value="">Select Machine</option>
-                    <?php if (isset($machines)): foreach ($machines as $m): ?>
-                    <option value="<?= sanitize($m['MachineID']) ?>" <?= (isset($record) && ($record['MachineID'] ?? '') === $m['MachineID']) ? 'selected' : '' ?>><?= sanitize($m['Name']) ?></option>
-                    <?php endforeach; endif; ?>
+                    <?= trending_options($machines, 'MachineID', 'Name', $trends['machine'] ?? null, isset($record) ? ($record['MachineID'] ?? null) : null, 'Select Machine') ?>
                 </select>
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Maintenance Type <span class="text-danger">*</span></label>
                 <select name="maintenance_type" class="form-select" required>
-                    <option value="">Select Type</option>
-                    <option value="Preventive" <?= (isset($record) && ($record['MaintenanceType'] ?? '') === 'Preventive') ? 'selected' : '' ?>>Preventive</option>
-                    <option value="Corrective" <?= (isset($record) && ($record['MaintenanceType'] ?? '') === 'Corrective') ? 'selected' : '' ?>>Corrective</option>
-                    <option value="Emergency" <?= (isset($record) && ($record['MaintenanceType'] ?? '') === 'Emergency') ? 'selected' : '' ?>>Emergency</option>
+                    <?= trending_value_options(['Preventive', 'Corrective', 'Emergency'], $trends['type'] ?? null, isset($record) ? ($record['MaintenanceType'] ?? null) : null, 'Select Type') ?>
                 </select>
             </div>
             <div class="col-md-4">
@@ -44,10 +38,9 @@
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Technician</label>
                 <select name="technician_id" class="form-select">
-                    <option value="">Select Technician</option>
-                    <?php if (isset($users)): foreach ($users as $u): ?>
-                    <option value="<?= sanitize($u['UserID']) ?>" <?= (isset($record) && ($record['TechnicianID'] ?? '') === $u['UserID']) ? 'selected' : '' ?>><?= sanitize($u['Name']) ?></option>
-                    <?php endforeach; endif; ?>
+                    <?php if (isset($users)): ?>
+                        <?= trending_options($users, 'UserID', 'Name', $trends['tech'] ?? null, isset($record) ? ($record['TechnicianID'] ?? null) : null, 'Select Technician') ?>
+                    <?php endif; ?>
                 </select>
             </div>
             <div class="col-md-4">

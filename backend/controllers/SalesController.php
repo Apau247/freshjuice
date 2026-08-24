@@ -133,6 +133,12 @@ class SalesController extends Controller {
         $this->render('form', [
             'customers' => (new CustomerModel())->all(),
             'finishedGoods' => (new FinishedGoodModel())->query("SELECT * FROM finished_goods WHERE QuantityAvailable > 0"),
+            // Recent customers / products first, so repeat selling is one click.
+            'trends' => [
+                'customer' => $this->trendIds('sales_orders', 'CustomerID', 'OrderDate'),
+                'fg'       => $this->trendIds('sales_orders', 'FG_ID', 'OrderDate'),
+                'status'   => $this->trendIds('sales_orders', 'Status', 'OrderDate'),
+            ],
         ]);
     }
 

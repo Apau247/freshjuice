@@ -24,7 +24,6 @@ class WasteController extends Controller {
                 return;
             }
             $this->model->create([
-                'WasteID' => generateId('WST'),
                 'Date' => $this->getInput('date'),
                 'WasteType' => $this->getInput('waste_type', 'Production'),
                 'Quantity' => (float)$this->getInput('quantity', '0'),
@@ -38,7 +37,16 @@ class WasteController extends Controller {
             $this->redirect('waste');
             return;
         }
-        $this->render('form', ['batches' => (new ProductionBatchModel())->all()]);
+        $this->render('form', [
+            'batches' => (new ProductionBatchModel())->all(),
+            // Follow the factory's recent waste pattern: same batches, types, units.
+            'trends' => [
+                'batch'     => $this->trendIds('waste_records', 'BatchID', 'Date'),
+                'type'      => $this->trendIds('waste_records', 'WasteType', 'Date'),
+                'unit'      => $this->trendIds('waste_records', 'Unit', 'Date'),
+                'disposal'  => $this->trendIds('waste_records', 'DisposalMethod', 'Date'),
+            ],
+        ]);
     }
 
     public function edit(): void {

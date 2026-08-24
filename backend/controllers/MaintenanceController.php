@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/Controller.php';
 require_once __DIR__ . '/../models/MaintenanceRecordModel.php';
 require_once __DIR__ . '/../models/MachineModel.php';
+require_once __DIR__ . '/../models/UserModel.php';
 
 class MaintenanceController extends Controller {
     public function __construct() {
@@ -48,7 +49,17 @@ class MaintenanceController extends Controller {
             $this->redirect('maintenance');
             return;
         }
-        $this->render('form', ['machines' => (new MachineModel())->all()]);
+        $this->render('form', [
+            'machines' => (new MachineModel())->all(),
+            'users' => (new UserModel())->all(),
+            // Pre-aim the form at the machines/technicians/work seen recently.
+            'trends' => [
+                'machine' => $this->trendIds('maintenance_records', 'MachineID', 'MaintenanceDate'),
+                'type'    => $this->trendIds('maintenance_records', 'MaintenanceType', 'MaintenanceDate'),
+                'tech'    => $this->trendIds('maintenance_records', 'TechnicianID', 'MaintenanceDate'),
+                'status'  => $this->trendIds('maintenance_records', 'Status', 'MaintenanceDate'),
+            ],
+        ]);
     }
 
     public function edit(): void {
@@ -78,7 +89,11 @@ class MaintenanceController extends Controller {
             $this->redirect('maintenance');
             return;
         }
-        $this->render('form', ['record' => $rec, 'machines' => (new MachineModel())->all()]);
+        $this->render('form', [
+            'record' => $rec,
+            'machines' => (new MachineModel())->all(),
+            'users' => (new UserModel())->all(),
+        ]);
     }
 
     public function delete(): void {

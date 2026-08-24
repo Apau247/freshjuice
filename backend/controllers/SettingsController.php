@@ -127,23 +127,42 @@ class SettingsController extends Controller {
 
         $db = getDb();
         $statements = $this->splitSql($sql);
-        $db->beginTransaction();
+
+        // MySQL implicitly COMMITs the current transaction the moment any DDL
+        // runs (CREATE / ALTER / DROP / TRUNCATE). A structural dump therefore
+        // can never be transactional -- wrapping it would die on commit() with
+        // "There is no active transaction". Only purely data-only restores get
+        // real atomicity; structural ones rely on FK checks being disabled and
+        // report honestly if they fail part-way.
+        $transactional = !$this->containsDdl($statements);
+
         try {
+            if ($transactional) $db->beginTransaction();
             $db->exec('SET FOREIGN_KEY_CHECKS=0');
             foreach ($statements as $statement) {
                 if ($statement === '') continue;
                 $db->exec($statement);
             }
             $db->exec('SET FOREIGN_KEY_CHECKS=1');
-            $db->commit();
+            if ($transactional && $db->inTransaction()) $db->commit();
             logAudit($_SESSION['user_id'] ?? null, 'RESTORE', 'System', null, 'Restored database from backup (' . count($statements) . ' statements)');
             setFlash('success', 'Database restored successfully from ' . sanitize(basename((string)$file['name'])) . '.');
         } catch (\Exception $e) {
-            $db->rollBack();
+            if ($db->inTransaction()) $db->rollBack();
             error_log('Restore failed: ' . $e->getMessage());
-            setFlash('error', 'Restore failed and was rolled back. The database is unchanged. Details are in the error log.');
+            setFlash('error', $transactional
+                ? 'Restore failed and was rolled back. The database is unchanged. Details are in the error log.'
+                : 'Restore failed part-way through. Structural changes cannot be rolled back automatically -- restore a known-good backup instead.');
         }
         $this->redirect('settings/backup');
+    }
+
+    /** Does this statement set contain schema-changing DDL? */
+    private function containsDdl(array $statements): bool {
+        foreach ($statements as $s) {
+            if (preg_match('/^\s*(CREATE|ALTER|DROP|RENAME|TRUNCATE)\b/i', (string)$s)) return true;
+        }
+        return false;
     }
 
     /** Split a dumped .sql file into individual statements on ";" line ends. */

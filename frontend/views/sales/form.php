@@ -15,25 +15,30 @@
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Customer <span class="text-danger">*</span></label>
                 <select name="customer_id" class="form-select" required>
-                    <option value="">Select Customer</option>
-                    <?php if (isset($customers)): foreach ($customers as $c): ?>
-                    <option value="<?= sanitize($c['CustomerID']) ?>" <?= (isset($order) && ($order['CustomerID'] ?? '') === $c['CustomerID']) ? 'selected' : '' ?>><?= sanitize($c['Name']) ?></option>
-                    <?php endforeach; endif; ?>
+                    <?= trending_options($customers, 'CustomerID', 'Name', $trends['customer'] ?? null, isset($order) ? ($order['CustomerID'] ?? null) : null, 'Select Customer') ?>
                 </select>
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Finished Good</label>
-                <select name="fg_id" class="form-select">
-                    <option value="">Select FG</option>
-                    <?php if (isset($finishedGoods)): foreach ($finishedGoods as $fg): ?>
-                    <option value="<?= sanitize($fg['FG_ID']) ?>" <?= (isset($order) && ($order['FG_ID'] ?? '') === $fg['FG_ID']) ? 'selected' : '' ?>><?= sanitize($fg['Flavour'] ?? '') ?> (<?= sanitize($fg['FG_ID']) ?>)</option>
-                    <?php endforeach; endif; ?>
+                <?php
+                // Cascade: each option carries its stock + unit so picking a
+                // product immediately caps the quantity and shows availability.
+                $fgAttrs = [];
+                foreach ($finishedGoods as $fg) {
+                    $fgAttrs[(string)$fg['FG_ID']] = 'data-qty="' . sanitize((string)($fg['QuantityAvailable'] ?? 0)) . '"'
+                        . ' data-unit="' . sanitize((string)($fg['Unit'] ?? '')) . '"'
+                        . ' data-flavour="' . sanitize((string)($fg['Flavour'] ?? '')) . '"';
+                }
+                ?>
+                <select name="fg_id" class="form-select" data-stock-for="quantity">
+                    <?= trending_options($finishedGoods, 'FG_ID', 'Flavour', $trends['fg'] ?? null, isset($order) ? ($order['FG_ID'] ?? null) : null, 'Select FG', $fgAttrs) ?>
                 </select>
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Quantity <span class="text-danger">*</span></label>
                 <input type="number" step="0.01" min="0.01" max="1000000" name="quantity" class="form-control" value="<?= sanitize((string)($order['Quantity'] ?? '')) ?>" required>
                 <div class="invalid-feedback">Quantity must be a number greater than zero.</div>
+                <div class="form-text" data-stock-hint></div>
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Total Amount ($) <span class="text-danger">*</span></label>

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../backend/config/database.php';
 require_once __DIR__ . '/../backend/config/permissions.php';
+require_once __DIR__ . '/../backend/config/ui.php';
 require_once APP_ROOT . '/backend/models/Model.php';
 require_once APP_ROOT . '/backend/controllers/Controller.php';
 

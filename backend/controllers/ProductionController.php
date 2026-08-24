@@ -38,6 +38,19 @@ class ProductionController extends Controller {
                 return;
             }
 
+            // Equipment check: a batch cannot run on machinery that is down or
+            // under maintenance -- equipment is validated separately from the
+            // materials below.
+            $machineId = $this->getInput('machine_id');
+            if ($machineId && $status !== 'Cancelled') {
+                $machine = (new MachineModel())->find($machineId);
+                if ($machine && in_array($machine['Status'], ['Down', 'Maintenance'], true)) {
+                    setFlash('error', 'Selected equipment "' . $machine['Name'] . '" is currently ' . strtolower((string)$machine['Status']) . '. Pick an operational machine.');
+                    $this->redirect('production/create');
+                    return;
+                }
+            }
+
             $db = getDb();
             $db->beginTransaction();
             try {
@@ -99,6 +112,15 @@ class ProductionController extends Controller {
             'machines' => (new MachineModel())->all(),
             'users' => (new UserModel())->all(),
             'suggestedBatchNumber' => $this->model->suggestBatchNumber(),
+            // Open the form in the direction the factory is already producing.
+            'trends' => [
+                'flavour' => $this->trendIds('production_batches', 'Flavour', 'ProductionDate'),
+                'machine' => $this->trendIds('production_batches', 'MachineID', 'ProductionDate'),
+                'raw'     => $this->trendIds('production_batches', 'RawMaterialID', 'ProductionDate'),
+                'pkg'     => $this->trendIds('production_batches', 'PackagingMaterialID', 'ProductionDate'),
+                'operator'=> $this->trendIds('production_batches', 'UserID', 'ProductionDate'),
+                'unit'    => $this->trendIds('production_batches', 'Unit', 'ProductionDate'),
+            ],
         ]);
     }
 
@@ -116,12 +138,22 @@ class ProductionController extends Controller {
                 return;
             }
 
-            // Mirror the creation rule ("Cancelled batches consume nothing"):
-            // cancelling releases the materials deducted when the batch was
-            // recorded; un-cancelling takes them out again.
             $db = getDb();
+            // Same equipment rule on edit: no batches on down/maintenance machines.
+            $machineId = $this->getInput('machine_id');
+            if ($machineId && $newStatus !== 'Cancelled') {
+                $machine = (new MachineModel())->find($machineId);
+                if ($machine && in_array($machine['Status'], ['Down', 'Maintenance'], true)) {
+                    setFlash('error', 'Selected equipment "' . $machine['Name'] . '" is currently ' . strtolower((string)$machine['Status']) . '. Pick an operational machine.');
+                    $this->redirect('production/edit&id=' . urlencode($id));
+                    return;
+                }
+            }
             $db->beginTransaction();
             try {
+                // Mirror the creation rule ("Cancelled batches consume nothing"):
+                // cancelling releases the materials deducted when the batch was
+                // recorded; un-cancelling takes them out again.
                 if ($oldStatus !== 'Cancelled' && $newStatus === 'Cancelled') {
                     if ($batch['RawMaterialID']) {
                         (new RawMaterialModel())->updateStock((string)$batch['RawMaterialID'], (float)$batch['Quantity']);

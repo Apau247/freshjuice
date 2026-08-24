@@ -95,7 +95,49 @@ class SupplierController extends Controller {
             $this->redirect('suppliers/deliveries');
             return;
         }
-        $this->render('delivery_form', ['suppliers' => $this->model->all()]);
+        // Trend: recently used suppliers first; per-supplier item history
+        // powers the cascading Item Name suggestions and unit auto-fill.
+        $supplierItems = [];
+        foreach ($this->model->query(
+            "SELECT SupplierID, ItemName, MAX(DeliveryDate) AS latest, COUNT(*) AS uses
+             FROM supplier_deliveries
+             WHERE ItemName <> ''
+             GROUP BY SupplierID, ItemName
+             ORDER BY latest DESC"
+        ) as $row) {
+            $supplierItems[(string)$row['SupplierID']][] = [
+                'item' => (string)$row['ItemName'],
+                'uses' => (int)$row['uses'],
+            ];
+        }
+        $this->render('delivery_form', [
+            'suppliers' => $this->model->all(),
+            'trends' => [
+                'supplier' => $this->trendIds('supplier_deliveries', 'SupplierID', 'DeliveryDate'),
+                'unit'     => $this->trendIds('supplier_deliveries', 'Unit', 'DeliveryDate'),
+                'grade'    => $this->trendIds('supplier_deliveries', 'QualityGrade', 'DeliveryDate'),
+            ],
+            'supplierUnits' => $this->itemUnits(),
+            'supplierItems' => $supplierItems,
+        ]);
+    }
+
+    /** Most-used unit per delivered item name (for auto-filling the Unit select). */
+    private function itemUnits(): array {
+        $map = [];
+        foreach ($this->model->query(
+            "SELECT ItemName, Unit, COUNT(*) AS uses
+             FROM supplier_deliveries
+             WHERE ItemName <> '' AND Unit <> ''
+             GROUP BY ItemName, Unit
+             ORDER BY uses DESC"
+        ) as $row) {
+            $key = strtolower(trim((string)$row['ItemName']));
+            if ($key !== '' && !isset($map[$key])) {
+                $map[$key] = (string)$row['Unit'];
+            }
+        }
+        return $map;
     }
 
     public function editDelivery(): void {

@@ -106,7 +106,14 @@ class EfficiencyController extends Controller
             $this->redirect('efficiency');
             return;
         }
-        $this->render('form', ['machines' => (new MachineModel())->all()]);
+        $this->render('form', [
+            'machines' => (new MachineModel())->all(),
+            // Recent machine/shift patterns first for the next OEE entry.
+            'trends' => [
+                'machine' => $this->trendIds('production_efficiency', 'MachineID', 'Date'),
+                'shift'   => $this->trendIds('production_efficiency', 'Shift', 'Date'),
+            ],
+        ]);
     }
 
     public function edit(): void

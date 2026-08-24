@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= sanitize($printTitle ?? 'Document') ?> - <?= APP_NAME ?></title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?= $assetBase ?>/frontend/assets/vendor/fonts/inter.css" rel="stylesheet">
+    <link href="<?= $assetBase ?>/frontend/assets/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
 </head>
 <body style="background:#fff;color:#111827;font-family:'Inter',system-ui,sans-serif;">
 
@@ -83,12 +83,12 @@
         setTimeout(function () { window.print(); }, 350);
     });
 </script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="<?= $assetBase ?>/frontend/assets/vendor/jquery/jquery-3.6.0.min.js"></script>
+<script src="<?= $assetBase ?>/frontend/assets/vendor/bootstrap/bootstrap.bundle.min.js"></script>
 <div class="doc-toolbar no-print">
     <button type="button" class="btn btn-sm btn-outline-secondary bg-white" onclick="window.print()"><i class="bi bi-printer"></i> Print again</button>
     <button type="button" class="btn btn-sm btn-success" onclick="window.close(); if(!window.closed){ history.back(); }"><i class="bi bi-x-lg"></i> Close</button>
 </div>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="<?= $assetBase ?>/frontend/assets/vendor/icons/bootstrap-icons.css">
 </body>
 </html>

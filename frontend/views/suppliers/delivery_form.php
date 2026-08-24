@@ -9,16 +9,27 @@
             <?= csrfField() ?>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Supplier <span class="text-danger">*</span></label>
-                <select name="supplier_id" class="form-select" required>
-                    <option value="">Select Supplier</option>
-                    <?php foreach ($suppliers as $s): ?>
-                    <option value="<?= sanitize($s['SupplierID']) ?>" <?= (isset($delivery) && ($delivery['SupplierID'] ?? '') === $s['SupplierID']) ? 'selected' : '' ?>><?= sanitize($s['Name']) ?></option>
-                    <?php endforeach; ?>
+                <?php
+                // Cascade data: what this supplier usually delivers. Picking a
+                // supplier narrows the Item Name suggestions to their actual
+                // delivery history, and choosing an item auto-sets its unit.
+                $itemIndex = []; // lowercase item => unit
+                foreach ($supplierUnits ?? [] as $k => $u) $itemIndex[$k] = $u;
+                ?>
+                <select name="supplier_id" class="form-select" required
+                        data-item-list="item_names"
+                        data-unit-target="unit"
+                        data-item-units='<?= sanitize(json_encode($itemIndex, JSON_HEX_APOS | JSON_HEX_QUOT)) ?>'
+                        data-items='<?= sanitize(json_encode($supplierItems ?? [], JSON_HEX_APOS | JSON_HEX_QUOT)) ?>'>
+                    <?= trending_options($suppliers, 'SupplierID', 'Name', $trends['supplier'] ?? null, isset($delivery) ? ($delivery['SupplierID'] ?? null) : null, 'Select Supplier') ?>
                 </select>
             </div>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Item Name <span class="text-danger">*</span></label>
-                <input type="text" name="item_name" class="form-control" value="<?= sanitize($delivery['ItemName'] ?? $delivery['material_name'] ?? '') ?>" required>
+                <input type="text" name="item_name" class="form-control" list="item_names"
+                       value="<?= sanitize($delivery['ItemName'] ?? $delivery['material_name'] ?? '') ?>" required autocomplete="off">
+                <datalist id="item_names"></datalist>
+                <div class="form-text" data-cascade-note></div>
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Quantity <span class="text-danger">*</span></label>
@@ -27,10 +38,7 @@
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Unit</label>
                 <select name="unit" class="form-select">
-                    <option value="kg" <?= (isset($delivery) && ($delivery['Unit'] ?? '') === 'kg') ? 'selected' : '' ?>>kg</option>
-                    <option value="litres" <?= (isset($delivery) && ($delivery['Unit'] ?? '') === 'litres') ? 'selected' : '' ?>>litres</option>
-                    <option value="pcs" <?= (isset($delivery) && ($delivery['Unit'] ?? '') === 'pcs') ? 'selected' : '' ?>>pcs</option>
-                    <option value="boxes" <?= (isset($delivery) && ($delivery['Unit'] ?? '') === 'boxes') ? 'selected' : '' ?>>boxes</option>
+                    <?= trending_value_options(['kg', 'litres', 'pcs', 'boxes'], $trends['unit'] ?? null, isset($delivery) ? ($delivery['Unit'] ?? null) : null) ?>
                 </select>
             </div>
             <div class="col-md-4">
@@ -40,9 +48,7 @@
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Quality Grade</label>
                 <select name="quality_grade" class="form-select">
-                    <option value="Grade A" <?= (isset($delivery) && ($delivery['QualityGrade'] ?? '') === 'Grade A') ? 'selected' : '' ?>>Grade A</option>
-                    <option value="Grade B" <?= (isset($delivery) && ($delivery['QualityGrade'] ?? '') === 'Grade B') ? 'selected' : '' ?>>Grade B</option>
-                    <option value="Grade C" <?= (isset($delivery) && ($delivery['QualityGrade'] ?? '') === 'Grade C') ? 'selected' : '' ?>>Grade C</option>
+                    <?= trending_value_options(['Grade A', 'Grade B', 'Grade C'], $trends['grade'] ?? null, isset($delivery) ? ($delivery['QualityGrade'] ?? null) : null) ?>
                 </select>
             </div>
             <div class="col-md-4">

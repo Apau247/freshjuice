@@ -271,6 +271,157 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /* ═══════════════════════════════════════════
+       SMART CASCADES — picking one option steers
+       its related fields:
+         • select[data-unit-target="unit"] + <option data-unit="kg">
+           -> flips the Unit dropdown to match the chosen record
+         • select[data-stock-for="quantity"] + <option data-qty data-unit>
+           -> caps Quantity at available stock and shows an availability hint
+         • select[name=supplier_id][data-items] + datalist
+           -> narrows Item Name suggestions to that supplier's history and
+              auto-fills the unit used for that item previously
+       ═══════════════════════════════════════════ */
+    var setFieldValue = function (form, name, value) {
+        if (!form || !name || value === null || value === undefined || value === '') return false;
+        var field = form.querySelector('[name="' + name + '"]');
+        if (!field) return false;
+        if (field.tagName === 'SELECT') {
+            var wanted = Array.prototype.find.call(field.options, function (o) { return o.value === value; });
+            if (!wanted) return false;
+            field.value = value;
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+            return true;
+        }
+        field.value = value;
+        return true;
+    };
+
+    var noteFor = function (el, message) {
+        var form = el.closest('form');
+        if (!form) return;
+        var group = el.closest('.col-md-6, .col-md-4, .col-12, [class*=col-]');
+        var note = (group || form).querySelector('[data-cascade-note]');
+        if (note) {
+            note.textContent = message || '';
+        } else if (message) {
+            // fall back to a toast so the user still sees it
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({ icon: 'info', title: message, toast: true, position: 'top-end', showConfirmButton: false, timer: 2500 });
+            }
+        }
+    };
+
+    var applyUnitCascade = function (select) {
+        var opt = select.selectedOptions && select.selectedOptions[0];
+        var unit = opt ? opt.getAttribute('data-unit') : null;
+        if (!unit) return;
+        var form = select.closest('form');
+        var targetName = select.getAttribute('data-unit-target');
+        var ok = setFieldValue(form, targetName, unit);
+        var label = opt.textContent.trim().split(' - ')[0];
+        noteFor(select, ok ? (label ? '"' + label + '" is measured in ' + unit + '.' : '') : '');
+    };
+
+    var applyStockCascade = function (select) {
+        var qtyName = select.getAttribute('data-stock-for');
+        if (!qtyName) return;
+        var form = select.closest('form');
+        var qty = form ? form.querySelector('[name="' + qtyName + '"]') : null;
+        var opt = select.selectedOptions && select.selectedOptions[0];
+        if (!opt || opt.value === '') {
+            if (qty) { qty.removeAttribute('max'); }
+            noteFor(select, '');
+            return;
+        }
+        var avail = parseFloat(opt.getAttribute('data-qty'));
+        var unit = opt.getAttribute('data-unit') || '';
+        if (!isNaN(avail)) {
+            if (qty) {
+                qty.setAttribute('max', String(avail));
+                var current = parseFloat(qty.value);
+                if (!isNaN(current) && current > avail) qty.value = String(avail);
+            }
+            noteFor(select, 'Available stock for this product: ' + avail + ' ' + unit);
+        }
+    };
+
+    var applySupplierItems = function (select) {
+        var listId = select.getAttribute('data-item-list');
+        if (!listId) return;
+        var list = document.getElementById(listId);
+        if (!list) return;
+        var supplierItems = {};
+        try { supplierItems = JSON.parse(select.getAttribute('data-items') || '{}'); } catch (e) {}
+        var entries = supplierItems[select.value] || [];
+
+        list.innerHTML = '';
+        entries.forEach(function (entry) {
+            var o = document.createElement('option');
+            o.value = entry.item;
+            list.appendChild(o);
+        });
+
+        var form = select.closest('form');
+        var itemInput = form ? form.querySelector('[name="item_name"]') : null;
+        if (itemInput && !itemInput.dataset.unitBound) {
+            itemInput.dataset.unitBound = '1';
+            itemInput.addEventListener('input', function () {
+                var units = {};
+                try { units = JSON.parse(select.getAttribute('data-item-units') || '{}'); } catch (e) {}
+                var key = itemInput.value.trim().toLowerCase();
+                if (key && units[key]) {
+                    setFieldValue(form, select.getAttribute('data-unit-target'), units[key]);
+                    noteFor(itemInput, 'This item was last delivered in ' + units[key] + '.');
+                }
+            });
+        }
+        if (entries.length) {
+            noteFor(select, entries.length + ' item' + (entries.length > 1 ? 's' : '') + ' usually delivered by this supplier.');
+        }
+    };
+
+    var applyEquipmentCheck = function (select) {
+        var opt = select.selectedOptions && select.selectedOptions[0];
+        if (!opt || opt.value === '') { noteFor(select, ''); return; }
+        var status = (opt.getAttribute('data-status') || 'Operational').toLowerCase();
+        var name = opt.getAttribute('data-mname') || opt.textContent.split('(')[0].trim();
+        var note = select.closest('[class*=col-]').querySelector('[data-machine-note]');
+        if (note) {
+            if (status === 'down' || status === 'maintenance') {
+                note.innerHTML = '<span class="text-danger fw-semibold"><i class="bi bi-exclamation-triangle me-1"></i>"'
+                    + name + '" is currently ' + status + ' — the batch will be rejected until it is operational.</span>';
+            } else {
+                note.innerHTML = '<span class="text-success"><i class="bi bi-check-circle me-1"></i>"' + name + '" is operational.</span>';
+            }
+        }
+    };
+
+    document.addEventListener('change', function (e) {
+        var el = e.target;
+        if (!el || el.nodeType !== 1) return;
+        if (el.hasAttribute('data-unit-target')) applyUnitCascade(el);
+        if (el.hasAttribute('data-stock-for')) applyStockCascade(el);
+        if (el.name === 'supplier_id' && el.hasAttribute('data-items')) applySupplierItems(el);
+        if (el.hasAttribute('data-equipment')) applyEquipmentCheck(el);
+    });
+
+    // Apply cascades once on load for selects that already have a value
+    // (trend-picked defaults or edit forms).
+    ['DOMContentLoaded', 'load'].forEach(function (evtName) {
+        window.addEventListener(evtName, function () {
+            document.querySelectorAll('select[data-unit-target], select[data-stock-for]').forEach(function (sel) {
+                if (sel.value !== '' && sel.selectedIndex > 0) {
+                    sel.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            });
+            var sup = document.querySelector('select[name="supplier_id"][data-items]');
+            if (sup && sup.value !== '') applySupplierItems(sup);
+            var eq = document.querySelector('select[data-equipment]');
+            if (eq && eq.value !== '') applyEquipmentCheck(eq);
+        }, { once: evtName === 'DOMContentLoaded' });
+    });
+
+    /* ═══════════════════════════════════════════
        KEYBOARD SHORTCUTS
        ═══════════════════════════════════════════ */
     document.addEventListener('keydown', function (e) {
