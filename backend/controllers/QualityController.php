@@ -17,6 +17,38 @@ class QualityController extends Controller {
         $this->render('index', ['inspections' => $this->model->getAllDetailed()]);
     }
 
+    /**
+     * SRS 4: Traceability Logs -- one row per batch following the chain
+     * supplier fruit -> materials consumed -> inspections -> finished goods -> orders.
+     */
+    public function traceability(): void {
+        $batches = $this->model->query(
+            "SELECT b.BatchID, b.BatchNumber, b.ProductionDate, b.Flavour, b.Quantity, b.Unit, b.Status,
+                    rm.Name AS RawMaterial,
+                    s.Name  AS SupplierName,
+                    d.DeliveryDate AS DeliveryDate,
+                    pm.Name AS PackagingMaterial,
+                    m.Name AS MachineName,
+                    u.Name AS ProducedBy,
+                    fg.FG_ID, fg.ExpiryDate AS FGExpiry, fg.QuantityAvailable AS FGQty,
+                    (SELECT GROUP_CONCAT(DISTINCT q.Result ORDER BY q.Result SEPARATOR '/')
+                       FROM quality_inspections q WHERE q.BatchID = b.BatchID) AS QCResults,
+                    (SELECT COUNT(*) FROM sales_orders so WHERE so.FG_ID = fg.FG_ID) AS OrderCount
+             FROM production_batches b
+             LEFT JOIN raw_materials rm ON b.RawMaterialID = rm.MaterialID
+             LEFT JOIN suppliers s ON rm.SupplierID = s.SupplierID
+             LEFT JOIN supplier_deliveries d ON d.SupplierID = s.SupplierID
+                   AND d.ItemName LIKE CONCAT('%%', LEFT(rm.Name, 10), '%%')
+             LEFT JOIN packaging_materials pm ON b.PackagingMaterialID = pm.PackageID
+             LEFT JOIN machines m ON b.MachineID = m.MachineID
+             LEFT JOIN users u ON b.UserID = u.UserID
+             LEFT JOIN finished_goods fg ON fg.BatchID = b.BatchID
+             ORDER BY b.ProductionDate DESC, b.BatchNumber DESC
+             LIMIT 300"
+        );
+        $this->render('traceability', ['batches' => $batches]);
+    }
+
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $this->getInput('InspectionID') ?: generateId('QI');

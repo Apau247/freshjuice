@@ -22,6 +22,16 @@ $map = [
     'auth/reset'                => ['auth',   'AuthController',   'resetPassword'],
     'dashboard'                 => ['dash',   'DashboardController','index'],
 
+    'alerts/low-stock'          => ['inv',    'InventoryController','lowStock'],
+    'alerts/expiry'             => ['inv',    'InventoryController','expiry'],
+
+    'reports'                   => ['rep',    'ReportController',   'index'],
+    'reports/view'              => ['rep',    'ReportController',   'show'],
+    'reports/export'            => ['rep',    'ReportController',   'exportCsv'],
+
+    'settings/backup'           => ['set',    'SettingsController', 'index'],
+    'settings/restore'          => ['set',    'SettingsController', 'restore'],
+
     'suppliers'                 => ['sup',    'SupplierController','index'],
     'suppliers/create'          => ['sup',    'SupplierController','create'],
     'suppliers/edit'            => ['sup',    'SupplierController','edit'],
@@ -45,11 +55,13 @@ $map = [
     'production/create'         => ['prod',   'ProductionController','create'],
     'production/edit'           => ['prod',   'ProductionController','edit'],
     'production/delete'         => ['prod',   'ProductionController','delete'],
+    'production/label'          => ['prod',   'ProductionController','label'],
 
     'quality'                   => ['qi',     'QualityController','index'],
     'quality/create'            => ['qi',     'QualityController','create'],
     'quality/edit'              => ['qi',     'QualityController','edit'],
     'quality/delete'            => ['qi',     'QualityController','delete'],
+    'quality/traceability'      => ['qi',     'QualityController','traceability'],
 
     'finished-goods'            => ['fg',     'FinishedGoodsController','index'],
     'finished-goods/create'     => ['fg',     'FinishedGoodsController','create'],
@@ -200,6 +212,7 @@ $map = [
 
     'notifications'             => ['notif', 'NotificationController','index'],
     'audit'                     => ['audit', 'AuditController','index'],
+    'scan'                      => ['scan',  'ScanController','lookup'],
 ];
 
 if (isset($map[$route])) {
@@ -255,6 +268,10 @@ if (isset($map[$route])) {
     $fileMap = [
         'auth'     => 'AuthController',
         'dash'     => 'DashboardController',
+        'inv'      => 'InventoryController',
+        'rep'      => 'ReportController',
+        'set'      => 'SettingsController',
+        'scan'     => 'ScanController',
         'sup'      => 'SupplierController',
         'rm'       => 'RawMaterialController',
         'pm'       => 'PackagingMaterialController',

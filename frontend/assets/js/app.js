@@ -243,6 +243,34 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     /* ═══════════════════════════════════════════
+       BARCODE SCAN — modal focus + ?q= list filter
+       ═══════════════════════════════════════════ */
+    var scanModal = document.getElementById('scanModal');
+    if (scanModal && typeof bootstrap !== 'undefined') {
+        scanModal.addEventListener('shown.bs.modal', function () {
+            var input = document.getElementById('scanInput');
+            if (input) { input.value = ''; input.focus(); }
+        });
+    }
+
+    // ScanController redirects to list pages with &q=<code>; push the code
+    // into the DataTable search box so the scanned record is isolated.
+    var urlQ = new URLSearchParams(window.location.search).get('q');
+    if (urlQ && typeof $ !== 'undefined' && $.fn && typeof $.fn.DataTable !== 'undefined') {
+        var applySearch = function () {
+            var api = $('.table').DataTable();
+            api.search(String(urlQ)).draw();
+            var box = document.querySelector('.dataTables_filter input');
+            if (box) box.value = urlQ;
+        };
+        if ($.fn.DataTable.isDataTable('.table')) {
+            applySearch();
+        } else {
+            setTimeout(applySearch, 300);
+        }
+    }
+
+    /* ═══════════════════════════════════════════
        KEYBOARD SHORTCUTS
        ═══════════════════════════════════════════ */
     document.addEventListener('keydown', function (e) {

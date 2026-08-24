@@ -27,6 +27,7 @@
                         <span class="badge bg-<?= $map[$s] ?? 'secondary' ?>"><?= sanitize($s) ?></span>
                     </td>
                     <td>
+                        <a href="?route=production/label&id=<?= urlencode($b['BatchID']) ?>" class="btn btn-sm btn-outline-secondary" title="Print Label"><i class="bi bi-upc-scan"></i></a>
                         <?php if (canEdit('production')): ?>
                         <a href="?route=production/edit&id=<?= urlencode($b['BatchID']) ?>" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
                         <a href="?route=production/delete&id=<?= urlencode($b['BatchID']) ?>" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>

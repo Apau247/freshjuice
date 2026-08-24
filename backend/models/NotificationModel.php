@@ -35,6 +35,21 @@ class NotificationModel extends Model
         );
     }
 
+    /** Maintenance due within the next 7 days (or already overdue). */
+    public function getDueMaintenance(): array
+    {
+        return $this->query(
+            "SELECT r.MaintenanceID, r.MaintenanceDate, r.MaintenanceType, r.Status,
+                    m.Name AS MachineName,
+                    CASE WHEN r.MaintenanceDate < CURDATE() THEN 1 ELSE 0 END AS Overdue
+             FROM maintenance_records r
+             LEFT JOIN machines m ON r.MachineID = m.MachineID
+             WHERE r.Status = 'Scheduled'
+               AND r.MaintenanceDate <= DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+             ORDER BY r.MaintenanceDate ASC"
+        );
+    }
+
     /**
      * Alerts scoped to what the signed-in user is allowed to see. Notifications
      * is open to every role, so each section has to be filtered by its own
@@ -47,6 +62,7 @@ class NotificationModel extends Model
             'low_packaging'    => can('materials')      ? $this->getLowPackagingAlerts() : [],
             'expiring_certs'   => can('certifications') ? $this->getExpiringCerts()      : [],
             'expiring_permits' => can('permits')        ? $this->getExpiringPermits()    : [],
+            'due_maintenance'  => can('maintenance')    ? $this->getDueMaintenance()     : [],
         ];
     }
 }

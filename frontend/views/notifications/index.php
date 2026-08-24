@@ -8,7 +8,8 @@ $lowStock = $notifications['low_stock'] ?? [];
 $lowPackaging = $notifications['low_packaging'] ?? [];
 $expiringCerts = $notifications['expiring_certs'] ?? [];
 $expiringPermits = $notifications['expiring_permits'] ?? [];
-$total = count($lowStock) + count($lowPackaging) + count($expiringCerts) + count($expiringPermits);
+$dueMaintenance = $notifications['due_maintenance'] ?? [];
+$total = count($lowStock) + count($lowPackaging) + count($expiringCerts) + count($expiringPermits) + count($dueMaintenance);
 ?>
 
 <?php if ($total === 0): ?>
@@ -117,6 +118,39 @@ $total = count($lowStock) + count($lowPackaging) + count($expiringCerts) + count
                     <td><?= sanitize($permit['ExpiryDate'] ?? '') ?></td>
                     <td><span class="badge bg-warning text-dark"><?= max(0, (int)((strtotime($permit['ExpiryDate'] ?? 'now') - time()) / 86400)) ?>d</span></td>
                     <td><span class="badge bg-secondary"><?= sanitize($permit['Status'] ?? '') ?></span></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<?php endif; ?>
+
+<?php if (count($dueMaintenance) > 0): ?>
+<div class="card border-0 shadow-sm mb-3 border-start border-4 <?= count(array_filter($dueMaintenance, fn($m) => (int)($m['Overdue'] ?? 0)) > 0) ? 'border-danger' : 'border-info' ?>">
+    <div class="card-body">
+        <h6 class="fw-bold mb-3">
+            <i class="bi bi-wrench text-danger me-2"></i>Maintenance Reminders
+            <span class="badge bg-danger ms-2"><?= count($dueMaintenance) ?></span>
+        </h6>
+        <p class="text-muted mb-2" style="font-size:0.78rem;">Scheduled within the next 7 days or overdue.</p>
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr><th>Machine</th><th>Type</th><th>Scheduled Date</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                <?php foreach ($dueMaintenance as $m): ?>
+                <tr>
+                    <td class="fw-semibold"><?= sanitize($m['MachineName'] ?? 'Unassigned') ?></td>
+                    <td><?= sanitize($m['MaintenanceType'] ?? '') ?></td>
+                    <td><?= sanitize($m['MaintenanceDate'] ?? '') ?></td>
+                    <td>
+                        <?php if ((int)($m['Overdue'] ?? 0) === 1): ?>
+                        <span class="badge bg-danger">Overdue</span>
+                        <?php else: ?>
+                        <span class="badge bg-info text-dark">Due in <?= max(0, (int)ceil((strtotime((string)$m['MaintenanceDate']) - time()) / 86400)) ?>d</span>
+                        <?php endif; ?>
+                    </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

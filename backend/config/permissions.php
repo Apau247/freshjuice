@@ -11,6 +11,13 @@ declare(strict_types=1);
 
 $MODULE_ROUTES = [
     'dashboard'           => 'dashboard',
+    'alerts/low-stock'    => 'inventory_alerts',
+    'alerts/expiry'       => 'inventory_alerts',
+    'reports'             => 'reports',
+    'reports/view'        => 'reports',
+    'reports/export'      => 'reports',
+    'settings/backup'     => 'backup',
+    'settings/restore'    => 'backup',
     'suppliers'           => 'suppliers',
     'suppliers/create'    => 'suppliers',
     'suppliers/edit'      => 'suppliers',
@@ -31,6 +38,7 @@ $MODULE_ROUTES = [
     'production/create'             => 'production',
     'production/edit'               => 'production',
     'production/delete'             => 'production',
+    'production/label'              => 'production',
     'finished-goods'                => 'finished_goods',
     'finished-goods/create'         => 'finished_goods',
     'finished-goods/edit'           => 'finished_goods',
@@ -39,6 +47,7 @@ $MODULE_ROUTES = [
     'quality/create'                => 'quality',
     'quality/edit'                  => 'quality',
     'quality/delete'                => 'quality',
+    'quality/traceability'          => 'quality',
     'certifications'                => 'certifications',
     'certifications/create'         => 'certifications',
     'certifications/edit'           => 'certifications',
@@ -171,7 +180,8 @@ $MODULE_ROUTES = [
 
 $ROLE_PERMISSIONS = [
     'ROLE-001' => [
-        'dashboard'       => 'full', 'suppliers'     => 'full', 'materials'     => 'full',
+        'dashboard'       => 'full', 'inventory_alerts'=> 'full', 'reports'       => 'full',
+        'backup'          => 'full', 'suppliers'     => 'full', 'materials'     => 'full',
         'production'      => 'full', 'finished_goods'=> 'full', 'quality'       => 'full',
         'certifications'  => 'full', 'customers'     => 'full', 'sales'         => 'full',
         'invoicing'       => 'full', 'safety'        => 'full', 'hazards'       => 'full',
@@ -184,7 +194,8 @@ $ROLE_PERMISSIONS = [
         'audit'           => 'full',
     ],
     'ROLE-002' => [
-        'dashboard'       => 'full', 'suppliers'     => 'full', 'materials'     => 'full',
+        'dashboard'       => 'full', 'inventory_alerts'=> 'full', 'reports'       => 'view',
+        'backup'          => 'no',   'suppliers'     => 'full', 'materials'     => 'full',
         'production'      => 'full', 'finished_goods'=> 'full', 'quality'       => 'full',
         'certifications'  => 'full', 'customers'     => 'full', 'sales'         => 'full',
         'invoicing'       => 'no',   'safety'        => 'full', 'hazards'       => 'full',
@@ -197,7 +208,8 @@ $ROLE_PERMISSIONS = [
         'audit'           => 'view',
     ],
     'ROLE-003' => [
-        'dashboard'       => 'full', 'suppliers'     => 'view', 'materials'     => 'full',
+        'dashboard'       => 'full', 'inventory_alerts'=> 'full', 'reports'       => 'view',
+        'backup'          => 'no',   'suppliers'     => 'view', 'materials'     => 'full',
         'production'      => 'full', 'finished_goods'=> 'full', 'quality'       => 'view',
         'certifications'  => 'no',   'customers'     => 'no',   'sales'         => 'no',
         'invoicing'       => 'no',   'safety'        => 'full', 'hazards'       => 'full',
@@ -210,7 +222,8 @@ $ROLE_PERMISSIONS = [
         'audit'           => 'no',
     ],
     'ROLE-004' => [
-        'dashboard'       => 'full', 'suppliers'     => 'full', 'materials'     => 'full',
+        'dashboard'       => 'full', 'inventory_alerts'=> 'full', 'reports'       => 'view',
+        'backup'          => 'no',   'suppliers'     => 'full', 'materials'     => 'full',
         'production'      => 'view', 'finished_goods'=> 'full', 'quality'       => 'no',
         'certifications'  => 'no',   'customers'     => 'no',   'sales'         => 'no',
         'invoicing'       => 'no',   'safety'        => 'full', 'hazards'       => 'full',
@@ -223,7 +236,8 @@ $ROLE_PERMISSIONS = [
         'audit'           => 'no',
     ],
     'ROLE-005' => [
-        'dashboard'       => 'full', 'suppliers'     => 'view', 'materials'     => 'no',
+        'dashboard'       => 'full', 'inventory_alerts'=> 'view', 'reports'       => 'view',
+        'backup'          => 'no',   'suppliers'     => 'view', 'materials'     => 'no',
         'production'      => 'view', 'finished_goods'=> 'view', 'quality'       => 'full',
         'certifications'  => 'full', 'customers'     => 'no',   'sales'         => 'no',
         'invoicing'       => 'no',   'safety'        => 'full', 'hazards'       => 'full',
@@ -236,7 +250,8 @@ $ROLE_PERMISSIONS = [
         'audit'           => 'no',
     ],
     'ROLE-006' => [
-        'dashboard'       => 'full', 'suppliers'     => 'no',   'materials'     => 'no',
+        'dashboard'       => 'full', 'inventory_alerts'=> 'view', 'reports'       => 'view',
+        'backup'          => 'no',   'suppliers'     => 'no',   'materials'     => 'no',
         'production'      => 'no',   'finished_goods'=> 'view', 'quality'       => 'no',
         'certifications'  => 'no',   'customers'     => 'full', 'sales'         => 'full',
         'invoicing'       => 'full', 'safety'        => 'full', 'hazards'       => 'full',
@@ -249,7 +264,8 @@ $ROLE_PERMISSIONS = [
         'audit'           => 'no',
     ],
     'ROLE-007' => [
-        'dashboard'       => 'full', 'suppliers'     => 'view', 'materials'     => 'view',
+        'dashboard'       => 'full', 'inventory_alerts'=> 'view', 'reports'       => 'view',
+        'backup'          => 'no',   'suppliers'     => 'view', 'materials'     => 'view',
         'production'      => 'no',   'finished_goods'=> 'view', 'quality'       => 'no',
         'certifications'  => 'no',   'customers'     => 'view', 'sales'         => 'view',
         'invoicing'       => 'full', 'safety'        => 'full', 'hazards'       => 'view',
@@ -262,7 +278,8 @@ $ROLE_PERMISSIONS = [
         'audit'           => 'no',
     ],
     'ROLE-008' => [
-        'dashboard'       => 'full', 'suppliers'     => 'no',   'materials'     => 'no',
+        'dashboard'       => 'full', 'inventory_alerts'=> 'view', 'reports'       => 'view',
+        'backup'          => 'no',   'suppliers'     => 'no',   'materials'     => 'no',
         'production'      => 'view', 'finished_goods'=> 'no',   'quality'       => 'no',
         'certifications'  => 'no',   'customers'     => 'no',   'sales'         => 'no',
         'invoicing'       => 'no',   'safety'        => 'full', 'hazards'       => 'full',
