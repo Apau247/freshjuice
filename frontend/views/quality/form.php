@@ -3,6 +3,7 @@
     <h5 class="fw-bold mb-0"><i class="bi bi-check-circle me-2"></i><?= $pageTitle ?></h5>
     <a href="?route=quality" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
 </div>
+
 <div class="card border-0 shadow-sm">
     <div class="card-body">
         <form method="POST" action="?route=<?= isset($inspection) ? 'quality/edit&id=' . urlencode($inspection['InspectionID']) : 'quality/create' ?>" class="row g-3">
