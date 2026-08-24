@@ -21,6 +21,13 @@ class MaintenanceController extends Controller {
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $machineId = $this->getInput('machine_id');
+            $err = $this->checkNumber('Downtime', (float)$this->getInput('downtime', '0'), 0)
+                ?? $this->checkNumber('Cost', (float)$this->getInput('cost', '0'), 0);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('maintenance/create');
+                return;
+            }
             $this->model->create([
                 'MaintenanceID' => generateId('MNT'),
                 'MaintenanceType' => $this->getInput('maintenance_type', 'Preventive'),
@@ -49,6 +56,13 @@ class MaintenanceController extends Controller {
         $rec = $this->model->find($id);
         if (!$rec) { setFlash('error', 'Not found.'); $this->redirect('maintenance'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->checkNumber('Downtime', (float)$this->getInput('downtime', '0'), 0)
+                ?? $this->checkNumber('Cost', (float)$this->getInput('cost', '0'), 0);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('maintenance/edit&id=' . urlencode($id));
+                return;
+            }
             $this->model->update($id, [
                 'MaintenanceType' => $this->getInput('maintenance_type'),
                 'MaintenanceDate' => $this->getInput('maintenance_date'),

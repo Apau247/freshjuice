@@ -46,9 +46,71 @@ class ReportModel extends Model
         'oee'           => 'efficiency',
     ];
 
+    /**
+     * Department partition of every report: which unit owns the underlying data.
+     * A manager whose staff.Department matches one of these values only sees (and
+     * can only print) the reports of their own department; "Management" oversees
+     * all departments, and so does the administrator.
+     */
+    public const DEPARTMENT_OF = [
+        'production'    => 'Production',
+        'waste'         => 'Production',
+        'oee'           => 'Production',
+        'inventory'     => 'Inventory',
+        'packaging'     => 'Inventory',
+        'supplier'      => 'Inventory',
+        'sales'         => 'Sales',
+        'profit-loss'   => 'Finance',
+        'maintenance'   => 'Maintenance',
+        'downtime'      => 'Maintenance',
+        'power'         => 'Maintenance',
+        'water'         => 'Maintenance',
+        'certification' => 'Quality Assurance',
+        'qaqc'          => 'Quality Assurance',
+        'sop'           => 'Management',
+    ];
+
+    public const REPORT_ROLES = ['ROLE-001', 'ROLE-002']; // Administrator + Manager only
+
     public static function moduleFor(string $type): ?string
     {
         return self::MODULE_OF[$type] ?? null;
+    }
+
+    public static function departmentFor(string $type): ?string
+    {
+        return self::DEPARTMENT_OF[$type] ?? null;
+    }
+
+    /** Department of the signed-in user, taken from their staff record. */
+    public function departmentForUser(?string $userId): ?string
+    {
+        if (!$userId) return null;
+        $rows = $this->query(
+            "SELECT Department FROM staff WHERE UserID = ? LIMIT 1",
+            [$userId]
+        );
+        $dept = $rows[0]['Department'] ?? null;
+        return ($dept !== null && $dept !== '') ? (string)$dept : null;
+    }
+
+    /**
+     * Report types the given role/department may open and print:
+     * administrator -> everything; factory-wide Management -> everything;
+     * any other manager -> only the reports owned by their department.
+     */
+    public static function visibleTypes(string $roleId, ?string $department): array
+    {
+        if ($roleId === 'ROLE-001') return self::TYPES;
+        if ($department === null || $department === 'Management') {
+            return $roleId === 'ROLE-002' ? self::TYPES : [];
+        }
+        $dept = $department;
+        return array_filter(
+            self::TYPES,
+            fn($label, $type) => self::departmentFor($type) === $dept,
+            ARRAY_FILTER_USE_BOTH
+        );
     }
 
     public function build(string $type, string $from, string $to): array

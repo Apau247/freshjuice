@@ -23,11 +23,11 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Consumption (kWh) <span class="text-danger">*</span></label>
-                <input type="number" step="0.01" name="consumption_kwh" class="form-control" value="<?= sanitize((string)($record['ConsumptionKWh'] ?? '')) ?>" required>
+                <input type="number" min="0" step="0.01" name="consumption_kwh" class="form-control" value="<?= sanitize((string)($record['ConsumptionKWh'] ?? '')) ?>" required>
             </div>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Cost ($)</label>
-                <input type="number" step="0.01" name="cost" class="form-control" value="<?= sanitize((string)($record['Cost'] ?? '0')) ?>">
+                <input type="number" min="0" step="0.01" name="cost" class="form-control" value="<?= sanitize((string)($record['Cost'] ?? '0')) ?>">
             </div>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Notes</label>

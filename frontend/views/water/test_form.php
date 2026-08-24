@@ -34,23 +34,23 @@
             </div>
             <div class="col-md-3">
                 <label class="form-label fw-semibold">pH Level</label>
-                <input type="number" step="0.01" name="ph_level" class="form-control" value="<?= sanitize((string)($test['pH_Level'] ?? '')) ?>">
+                <input type="number" min="0" max="14" step="0.01" name="ph_level" class="form-control" value="<?= sanitize((string)($test['pH_Level'] ?? '')) ?>">
             </div>
             <div class="col-md-3">
                 <label class="form-label fw-semibold">Turbidity</label>
-                <input type="number" step="0.01" name="turbidity" class="form-control" value="<?= sanitize((string)($test['Turbidity'] ?? '')) ?>">
+                <input type="number" min="0" step="0.01" name="turbidity" class="form-control" value="<?= sanitize((string)($test['Turbidity'] ?? '')) ?>">
             </div>
             <div class="col-md-3">
                 <label class="form-label fw-semibold">TDS</label>
-                <input type="number" step="0.01" name="tds" class="form-control" value="<?= sanitize((string)($test['TDS'] ?? '')) ?>">
+                <input type="number" min="0" step="0.01" name="tds" class="form-control" value="<?= sanitize((string)($test['TDS'] ?? '')) ?>">
             </div>
             <div class="col-md-3">
                 <label class="form-label fw-semibold">Chlorine</label>
-                <input type="number" step="0.01" name="chlorine" class="form-control" value="<?= sanitize((string)($test['Chlorine'] ?? '')) ?>">
+                <input type="number" min="0" step="0.01" name="chlorine" class="form-control" value="<?= sanitize((string)($test['Chlorine'] ?? '')) ?>">
             </div>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Bacteria Count</label>
-                <input type="number" step="0.01" name="bacteria_count" class="form-control" value="<?= sanitize((string)($test['BacteriaCount'] ?? '')) ?>">
+                <input type="number" min="0" step="0.01" name="bacteria_count" class="form-control" value="<?= sanitize((string)($test['BacteriaCount'] ?? '')) ?>">
             </div>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Tested By</label>
@@ -72,3 +72,5 @@
         </form>
     </div>
 </div>
+
+

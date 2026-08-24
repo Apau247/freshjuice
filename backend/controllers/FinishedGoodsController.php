@@ -17,6 +17,12 @@ class FinishedGoodsController extends Controller {
 
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->checkNumber('Quantity available', (float)$this->getInput('quantity_available', '0'), 0);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('finished-goods/create');
+                return;
+            }
             $this->model->create([
                 'FG_ID' => generateId('FG'),
                 'BatchID' => $this->getInput('batch_id') ?: null,
@@ -38,6 +44,12 @@ class FinishedGoodsController extends Controller {
         $item = $this->model->find($id);
         if (!$item) { setFlash('error', 'Not found.'); $this->redirect('finished-goods'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->checkNumber('Quantity available', (float)$this->getInput('quantity_available', '0'), 0);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('finished-goods/edit&id=' . urlencode($id));
+                return;
+            }
             $this->model->update($id, [
                 'ExpiryDate' => $this->getInput('expiry_date'),
                 'QuantityAvailable' => (float)$this->getInput('quantity_available', '0'),

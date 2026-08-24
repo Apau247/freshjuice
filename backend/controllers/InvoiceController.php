@@ -17,6 +17,14 @@ class InvoiceController extends Controller {
 
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->checkNumber('Amount', (float)$this->getInput('amount', '0'), 0)
+                ?? $this->checkNumber('Tax', (float)$this->getInput('tax', '0'), 0)
+                ?? $this->checkNumber('Total due', (float)$this->getInput('total_due', '0'), 0);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('invoicing/create');
+                return;
+            }
             $this->model->create([
                 'InvoiceID' => generateId('INV'),
                 'InvoiceDate' => $this->getInput('invoice_date'),
@@ -39,6 +47,14 @@ class InvoiceController extends Controller {
         $inv = $this->model->find($id);
         if (!$inv) { setFlash('error', 'Not found.'); $this->redirect('invoicing'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->checkNumber('Amount', (float)$this->getInput('amount', '0'), 0)
+                ?? $this->checkNumber('Tax', (float)$this->getInput('tax', '0'), 0)
+                ?? $this->checkNumber('Total due', (float)$this->getInput('total_due', '0'), 0);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('invoicing/edit&id=' . urlencode($id));
+                return;
+            }
             $this->model->update($id, [
                 'InvoiceDate' => $this->getInput('invoice_date'),
                 'Amount' => (float)$this->getInput('amount', '0'),

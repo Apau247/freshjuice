@@ -26,15 +26,15 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Amount ($) <span class="text-danger">*</span></label>
-                <input type="number" step="0.01" name="amount" class="form-control" value="<?= sanitize((string)($invoice['Amount'] ?? '')) ?>" required>
+                <input type="number" min="0" step="0.01" name="amount" class="form-control" value="<?= sanitize((string)($invoice['Amount'] ?? '')) ?>" required>
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Tax ($)</label>
-                <input type="number" step="0.01" name="tax" class="form-control" value="<?= sanitize((string)($invoice['Tax'] ?? '0')) ?>">
+                <input type="number" min="0" step="0.01" name="tax" class="form-control" value="<?= sanitize((string)($invoice['Tax'] ?? '0')) ?>">
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Total Due ($)</label>
-                <input type="number" step="0.01" name="total_due" class="form-control" value="<?= sanitize((string)($invoice['TotalDue'] ?? '0')) ?>">
+                <input type="number" min="0" step="0.01" name="total_due" class="form-control" value="<?= sanitize((string)($invoice['TotalDue'] ?? '0')) ?>">
             </div>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Payment Status</label>

@@ -40,11 +40,11 @@
             </div>
             <div class="col-md-3">
                 <label class="form-label fw-semibold">Total Items</label>
-                <input type="number" name="total_items" class="form-control" value="<?= sanitize((string)($checklist['TotalItems'] ?? '0')) ?>">
+                <input type="number" min="0" name="total_items" class="form-control" value="<?= sanitize((string)($checklist['TotalItems'] ?? '0')) ?>">
             </div>
             <div class="col-md-3">
                 <label class="form-label fw-semibold">Completed Items</label>
-                <input type="number" name="completed_items" class="form-control" value="<?= sanitize((string)($checklist['CompletedItems'] ?? '0')) ?>">
+                <input type="number" min="0" name="completed_items" class="form-control" value="<?= sanitize((string)($checklist['CompletedItems'] ?? '0')) ?>">
             </div>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Approval Status</label>

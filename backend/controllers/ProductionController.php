@@ -110,6 +110,11 @@ class ProductionController extends Controller {
             $oldStatus = (string)$batch['Status'];
             $newStatus = $this->getInput('status', $oldStatus);
             $qty = (float)$this->getInput('quantity', (string)$batch['Quantity']);
+            if ($err = $this->checkNumber('Quantity', $qty, 0.01)) {
+                setFlash('error', $err);
+                $this->redirect('production/edit&id=' . urlencode($id));
+                return;
+            }
 
             // Mirror the creation rule ("Cancelled batches consume nothing"):
             // cancelling releases the materials deducted when the batch was

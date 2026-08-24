@@ -21,11 +21,11 @@
             </div>
             <div class="col-md-3">
                 <label class="form-label fw-semibold">Participants</label>
-                <input type="number" name="ParticipantsCount" class="form-control" value="<?= sanitize((string)($drill['ParticipantsCount'] ?? '')) ?>">
+                <input type="number" min="0" name="ParticipantsCount" class="form-control" value="<?= sanitize((string)($drill['ParticipantsCount'] ?? '')) ?>">
             </div>
             <div class="col-md-3">
                 <label class="form-label fw-semibold">Duration (min)</label>
-                <input type="number" name="DurationMinutes" class="form-control" value="<?= sanitize((string)($drill['DurationMinutes'] ?? '')) ?>">
+                <input type="number" min="0" name="DurationMinutes" class="form-control" value="<?= sanitize((string)($drill['DurationMinutes'] ?? '')) ?>">
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Conducted By</label>

@@ -35,7 +35,7 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Quantity Available <span class="text-danger">*</span></label>
-                <input type="number" step="0.01" name="quantity_available" class="form-control" value="<?= sanitize((string)($good['QuantityAvailable'] ?? '')) ?>" required>
+                <input type="number" min="0" step="0.01" name="quantity_available" class="form-control" value="<?= sanitize((string)($good['QuantityAvailable'] ?? '')) ?>" required>
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Unit</label>

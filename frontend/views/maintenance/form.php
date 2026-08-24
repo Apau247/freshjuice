@@ -31,11 +31,11 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Downtime (hours)</label>
-                <input type="number" step="0.1" name="downtime" class="form-control" value="<?= sanitize((string)($record['Downtime'] ?? '0')) ?>">
+                <input type="number" min="0" step="0.1" name="downtime" class="form-control" value="<?= sanitize((string)($record['Downtime'] ?? '0')) ?>">
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Cost ($) <span class="text-danger">*</span></label>
-                <input type="number" step="0.01" name="cost" class="form-control" value="<?= sanitize((string)($record['Cost'] ?? '0')) ?>" required>
+                <input type="number" min="0" step="0.01" name="cost" class="form-control" value="<?= sanitize((string)($record['Cost'] ?? '0')) ?>" required>
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Next Service Date</label>

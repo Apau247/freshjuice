@@ -27,6 +27,7 @@ $map = [
 
     'reports'                   => ['rep',    'ReportController',   'index'],
     'reports/view'              => ['rep',    'ReportController',   'show'],
+    'reports/print'             => ['rep',    'ReportController',   'printView'],
     'reports/export'            => ['rep',    'ReportController',   'exportCsv'],
 
     'settings/backup'           => ['set',    'SettingsController', 'index'],
@@ -77,6 +78,7 @@ $map = [
     'sales/create'              => ['sales',  'SalesController','create'],
     'sales/edit'                => ['sales',  'SalesController','edit'],
     'sales/delete'              => ['sales',  'SalesController','delete'],
+    'sales/receipt'             => ['sales',  'SalesController','receipt'],
 
     'invoicing'                 => ['inv',    'InvoiceController','index'],
     'invoicing/create'          => ['inv',    'InvoiceController','create'],

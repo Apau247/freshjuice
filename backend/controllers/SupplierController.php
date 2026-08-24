@@ -73,6 +73,12 @@ class SupplierController extends Controller {
 
     public function createDelivery(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->checkNumber('Quantity', (float)$this->getInput('quantity', '0'), 0.01);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('suppliers/delivery/create');
+                return;
+            }
             $id = generateId('DEL');
             $this->model->createDelivery([
                 'DeliveryID' => $id, 'SupplierID' => $this->getInput('supplier_id'),
@@ -95,6 +101,12 @@ class SupplierController extends Controller {
     public function editDelivery(): void {
         $id = $this->getInput('id');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->checkNumber('Quantity', (float)$this->getInput('quantity', '0'), 0.01);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('suppliers/delivery/edit&id=' . urlencode($id));
+                return;
+            }
             $this->model->updateDelivery($id, [
                 'SupplierID' => $this->getInput('supplier_id'),
                 'DeliveryDate' => $this->getInput('delivery_date'),

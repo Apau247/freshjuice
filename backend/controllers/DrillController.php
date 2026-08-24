@@ -28,6 +28,14 @@ class DrillController extends Controller
 
         $this->requireCanCreate('drills');
 
+        $err = $this->checkNumber('Participants count', (int)$this->getInput('ParticipantsCount'), 1)
+            ?? $this->checkNumber('Duration (minutes)', (int)$this->getInput('DurationMinutes'), 0);
+        if ($err) {
+            setFlash('error', $err);
+            $this->redirect('safety/drills/create');
+            return;
+        }
+
         $id = generateId('DRL');
         $this->model->create([
             'DrillID' => $id,
@@ -65,6 +73,14 @@ class DrillController extends Controller
         }
 
         $this->requireCanEdit('drills');
+
+        $err = $this->checkNumber('Participants count', (int)$this->getInput('ParticipantsCount'), 1)
+            ?? $this->checkNumber('Duration (minutes)', (int)$this->getInput('DurationMinutes'), 0);
+        if ($err) {
+            setFlash('error', $err);
+            $this->redirect('safety/drills/edit&id=' . urlencode($id));
+            return;
+        }
 
         $this->model->update($id, [
             'DrillType' => sanitize($this->getInput('DrillType')),

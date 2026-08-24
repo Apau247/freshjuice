@@ -60,6 +60,16 @@ class EfficiencyController extends Controller
             $downtimeMinutes = (float)$this->getInput('downtime_minutes', '0');
             $totalProduced = (int)$this->getInput('total_produced');
             $goodProduced = (int)$this->getInput('good_produced');
+            $err = $this->checkNumber('Planned run time', $plannedRunTime, 0.01)
+                ?? $this->checkNumber('Actual run time', $actualRunTime, 0)
+                ?? $this->checkNumber('Downtime minutes', $downtimeMinutes, 0)
+                ?? $this->checkNumber('Total produced', $totalProduced, 0)
+                ?? $this->checkNumber('Good produced', $goodProduced, 0, $totalProduced);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('efficiency/create');
+                return;
+            }
             $defectCount = $totalProduced - $goodProduced;
 
             $effectiveRunTime = max(0, $plannedRunTime - $downtimeMinutes);
@@ -110,6 +120,16 @@ class EfficiencyController extends Controller
             $downtimeMinutes = (float)$this->getInput('downtime_minutes', '0');
             $totalProduced = (int)$this->getInput('total_produced');
             $goodProduced = (int)$this->getInput('good_produced');
+            $err = $this->checkNumber('Planned run time', $plannedRunTime, 0.01)
+                ?? $this->checkNumber('Actual run time', $actualRunTime, 0)
+                ?? $this->checkNumber('Downtime minutes', $downtimeMinutes, 0)
+                ?? $this->checkNumber('Total produced', $totalProduced, 0)
+                ?? $this->checkNumber('Good produced', $goodProduced, 0, $totalProduced);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('efficiency/edit&id=' . urlencode($id));
+                return;
+            }
             $defectCount = $totalProduced - $goodProduced;
 
             $effectiveRunTime = max(0, $plannedRunTime - $downtimeMinutes);

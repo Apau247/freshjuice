@@ -17,6 +17,12 @@ class WasteController extends Controller {
 
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->checkNumber('Quantity', (float)$this->getInput('quantity', '0'), 0);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('waste/create');
+                return;
+            }
             $this->model->create([
                 'WasteID' => generateId('WST'),
                 'Date' => $this->getInput('date'),
@@ -40,6 +46,12 @@ class WasteController extends Controller {
         $record = $this->model->find($id);
         if (!$record) { setFlash('error', 'Not found.'); $this->redirect('waste'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->checkNumber('Quantity', (float)$this->getInput('quantity', '0'), 0);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('waste/edit&id=' . urlencode($id));
+                return;
+            }
             $this->model->update($id, [
                 'Date' => $this->getInput('date'),
                 'WasteType' => $this->getInput('waste_type'),

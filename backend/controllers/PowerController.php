@@ -19,6 +19,13 @@ class PowerController extends Controller {
 
     public function createUsage(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->checkNumber('Consumption (kWh)', (float)$this->getInput('consumption_kwh', '0'), 0)
+                ?? $this->checkNumber('Cost', (float)$this->getInput('cost', '0'), 0);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('power/usage/form');
+                return;
+            }
             $id = generateId('PU');
             $this->model->getDb()->prepare(
                 "INSERT INTO power_usage (PowerUsageID, Date, Source, ConsumptionKWh, Cost, Notes) VALUES (?,?,?,?,?,?)"
@@ -40,6 +47,13 @@ class PowerController extends Controller {
         $record = $this->model->findUsage($id);
         if (!$record) { setFlash('error', 'Not found.'); $this->redirect('power'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->checkNumber('Consumption (kWh)', (float)$this->getInput('consumption_kwh', '0'), 0)
+                ?? $this->checkNumber('Cost', (float)$this->getInput('cost', '0'), 0);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('power/usage/edit&id=' . urlencode($id));
+                return;
+            }
             $this->model->updateUsage($id, [
                 'Date' => $this->getInput('date'),
                 'Source' => $this->getInput('source', 'Grid'),
@@ -62,6 +76,13 @@ class PowerController extends Controller {
 
     public function createGeneratorLog(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->checkNumber('Runtime (hrs)', (float)$this->getInput('runtime_hrs', '0'), 0)
+                ?? $this->checkNumber('Fuel used', (float)$this->getInput('fuel_used', '0'), 0);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('power/generator/form');
+                return;
+            }
             $id = generateId('GEN');
             $this->model->getDb()->prepare(
                 "INSERT INTO generator_log (LogID, Date, StartTime, EndTime, RuntimeHrs, FuelUsed, FuelUnit, Reason, Notes) VALUES (?,?,?,?,?,?,?,?,?)"
@@ -85,6 +106,13 @@ class PowerController extends Controller {
         $log = $this->model->findGeneratorLog($id);
         if (!$log) { setFlash('error', 'Not found.'); $this->redirect('power'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->checkNumber('Runtime (hrs)', (float)$this->getInput('runtime_hrs', '0'), 0)
+                ?? $this->checkNumber('Fuel used', (float)$this->getInput('fuel_used', '0'), 0);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('power/generator/edit&id=' . urlencode($id));
+                return;
+            }
             $this->model->updateGeneratorLog($id, [
                 'Date' => $this->getInput('date'),
                 'StartTime' => $this->getInput('start_time'),

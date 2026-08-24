@@ -6,12 +6,16 @@
     </div>
     <div class="d-flex gap-2">
         <a href="?route=reports" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> All Reports</a>
-        <button type="button" class="btn btn-outline-primary btn-sm no-print" onclick="window.print()"><i class="bi bi-printer"></i> Print / PDF</button>
+        <a href="?route=reports/print&type=<?= urlencode($type) ?>&from=<?= urlencode($from) ?>&to=<?= urlencode($to) ?>"
+           target="_blank" rel="noopener"
+           class="btn btn-outline-primary btn-sm" title="Opens a clean printable document (company header, report name and results only)">
+            <i class="bi bi-printer"></i> Print / PDF
+        </a>
         <a href="?route=reports/export&type=<?= urlencode($type) ?>&from=<?= urlencode($from) ?>&to=<?= urlencode($to) ?>" class="btn btn-success btn-sm"><i class="bi bi-filetype-csv"></i> Export CSV</a>
     </div>
 </div>
 
-<div class="card border-0 shadow-sm mb-3 no-print">
+<div class="card border-0 shadow-sm mb-3">
     <div class="card-body py-2">
         <form method="get" action="" class="row g-2 align-items-end">
             <input type="hidden" name="route" value="reports/view">
@@ -46,7 +50,7 @@
 </div>
 <?php endif; ?>
 
-<div class="card border-0 shadow-sm print-area">
+<div class="card border-0 shadow-sm">
     <div class="card-body">
         <?php if (empty($rows)): ?>
         <div class="text-center py-5 text-muted">
@@ -67,12 +71,3 @@
         <?php endif; ?>
     </div>
 </div>
-
-<style>
-    @media print {
-        .sidebar, .navbar, .no-print { display: none !important; }
-        #page-content-wrapper { width: 100% !important; margin: 0 !important; }
-        .container-fluid { padding: 0 !important; }
-        .card { box-shadow: none !important; border: 1px solid #dee2e6 !important; }
-    }
-</style>

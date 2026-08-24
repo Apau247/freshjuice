@@ -9,7 +9,8 @@
             <?= csrfField() ?>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Order Date <span class="text-danger">*</span></label>
-                <input type="date" name="order_date" class="form-control" value="<?= sanitize($order['OrderDate'] ?? $order['order_date'] ?? date('Y-m-d')) ?>" required>
+                <input type="date" name="order_date" class="form-control" max="<?= date('Y-m-d') ?>" value="<?= sanitize($order['OrderDate'] ?? $order['order_date'] ?? date('Y-m-d')) ?>" required>
+                <div class="form-text">Cannot be a future date.</div>
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Customer <span class="text-danger">*</span></label>
@@ -31,11 +32,13 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Quantity <span class="text-danger">*</span></label>
-                <input type="number" step="0.01" name="quantity" class="form-control" value="<?= sanitize((string)($order['Quantity'] ?? '')) ?>" required>
+                <input type="number" step="0.01" min="0.01" max="1000000" name="quantity" class="form-control" value="<?= sanitize((string)($order['Quantity'] ?? '')) ?>" required>
+                <div class="invalid-feedback">Quantity must be a number greater than zero.</div>
             </div>
             <div class="col-md-4">
-                <label class="form-label fw-semibold">Total Amount ($)</label>
-                <input type="number" step="0.01" name="total_amount" class="form-control" value="<?= sanitize((string)($order['TotalAmount'] ?? '0')) ?>">
+                <label class="form-label fw-semibold">Total Amount ($) <span class="text-danger">*</span></label>
+                <input type="number" step="0.01" min="0" name="total_amount" class="form-control" value="<?= sanitize((string)($order['TotalAmount'] ?? '0')) ?>" required>
+                <div class="invalid-feedback">Total amount cannot be negative.</div>
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Status</label>

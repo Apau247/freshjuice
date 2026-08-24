@@ -281,4 +281,89 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     });
+
+    /* ═══════════════════════════════════════════
+       FORM VALIDATION NET — runs on every form.
+       Number fields: rejects blanks/negatives/out-of-range values with an
+       inline error; dates respect min/max; required textboxes must be filled.
+       Server-side validation still guards every module -- this just keeps the
+       UX smooth and catches mistakes before a submit round-trip.
+       ═══════════════════════════════════════════ */
+    var ensureFeedback = function (field) {
+        if (field.parentElement.querySelector('.invalid-feedback')) return;
+        var msg = document.createElement('div');
+        msg.className = 'invalid-feedback';
+        field.parentElement.appendChild(msg);
+    };
+
+    var messageFor = function (field) {
+        if (field.validity.valueMissing) return 'This field is required.';
+        if (field.validity.badInput)   return 'Please enter a valid number.';
+        if (field.validity.rangeUnderflow) return 'Value cannot be less than ' + field.min + '.';
+        if (field.validity.rangeOverflow)  return 'Value cannot be greater than ' + field.max + '.';
+        if (field.validity.stepMismatch) return 'Please use steps of ' + (field.step || '1') + '.';
+        if (field.validity.tooLong) return 'Too many characters.';
+        return field.validationMessage || 'Invalid value.';
+    };
+
+    var validateField = function (field) {
+        // Only enforce custom checks on inputs that actually declare constraints;
+        // everything else falls through to native HTML5 validation.
+        var constrained = field.required || field.hasAttribute('min') ||
+                          field.hasAttribute('max') || field.pattern;
+        if (!constrained) { field.classList.remove('is-invalid'); return true; }
+
+        var ok = field.checkValidity();
+        if (!ok) {
+            ensureFeedback(field);
+            var fb = field.parentElement.querySelector('.invalid-feedback');
+            if (fb) fb.textContent = messageFor(field);
+            field.classList.add('is-invalid');
+        } else {
+            field.classList.remove('is-invalid');
+        }
+        return ok;
+    };
+
+    document.querySelectorAll('form').forEach(function (form) {
+        // Live feedback: clear the red border as soon as the user fixes a field.
+        form.addEventListener('input', function (e) {
+            var f = e.target;
+            if (f.classList && f.classList.contains('is-invalid') && f.checkValidity()) {
+                f.classList.remove('is-invalid');
+            }
+        });
+
+        form.addEventListener('submit', function (e) {
+            if (form.dataset.validated === '1') return; // already passed once
+            var fields = form.querySelectorAll('input, select, textarea');
+            var firstBad = null;
+
+            fields.forEach(function (f) {
+                // Skip buttons/hidden/csrf inputs
+                if (!['INPUT', 'SELECT', 'TEXTAREA'].includes(f.tagName)) return;
+                if (f.type === 'hidden') return;
+                if (!validateField(f) && !firstBad) firstBad = f;
+            });
+
+            if (firstBad) {
+                e.preventDefault();
+                firstBad.focus();
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Check the highlighted field',
+                        text: firstBad.parentElement.querySelector('.invalid-feedback')
+                            ? firstBad.parentElement.querySelector('.invalid-feedback').textContent
+                            : 'Some fields need your attention.',
+                        toast: true, position: 'top-end',
+                        showConfirmButton: false, timer: 3500
+                    });
+                }
+                return;
+            }
+            form.dataset.validated = '1'; // allow the submit; reset for back-nav
+            setTimeout(function () { delete form.dataset.validated; }, 5000);
+        });
+    });
 });

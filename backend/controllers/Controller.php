@@ -22,6 +22,24 @@ abstract class Controller
         require APP_ROOT . '/frontend/views/layouts/main.php';
     }
 
+    /**
+     * Render a view into the bare print layout: company letterhead + document
+     * title + content only -- no sidebar, navbar or app chrome. Used for
+     * printable documents (reports, receipts) that must show nothing but the
+     * results and their heading.
+     */
+    protected function renderPrint(string $view, array $data = [], string $docTitle = ''): void
+    {
+        extract($data);
+        $viewFile = APP_ROOT . '/frontend/views/' . $this->viewPath . '/' . $view . '.php';
+        if (!file_exists($viewFile)) throw new RuntimeException("View not found: {$view}");
+        ob_start();
+        require $viewFile;
+        $printContent = ob_get_clean();
+        $printTitle   = $docTitle;
+        require APP_ROOT . '/frontend/views/layouts/print.php';
+    }
+
     protected function redirect(string $route): void
     {
         header("Location: ?route={$route}");
@@ -31,6 +49,20 @@ abstract class Controller
     protected function getInput(string $key, string $default = ''): string
     {
         return sanitize($_POST[$key] ?? $_GET[$key] ?? $default);
+    }
+
+    /**
+     * Server-side range check for one numeric field. Returns a human-readable
+     * error message, or null when the value is in range. Chain with ?? to
+     * validate several fields and keep the first failure:
+     *   $err = $this->checkNumber('Quantity', $qty, 0.01) ?? $this->checkNumber('Cost', $cost, 0);
+     */
+    protected function checkNumber(string $label, float $value, float $min, ?float $max = null): ?string
+    {
+        if (!is_finite($value)) return "$label must be a valid number.";
+        if ($value < $min)      return "$label cannot be less than $min.";
+        if ($max !== null && $value > $max) return "$label cannot be greater than $max.";
+        return null;
     }
 
     protected function requireRole(string ...$roleIds): void

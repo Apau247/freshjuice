@@ -18,22 +18,17 @@ class ReportController extends Controller {
     }
 
     public function index(): void {
-        // Describe each report card with the modules the signed-in user can see.
-        $types = ReportModel::TYPES;
-        $visible = array_filter($types, fn($t) => self::moduleFor($t) === null || can(self::moduleFor($t)), ARRAY_FILTER_USE_KEY);
+        $this->guardReports();
+        // Only the report cards this user's role AND department may open.
+        $visible = $this->allowedTypes();
         $this->render('index', ['types' => $visible]);
     }
 
     public function show(): void {
+        $this->guardReports();
         $type = $this->getInput('type');
-        if (!isset(ReportModel::TYPES[$type])) {
-            setFlash('error', 'Unknown report type.');
-            $this->redirect('reports');
-            return;
-        }
-        $module = ReportModel::moduleFor($type);
-        if ($module && !can($module)) {
-            setFlash('error', 'You do not have permission to view this report.');
+        if (!isset(ReportModel::TYPES[$type]) || !isset($this->allowedTypes()[$type])) {
+            setFlash('error', 'Unknown report or not available for your department.');
             $this->redirect('reports');
             return;
         }
@@ -47,14 +42,32 @@ class ReportController extends Controller {
         $this->render('show', $data);
     }
 
-    public function exportCsv(): void {
+    /**
+     * Dedicated printable document: company letterhead + report name +
+     * summary + results table only -- the app chrome is never printed.
+     */
+    public function printView(): void {
+        $this->guardReports();
         $type = $this->getInput('type');
-        if (!isset(ReportModel::TYPES[$type]) || !can('reports')) {
+        if (!isset(ReportModel::TYPES[$type]) || !isset($this->allowedTypes()[$type])) {
+            setFlash('error', 'Unknown report or not available for your department.');
             $this->redirect('reports');
             return;
         }
-        $module = ReportModel::moduleFor($type);
-        if ($module && !can($module)) {
+        [$from, $to] = $this->range();
+        $data = $this->reports->build($type, $from, $to);
+        $data['type'] = $type;
+        $data['from'] = $from;
+        $data['to']   = $to;
+        logAudit($_SESSION['user_id'] ?? null, 'PRINT', 'Reports', $type, "Printed {$data['title']} ($from to $to)");
+        $this->renderPrint('print', $data, $data['title']);
+    }
+
+    public function exportCsv(): void {
+        if (!$this->reportsAllowed()) { $this->redirect('dashboard'); return; }
+        $type = $this->getInput('type');
+        if (!isset(ReportModel::TYPES[$type]) || !isset($this->allowedTypes()[$type])) {
+            setFlash('error', 'Unknown report or not available for your department.');
             $this->redirect('reports');
             return;
         }
@@ -79,6 +92,35 @@ class ReportController extends Controller {
         fclose($out);
         logAudit($_SESSION['user_id'] ?? null, 'EXPORT', 'Reports', $type, "Exported {$data['title']} CSV");
         exit;
+    }
+
+    /** Reports centre is restricted to Administrator and Manager roles. */
+    private function reportsAllowed(): bool {
+        return hasRole(...ReportModel::REPORT_ROLES);
+    }
+
+    private function guardReports(): void {
+        if (!$this->reportsAllowed()) {
+            setFlash('error', 'Reports are restricted to administrators and managers.');
+            $this->redirect('dashboard');
+        }
+    }
+
+    /**
+     * Partitioned report list for the signed-in manager: role gate, then
+     * department partition, then the underlying module permission.
+     */
+    private function allowedTypes(): array {
+        static $cached = null;
+        if ($cached !== null) return $cached;
+        $user = currentUser();
+        $types = ReportModel::visibleTypes($user['role_id'] ?? '', $this->reports->departmentForUser($user['id'] ?? null));
+        $cached = array_filter(
+            $types,
+            fn($t) => ReportModel::moduleFor($t) === null || can(ReportModel::moduleFor($t)),
+            ARRAY_FILTER_USE_KEY
+        );
+        return $cached;
     }
 
     /** Validated date range (defaults to current month). */

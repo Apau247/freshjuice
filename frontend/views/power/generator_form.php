@@ -21,11 +21,11 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Runtime (hours)</label>
-                <input type="number" step="0.1" name="runtime_hrs" class="form-control" value="<?= sanitize((string)($record['RuntimeHrs'] ?? '0')) ?>">
+                <input type="number" min="0" step="0.1" name="runtime_hrs" class="form-control" value="<?= sanitize((string)($record['RuntimeHrs'] ?? '0')) ?>">
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Fuel Used</label>
-                <input type="number" step="0.01" name="fuel_used" class="form-control" value="<?= sanitize((string)($record['FuelUsed'] ?? '0')) ?>">
+                <input type="number" min="0" step="0.01" name="fuel_used" class="form-control" value="<?= sanitize((string)($record['FuelUsed'] ?? '0')) ?>">
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Fuel Unit</label>

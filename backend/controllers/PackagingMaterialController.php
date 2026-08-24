@@ -16,11 +16,20 @@ class PackagingMaterialController extends Controller {
 
     public function create(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $currentStock = (float)$this->getInput('current_stock', '0');
+            $minStock = (float)$this->getInput('min_stock', '0');
+            $err = $this->checkNumber('Current stock', $currentStock, 0)
+                ?? $this->checkNumber('Minimum stock', $minStock, 0);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('materials/packaging/create');
+                return;
+            }
             $this->model->create([
                 'PackageID' => generateId('PKG'), 'Name' => $this->getInput('name'),
                 'Type' => $this->getInput('type'), 'Unit' => $this->getInput('unit', 'pcs'),
-                'CurrentStock' => (float)$this->getInput('current_stock', '0'),
-                'MinStock' => (float)$this->getInput('min_stock', '0'),
+                'CurrentStock' => $currentStock,
+                'MinStock' => $minStock,
             ]);
             setFlash('success', 'Packaging material created.');
             $this->redirect('materials/packaging');
@@ -34,11 +43,20 @@ class PackagingMaterialController extends Controller {
         $item = $this->model->find($id);
         if (!$item) { setFlash('error', 'Not found.'); $this->redirect('materials/packaging'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $currentStock = (float)$this->getInput('current_stock', '0');
+            $minStock = (float)$this->getInput('min_stock', '0');
+            $err = $this->checkNumber('Current stock', $currentStock, 0)
+                ?? $this->checkNumber('Minimum stock', $minStock, 0);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('materials/packaging/edit&id=' . urlencode($id));
+                return;
+            }
             $this->model->update($id, [
                 'Name' => $this->getInput('name'), 'Type' => $this->getInput('type'),
                 'Unit' => $this->getInput('unit'),
-                'CurrentStock' => (float)$this->getInput('current_stock', '0'),
-                'MinStock' => (float)$this->getInput('min_stock', '0'),
+                'CurrentStock' => $currentStock,
+                'MinStock' => $minStock,
             ]);
             setFlash('success', 'Packaging material updated.');
             $this->redirect('materials/packaging');

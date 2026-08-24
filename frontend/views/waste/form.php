@@ -34,7 +34,7 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Quantity <span class="text-danger">*</span></label>
-                <input type="number" step="0.01" name="quantity" class="form-control" value="<?= sanitize((string)($record['Quantity'] ?? '')) ?>" required>
+                <input type="number" min="0" step="0.01" name="quantity" class="form-control" value="<?= sanitize((string)($record['Quantity'] ?? '')) ?>" required>
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Unit</label>

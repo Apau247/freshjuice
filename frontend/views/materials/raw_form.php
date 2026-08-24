@@ -34,11 +34,11 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Current Stock</label>
-                <input type="number" step="0.01" name="current_stock" class="form-control" value="<?= sanitize((string)($material['CurrentStock'] ?? '0')) ?>">
+                <input type="number" min="0" step="0.01" name="current_stock" class="form-control" value="<?= sanitize((string)($material['CurrentStock'] ?? '0')) ?>">
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Min Stock Level</label>
-                <input type="number" step="0.01" name="min_stock" class="form-control" value="<?= sanitize((string)($material['MinStock'] ?? '0')) ?>">
+                <input type="number" min="0" step="0.01" name="min_stock" class="form-control" value="<?= sanitize((string)($material['MinStock'] ?? '0')) ?>">
             </div>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Supplier</label>

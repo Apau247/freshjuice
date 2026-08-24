@@ -65,6 +65,15 @@ class SopController extends Controller {
 
     public function createChecklist(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $totalItems = (int)$this->getInput('total_items', '0');
+            $completedItems = (int)$this->getInput('completed_items', '0');
+            $err = $this->checkNumber('Total items', $totalItems, 0)
+                ?? $this->checkNumber('Completed items', $completedItems, 0, $totalItems);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('sops/checklist/form');
+                return;
+            }
             $id = generateId('CHK');
             $this->model->createChecklist([
                 'ChecklistID' => $id,
@@ -103,6 +112,13 @@ class SopController extends Controller {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $totalItems = max(0, (int)($checklist['TotalItems'] ?? 0));
+            $err = $this->checkNumber('Completed items', (int)$this->getInput('completed_items', '0'), 0, $totalItems);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('sops/checklist/edit&id=' . urlencode($id));
+                return;
+            }
             $this->model->updateChecklist($id, [
                 'CompletedItems' => (int)$this->getInput('completed_items', '0'),
                 'ApprovalStatus' => $this->getInput('approval_status'),

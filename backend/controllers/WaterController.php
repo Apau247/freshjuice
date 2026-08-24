@@ -20,6 +20,12 @@ class WaterController extends Controller {
 
     public function createUsage(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->checkNumber('Quantity', (float)$this->getInput('quantity', '0'), 0);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('water/usage/form');
+                return;
+            }
             $id = generateId('WU');
             $this->model->getDb()->prepare(
                 "INSERT INTO water_usage (WaterUsageID, Date, UsageType, Quantity, Unit, Purpose, RecordedBy) VALUES (?,?,?,?,?,?,?)"
@@ -41,6 +47,12 @@ class WaterController extends Controller {
         $record = $this->model->findUsage($id);
         if (!$record) { setFlash('error', 'Not found.'); $this->redirect('water'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->checkNumber('Quantity', (float)$this->getInput('quantity', '0'), 0);
+            if ($err) {
+                setFlash('error', $err);
+                $this->redirect('water/usage/edit&id=' . urlencode($id));
+                return;
+            }
             $this->model->updateUsage($id, [
                 'Date' => $this->getInput('date'),
                 'UsageType' => $this->getInput('usage_type'),
@@ -63,6 +75,12 @@ class WaterController extends Controller {
 
     public function createTest(): void {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->validateTestValues();
+            if ($err !== null) {
+                setFlash('error', $err);
+                $this->redirect('water/test/form');
+                return;
+            }
             $id = generateId('WT');
             $this->model->getDb()->prepare(
                 "INSERT INTO water_quality_tests (WaterTestID, TestDate, TestType, pH_Level, Turbidity, TDS, Chlorine, BacteriaCount, Result, Notes, TestedBy) VALUES (?,?,?,?,?,?,?,?,?,?,?)"
@@ -87,6 +105,12 @@ class WaterController extends Controller {
         $test = $this->model->findTest($id);
         if (!$test) { setFlash('error', 'Not found.'); $this->redirect('water'); return; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $err = $this->validateTestValues();
+            if ($err !== null) {
+                setFlash('error', $err);
+                $this->redirect('water/test/edit&id=' . urlencode($id));
+                return;
+            }
             $this->model->updateTest($id, [
                 'TestDate' => $this->getInput('test_date'),
                 'TestType' => $this->getInput('test_type'),
@@ -109,5 +133,20 @@ class WaterController extends Controller {
         $this->model->deleteTest($this->getInput('id'));
         setFlash('success', 'Water quality test deleted.');
         $this->redirect('water');
+    }
+
+    /** Water test values are optional, but any provided value must be sane. */
+    private function validateTestValues(): ?string {
+        $ph = $this->getInput('ph_level');
+        if ($ph !== '' && ($v = (float)$ph) !== null) {
+            if ($e = $this->checkNumber('pH level', $v, 0, 14)) return $e;
+        }
+        foreach (['Turbidity' => 'turbidity', 'TDS' => 'tds', 'Chlorine' => 'chlorine', 'Bacteria count' => 'bacteria_count'] as $label => $key) {
+            $raw = $this->getInput($key);
+            if ($raw !== '') {
+                if ($e = $this->checkNumber($label, (float)$raw, 0)) return $e;
+            }
+        }
+        return null;
     }
 }

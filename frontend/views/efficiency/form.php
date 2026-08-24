@@ -32,23 +32,23 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Planned Run Time (min) <span class="text-danger">*</span></label>
-                <input type="number" step="0.01" name="planned_run_time" class="form-control" value="<?= sanitize((string)($efficiency['PlannedRunTime'] ?? '')) ?>" required oninput="calcOEE()">
+                <input type="number" min="0" step="0.01" name="planned_run_time" class="form-control" value="<?= sanitize((string)($efficiency['PlannedRunTime'] ?? '')) ?>" required oninput="calcOEE()">
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Actual Run Time (min) <span class="text-danger">*</span></label>
-                <input type="number" step="0.01" name="actual_run_time" class="form-control" value="<?= sanitize((string)($efficiency['ActualRunTime'] ?? '')) ?>" required oninput="calcOEE()">
+                <input type="number" min="0" step="0.01" name="actual_run_time" class="form-control" value="<?= sanitize((string)($efficiency['ActualRunTime'] ?? '')) ?>" required oninput="calcOEE()">
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Downtime (min)</label>
-                <input type="number" step="0.01" name="downtime_minutes" class="form-control" value="<?= sanitize((string)($efficiency['DowntimeMinutes'] ?? '0')) ?>">
+                <input type="number" min="0" step="0.01" name="downtime_minutes" class="form-control" value="<?= sanitize((string)($efficiency['DowntimeMinutes'] ?? '0')) ?>">
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Total Produced <span class="text-danger">*</span></label>
-                <input type="number" name="total_produced" class="form-control" value="<?= sanitize((string)($efficiency['TotalProduced'] ?? '')) ?>" required oninput="calcOEE()">
+                <input type="number" min="0" name="total_produced" class="form-control" value="<?= sanitize((string)($efficiency['TotalProduced'] ?? '')) ?>" required oninput="calcOEE()">
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Good Produced <span class="text-danger">*</span></label>
-                <input type="number" name="good_produced" class="form-control" value="<?= sanitize((string)($efficiency['GoodProduced'] ?? '')) ?>" required oninput="calcOEE()">
+                <input type="number" min="0" name="good_produced" class="form-control" value="<?= sanitize((string)($efficiency['GoodProduced'] ?? '')) ?>" required oninput="calcOEE()">
             </div>
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Notes</label>

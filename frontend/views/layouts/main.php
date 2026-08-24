@@ -386,9 +386,9 @@
                 <?php endif; ?>
                 <?php endif; ?>
 
-                <?php if (can('reports') || can('efficiency')): ?>
+                <?php if ((hasRole('ROLE-001', 'ROLE-002')) && can('reports') || can('efficiency')): ?>
                 <li class="nav-item"><span class="nav-section">REPORTS</span></li>
-                <?php if (can('reports')): ?>
+                <?php if ((hasRole('ROLE-001', 'ROLE-002')) && can('reports')): ?>
                 <li class="nav-item">
                     <a href="?route=reports" class="nav-link<?= str_starts_with($currentRoute, 'reports') ? ' active' : '' ?>">
                         <i class="nav-icon bi bi-file-earmark-bar-graph"></i>
