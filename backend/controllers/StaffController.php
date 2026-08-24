@@ -26,7 +26,7 @@ class StaffController extends Controller {
                 'Phone' => $this->getInput('phone'),
                 'Department' => $this->getInput('department'),
                 'Position' => $this->getInput('position'),
-                'DateHired' => $this->getInput('date_hired'),
+                'DateHired' => $this->getInput('date_hired') ?: null,
             ]);
             setFlash('success', 'Staff created.');
             $this->redirect('staff');
@@ -47,6 +47,7 @@ class StaffController extends Controller {
                 'Phone' => $this->getInput('phone'),
                 'Department' => $this->getInput('department'),
                 'Position' => $this->getInput('position'),
+                'DateHired' => $this->getInput('date_hired') ?: null,
                 'Status' => $this->getInput('status'),
             ]);
             setFlash('success', 'Staff updated.');
@@ -71,13 +72,14 @@ class StaffController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = generateId('ATT');
             $this->model->getDb()->prepare(
-                "INSERT INTO attendance (AttendanceID, StaffID, ShiftID, Date, ClockIn, Status) VALUES (?,?,?,?,?,?)"
+                "INSERT INTO attendance (AttendanceID, StaffID, ShiftID, Date, ClockIn, ClockOut, Status) VALUES (?,?,?,?,?,?,?)"
             )->execute([
                 $id,
                 $this->getInput('StaffID'),
                 $this->getInput('ShiftID') ?: null,
                 $this->getInput('Date', date('Y-m-d')),
-                $this->getInput('ClockIn'),
+                $this->getInput('ClockIn') ?: null,
+                $this->getInput('ClockOut') ?: null,
                 $this->getInput('Status', 'Present'),
             ]);
             setFlash('success', 'Attendance recorded.');
@@ -147,11 +149,12 @@ class StaffController extends Controller {
         $id = $this->getInput('id');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->model->getDb()->prepare(
-                "UPDATE attendance SET StaffID = ?, ShiftID = ?, ClockIn = ?, `Date` = ?, Status = ? WHERE AttendanceID = ?"
+                "UPDATE attendance SET StaffID = ?, ShiftID = ?, ClockIn = ?, ClockOut = ?, `Date` = ?, Status = ? WHERE AttendanceID = ?"
             )->execute([
                 $this->getInput('StaffID'),
                 $this->getInput('ShiftID') ?: null,
-                $this->getInput('ClockIn'),
+                $this->getInput('ClockIn') ?: null,
+                $this->getInput('ClockOut') ?: null,
                 $this->getInput('Date'),
                 $this->getInput('Status', 'Present'),
                 $id,
