@@ -6,7 +6,7 @@ rem ================================================================
 rem  Propine Fruity Factory Management System - one-click launcher
 rem  1. If the site is not responding, starts XAMPP (Apache + MySQL)
 rem  2. Waits until the app answers (max ~60 seconds)
-rem  3. Opens the system's default web browser fullscreen
+rem  3. Opens the system default browser in fullscreen/kiosk mode
 rem  4. Creates a desktop shortcut with the PF pineapple icon
 rem ================================================================
 
@@ -47,9 +47,34 @@ echo.
 echo XAMPP did not respond within 60 seconds.
 echo Opening the XAMPP Control Panel so you can check Apache/MySQL...
 start "" "%XAMPP_DIR%\xampp-control.exe"
+goto :end
 
 :open
 echo Promotora Foods is ready. Opening browser fullscreen...
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0open-in-browser.ps1" -Url "%URL%"
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+    "& { ^
+        $url='%URL%'; ^
+        $exe=$null; ^
+        try { ^
+            $u='HKCU:\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice'; ^
+            $p=(Get-ItemProperty -Path $u -ErrorAction Stop).ProgId; ^
+            $c=(Get-ItemProperty -Path ('Registry::HKEY_CLASSES_ROOT\'+$p+'\shell\open\command') -ErrorAction Stop).'(default)'; ^
+            if($c.StartsWith('\"')){ $m=[regex]::Match($c,'^\"([^\"]+)\"'); if($m.Success){$exe=$m.Groups[1].Value} } ^
+            elseif($c.Contains(' ')){ $exe=($c -split '\s+',2)[0] } ^
+            else{ $exe=$c } ^
+        } catch{} ^
+        $n=''; ^
+        if($exe){ try{ $n=[IO.Path]::GetFileNameWithoutExtension($exe).ToLower() }catch{} } ^
+        $chromium=@('chrome','msedge','brave','opera','vivaldi','chromium'); ^
+        if($n -and ($chromium -contains $n) -and (Test-Path $exe)){ ^
+            Start-Process -FilePath $exe -ArgumentList '--new-window','--start-fullscreen',$url ^
+        } elseif($n -and $n -eq 'firefox'){ ^
+            Start-Process -FilePath $exe -ArgumentList '-kiosk',$url ^
+        } else { ^
+            Start-Process $url ^
+        } ^
+    }"
+
+:end
 endlocal
 exit /b 0
