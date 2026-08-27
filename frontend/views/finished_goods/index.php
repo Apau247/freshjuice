@@ -1,5 +1,5 @@
 <?php $pageTitle = 'Finished Goods'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-cup-straw me-2"></i><?= $pageTitle ?></h5>
     <?php if (canCreate('finished_goods')): ?>
     <!-- No create route available for finished goods -->
@@ -7,7 +7,7 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <table id="dataTable" class="table table-hover align-middle">
+        <div class="table-responsive"><table id="dataTable" class="table table-hover align-middle">
             <thead class="table-light">
                 <tr><th>FG ID</th><th>Batch#</th><th>Flavour</th><th>Qty Avail</th><th>Expiry</th><th>Location</th><th>Status</th><th>Actions</th></tr>
             </thead>
@@ -42,6 +42,6 @@
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>

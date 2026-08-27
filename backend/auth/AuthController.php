@@ -122,10 +122,11 @@ class AuthController
 
             if ($user) {
                 $token = bin2hex(random_bytes(32));
+                $tokenHash = hash('sha256', $token);
                 $expires = date('Y-m-d H:i:s', time() + 3600);
 
                 $update = $this->db->prepare("UPDATE users SET reset_token = ?, reset_expires = ? WHERE UserID = ?");
-                $update->execute([$token, $expires, $user['UserID']]);
+                $update->execute([$tokenHash, $expires, $user['UserID']]);
 
                 logAudit($user['UserID'], 'PASSWORD_RESET_REQUEST', 'Auth', $user['UserID'], 'Password reset requested');
 
@@ -181,14 +182,19 @@ class AuthController
                 exit;
             }
 
-            if (strlen($newPassword) < 6) {
-                setFlash('error', 'Password must be at least 6 characters.');
+            if (strlen($newPassword) < 8) {
+                setFlash('error', 'Password must be at least 8 characters.');
+                header('Location: ?route=auth/reset&token=' . $token);
+                exit;
+            }
+            if (!preg_match('/[A-Z]/', $newPassword) || !preg_match('/[a-z]/', $newPassword) || !preg_match('/[0-9]/', $newPassword)) {
+                setFlash('error', 'Password must contain at least one uppercase letter, one lowercase letter, and one number.');
                 header('Location: ?route=auth/reset&token=' . $token);
                 exit;
             }
 
             $stmt = $this->db->prepare("SELECT UserID FROM users WHERE reset_token = ? AND reset_expires > NOW() AND Status = 'Active'");
-            $stmt->execute([$token]);
+            $stmt->execute([hash('sha256', $token)]);
             $user = $stmt->fetch();
 
             if (!$user) {
@@ -215,7 +221,7 @@ class AuthController
         }
 
         $stmt = $this->db->prepare("SELECT UserID FROM users WHERE reset_token = ? AND reset_expires > NOW() AND Status = 'Active'");
-        $stmt->execute([$token]);
+        $stmt->execute([hash('sha256', $token)]);
         $validToken = $stmt->fetch();
 
         if (!$validToken) {

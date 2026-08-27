@@ -1,5 +1,5 @@
 <?php $pageTitle = 'Suppliers'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-truck me-2"></i><?= $pageTitle ?></h5>
     <?php if (canCreate('suppliers')): ?>
     <a href="?route=suppliers/create" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> New Supplier</a>
@@ -7,7 +7,7 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <table id="dataTable" class="table table-hover align-middle">
+        <div class="table-responsive"><table id="dataTable" class="table table-hover align-middle">
             <thead class="table-light"><tr><th>ID</th><th>Name</th><th>Contact</th><th>Email</th><th>Phone</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody>
                 <?php foreach ($suppliers as $s): ?>
@@ -31,6 +31,6 @@
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>

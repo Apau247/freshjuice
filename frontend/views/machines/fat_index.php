@@ -1,6 +1,6 @@
 <?php $pageTitle = 'Factory Acceptance Testing'; ?>
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <h4><i class="bi bi-flask me-2"></i>Factory Acceptance Testing</h4>
         <?php if (canCreate('fat')): ?>
         <a href="?route=fat/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>New FAT Record</a>
@@ -9,7 +9,7 @@
 
     <div class="card">
         <div class="card-body">
-            <table id="dataTable" class="table table-striped table-hover">
+            <div class="table-responsive"><table id="dataTable" class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>FAT_ID</th>
@@ -59,7 +59,7 @@
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
-            </table>
+            </table></div>
         </div>
     </div>
 </div>

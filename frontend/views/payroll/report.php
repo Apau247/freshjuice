@@ -10,7 +10,7 @@ $pctPaid = $summary['all_cnt'] > 0 ? round($summary['paid_cnt'] / $summary['all_
     </div>
 </div>
 
-<form method="get" action="" class="row g-2 align-items-end mb-3">
+<form method="get" action="" class="period-filter row g-2 align-items-end mb-3">
     <input type="hidden" name="route" value="payroll/report">
     <div class="col-auto">
         <label class="form-label small text-muted mb-1">Month</label>
@@ -69,13 +69,14 @@ $sections = [
     'Not Paid' => ['rows' => $unpaid, 'badge' => 'danger',  'icon' => 'bi-hourglass-split'],
 ];
 foreach ($sections as $label => $cfg): if (!$cfg['rows']) continue; ?>
-<div class="card border-0 shadow-sm mb-3">
+<?php /* no-datatable: total rows use colspan, which the DOM table parser rejects */ ?>
+<div class="card border-0 shadow-sm mb-3 no-datatable">
     <div class="card-header bg-white pt-3">
         <strong><i class="bi <?= $cfg['icon'] ?> text-<?= $cfg['badge'] ?> me-1"></i><?= $label ?></strong>
         <span class="badge bg-<?= $cfg['badge'] ?> ms-2"><?= count($cfg['rows']) ?></span>
     </div>
     <div class="card-body">
-        <table id="dataTable" class="table table-hover align-middle">
+        <div class="table-responsive"><table class="table table-hover align-middle">
             <thead class="table-light">
                 <tr><th>Staff</th><th>Department</th><th>Net Pay</th><th>Status</th><th>Payment Date</th><th>Method</th></tr>
             </thead>
@@ -96,7 +97,7 @@ foreach ($sections as $label => $cfg): if (!$cfg['rows']) continue; ?>
                     <td colspan="3"></td>
                 </tr>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>
 <?php endforeach; ?>

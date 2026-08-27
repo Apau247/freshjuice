@@ -744,3 +744,34 @@ CREATE TABLE fat_records (
 -- ================================================================
 ALTER TABLE users ADD COLUMN reset_token VARCHAR(64) DEFAULT NULL;
 ALTER TABLE users ADD COLUMN reset_expires DATETIME DEFAULT NULL;
+
+-- ================================================================
+-- MIGRATION: Notifications (per-user alerts)
+-- ================================================================
+CREATE TABLE IF NOT EXISTS notifications (
+    NotificationID  VARCHAR(50)  PRIMARY KEY,
+    UserID          VARCHAR(50)  NOT NULL,
+    Title           VARCHAR(150) NOT NULL,
+    Message         TEXT         DEFAULT NULL,
+    IsRead          TINYINT(1)   DEFAULT 0,
+    created_at      TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (UserID) REFERENCES users(UserID) ON UPDATE CASCADE ON DELETE CASCADE,
+    INDEX idx_notif_user_read (UserID, IsRead),
+    INDEX idx_notif_created  (created_at)
+) ENGINE=InnoDB;
+
+-- ================================================================
+-- MIGRATION: Workers (factory laborers — separate from login users)
+-- ================================================================
+CREATE TABLE IF NOT EXISTS workers (
+    WorkerID      VARCHAR(50)  PRIMARY KEY,
+    FirstName     VARCHAR(100) NOT NULL,
+    LastName      VARCHAR(100) NOT NULL,
+    Phone         VARCHAR(30)  DEFAULT NULL,
+    Position      VARCHAR(100) DEFAULT 'Laborer',
+    MonthlyPay    DECIMAL(12,2) DEFAULT 0,
+    DateHired     DATE         DEFAULT NULL,
+    Status        ENUM('Active','On Leave','Terminated') DEFAULT 'Active',
+    created_at    TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_workers_status (Status)
+) ENGINE=InnoDB;

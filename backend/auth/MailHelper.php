@@ -55,7 +55,7 @@ class MailHelper
         }
 
         $fromEmail = defined('MAIL_FROM') && MAIL_FROM !== '' ? MAIL_FROM : 'noreply@localhost';
-        $fromName  = defined('APP_NAME') ? APP_NAME : 'Fresh Fruit Juice Production Factory';
+        $fromName  = defined('APP_NAME') ? APP_NAME : 'PROMOTORA FOODS';
         $subject   = $fromName . ' - Password Reset';
         $body      = self::buildBody($toName, $resetUrl, $fromName);
         $altBody   = "Hello {$toName},\n\nYou requested a password reset.\nReset link: {$resetUrl}\n\nThis link expires in 1 hour.\n";
@@ -125,7 +125,7 @@ class MailHelper
             <head><meta charset="UTF-8"></head>
             <body style="margin:0;padding:0;font-family:Inter,system-ui,sans-serif;background:#f1f5f9;">
                 <div style="max-width:480px;margin:40px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
-                    <div style="background:linear-gradient(135deg,#22c55e,#06b6d4);padding:32px;text-align:center;">
+                    <div style="background:linear-gradient(135deg,#16a34a,#d97706);padding:32px;text-align:center;">
                         <div style="width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,0.2);display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px;">
                             <span style="font-size:24px;">🔑</span>
                         </div>
@@ -135,7 +135,7 @@ class MailHelper
                         <p style="color:#334155;font-size:0.9rem;line-height:1.6;">Hello <strong>' . htmlspecialchars($toName) . '</strong>,</p>
                         <p style="color:#334155;font-size:0.9rem;line-height:1.6;">You requested a password reset. Click the button below to set a new password:</p>
                         <div style="text-align:center;margin:28px 0;">
-                            <a href="' . htmlspecialchars($resetUrl) . '" style="display:inline-block;padding:12px 32px;background:linear-gradient(135deg,#22c55e,#06b6d4);color:#fff;text-decoration:none;border-radius:10px;font-weight:700;font-size:0.9rem;box-shadow:0 4px 16px rgba(34,197,94,0.3);">Reset My Password</a>
+                            <a href="' . htmlspecialchars($resetUrl) . '" style="display:inline-block;padding:12px 32px;background:linear-gradient(135deg,#16a34a,#d97706);color:#fff;text-decoration:none;border-radius:10px;font-weight:700;font-size:0.9rem;box-shadow:0 4px 16px rgba(22,163,74,0.3);">Reset My Password</a>
                         </div>
                         <p style="color:#94a3b8;font-size:0.78rem;line-height:1.5;">This link expires in 1 hour. If you didn\'t request this, you can safely ignore this email.</p>
                         <hr style="border:none;border-top:1px solid #e2e8f0;margin:20px 0;">

@@ -27,8 +27,8 @@ class PricingController extends Controller {
         $this->requireCanEdit('pricing');
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') { $this->redirect('prices'); return; }
 
-        $prices = json_decode($this->getInput('prices', ''), true);
-        if (!is_array($prices)) $prices = [];
+        $prices = $this->getJsonInput('prices');
+        if ($prices === null) $prices = [];
 
         $saved = 0; $skipped = 0;
         foreach ($prices as $flavour => $amt) {

@@ -3,7 +3,7 @@
     Pay period: <strong class="text-dark"><?= sanitize(PayrollController::monthName((int)$month)) ?> <?= (int)$year ?></strong>
 </p>
 
-<table class="doc-summary">
+<div class="table-responsive"><table class="doc-summary">
     <tr>
         <th>Total Staff</th><td><?= $summary['all_cnt'] ?></td>
         <th>Grand Total</th><td><strong><?= money($summary['grand_total']) ?></strong></td>
@@ -12,7 +12,7 @@
         <th>Paid</th><td class="text-success"><strong><?= $summary['paid_cnt'] ?> &middot; <?= money($summary['paid_total']) ?></strong></td>
         <th>Not Paid</th><td class="text-danger"><strong><?= $summary['unpaid_cnt'] ?> &middot; <?= money($summary['unpaid_total']) ?></strong></td>
     </tr>
-</table>
+</table></div>
 
 <?php
 $sections = [
@@ -22,7 +22,7 @@ $sections = [
 foreach ($sections as $heading => $cfg): ?>
 <h2 style="font-size:0.9rem;font-weight:700;margin:18px 0 8px;"><?= sanitize($heading) ?> (<?= count($cfg['rows']) ?>)</h2>
 <?php if ($cfg['rows']): ?>
-<table class="doc-table">
+<div class="table-responsive"><table class="doc-table">
     <thead>
         <tr><th style="width:34px">#</th><th>Staff</th><th>Department</th><th>Base Salary</th><th>Allowances</th><th>Deductions</th><th>Net Pay</th><th>Payment Date</th><th>Method</th></tr>
     </thead>
@@ -46,7 +46,7 @@ foreach ($sections as $heading => $cfg): ?>
             <th colspan="2"></th>
         </tr>
     </tbody>
-</table>
+</table></div>
 <?php else: ?>
 <p class="text-muted" style="font-size:0.82rem;">No records in this category.</p>
 <?php endif; ?>

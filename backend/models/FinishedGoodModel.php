@@ -23,6 +23,14 @@ class FinishedGoodModel extends Model {
         return $this->db->prepare("UPDATE finished_goods SET QuantityAvailable = QuantityAvailable - ? WHERE FG_ID = ? AND QuantityAvailable >= ?")->execute([$qty, $id, $qty]);
     }
 
+    /** Lock a finished goods row for atomic stock check-and-deduct. */
+    public function lockForStock(string $id): ?array {
+        $stmt = $this->db->prepare("SELECT * FROM finished_goods WHERE FG_ID = ? FOR UPDATE");
+        $stmt->execute([$id]);
+        $r = $stmt->fetch();
+        return $r ?: null;
+    }
+
     public function restoreStock(string $id, float $qty): bool {
         return $this->db->prepare("UPDATE finished_goods SET QuantityAvailable = QuantityAvailable + ? WHERE FG_ID = ?")->execute([$qty, $id]);
     }

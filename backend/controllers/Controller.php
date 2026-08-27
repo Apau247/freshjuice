@@ -52,6 +52,25 @@ abstract class Controller
     }
 
     /**
+     * Decode a JSON payload posted as one field (bulk-save forms). Uses the
+     * RAW value: getInput()'s htmlspecialchars() corrupts the JSON quotes
+     * (&quot;) and makes json_decode() fail silently. Callers must still
+     * validate every decoded key/value before touching the database.
+     */
+    protected function getJsonInput(string $key = ''): ?array
+    {
+        $raw = $key !== '' ? ($_POST[$key] ?? '') : '';
+        // Fall back to a raw JSON request body (Content-Type: application/json),
+        // e.g. the Excel-import endpoint posts the row array directly.
+        if (($raw === '' || !is_string($raw)) && str_contains($_SERVER['CONTENT_TYPE'] ?? '', 'application/json')) {
+            $raw = file_get_contents('php://input');
+        }
+        if (!is_string($raw) || trim($raw) === '') return null;
+        $data = json_decode($raw, true);
+        return is_array($data) ? $data : null;
+    }
+
+    /**
      * Trend analysis for "new record" forms: which values has the factory been
      * using lately? Returns [['value' => id-or-string, 'uses' => n], ...]
      * ordered by most-recently-used, then most-frequently-used. The create

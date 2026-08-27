@@ -1,5 +1,5 @@
 <?php $pageTitle = 'Notifications'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-bell me-2"></i><?= $pageTitle ?></h5>
 </div>
 
@@ -9,7 +9,8 @@ $lowPackaging = $notifications['low_packaging'] ?? [];
 $expiringCerts = $notifications['expiring_certs'] ?? [];
 $expiringPermits = $notifications['expiring_permits'] ?? [];
 $dueMaintenance = $notifications['due_maintenance'] ?? [];
-$total = count($lowStock) + count($lowPackaging) + count($expiringCerts) + count($expiringPermits) + count($dueMaintenance);
+$myPayments = $notifications['my_payments'] ?? [];
+$total = count($lowStock) + count($lowPackaging) + count($expiringCerts) + count($expiringPermits) + count($dueMaintenance) + count($myPayments);
 ?>
 
 <?php if ($total === 0): ?>
@@ -29,7 +30,7 @@ $total = count($lowStock) + count($lowPackaging) + count($expiringCerts) + count
             <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Low Stock Alerts
             <span class="badge bg-danger ms-2"><?= count($lowStock) ?></span>
         </h6>
-        <table class="table table-hover align-middle mb-0">
+        <div class="table-responsive"><table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr><th>Material</th><th>Current Stock</th><th>Min Stock</th><th>Unit</th></tr>
             </thead>
@@ -43,7 +44,7 @@ $total = count($lowStock) + count($lowPackaging) + count($expiringCerts) + count
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>
 <?php endif; ?>
@@ -55,7 +56,7 @@ $total = count($lowStock) + count($lowPackaging) + count($expiringCerts) + count
             <i class="bi bi-box text-danger me-2"></i>Packaging Reorder Alerts
             <span class="badge bg-danger ms-2"><?= count($lowPackaging) ?></span>
         </h6>
-        <table class="table table-hover align-middle mb-0">
+        <div class="table-responsive"><table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr><th>Material</th><th>Current Stock</th><th>Min Stock</th><th>Unit</th></tr>
             </thead>
@@ -69,7 +70,7 @@ $total = count($lowStock) + count($lowPackaging) + count($expiringCerts) + count
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>
 <?php endif; ?>
@@ -81,7 +82,7 @@ $total = count($lowStock) + count($lowPackaging) + count($expiringCerts) + count
             <i class="bi bi-award text-warning me-2"></i>Expiring Certifications
             <span class="badge bg-warning text-dark ms-2"><?= count($expiringCerts) ?></span>
         </h6>
-        <table class="table table-hover align-middle mb-0">
+        <div class="table-responsive"><table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr><th>Certification</th><th>Expiry Date</th><th>Days Left</th><th>Status</th></tr>
             </thead>
@@ -95,7 +96,7 @@ $total = count($lowStock) + count($lowPackaging) + count($expiringCerts) + count
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>
 <?php endif; ?>
@@ -107,7 +108,7 @@ $total = count($lowStock) + count($lowPackaging) + count($expiringCerts) + count
             <i class="bi bi-file-earmark-check text-warning me-2"></i>Expiring Permits
             <span class="badge bg-warning text-dark ms-2"><?= count($expiringPermits) ?></span>
         </h6>
-        <table class="table table-hover align-middle mb-0">
+        <div class="table-responsive"><table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr><th>Permit</th><th>Expiry Date</th><th>Days Left</th><th>Status</th></tr>
             </thead>
@@ -121,7 +122,7 @@ $total = count($lowStock) + count($lowPackaging) + count($expiringCerts) + count
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>
 <?php endif; ?>
@@ -134,7 +135,7 @@ $total = count($lowStock) + count($lowPackaging) + count($expiringCerts) + count
             <span class="badge bg-danger ms-2"><?= count($dueMaintenance) ?></span>
         </h6>
         <p class="text-muted mb-2" style="font-size:0.78rem;">Scheduled within the next 7 days or overdue.</p>
-        <table class="table table-hover align-middle mb-0">
+        <div class="table-responsive"><table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr><th>Machine</th><th>Type</th><th>Scheduled Date</th><th>Status</th></tr>
             </thead>
@@ -154,7 +155,35 @@ $total = count($lowStock) + count($lowPackaging) + count($expiringCerts) + count
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
+    </div>
+</div>
+<?php endif; ?>
+
+<?php if (count($myPayments) > 0): ?>
+<div class="card border-0 shadow-sm mb-3 border-start border-4 border-success">
+    <div class="card-body">
+        <h6 class="fw-bold mb-3">
+            <i class="bi bi-cash-stack text-success me-2"></i>Salary Notifications
+            <span class="badge bg-success ms-2"><?= count($myPayments) ?></span>
+        </h6>
+        <div class="list-group list-group-flush">
+            <?php foreach ($myPayments as $n): ?>
+            <div class="list-group-item d-flex justify-content-between align-items-start <?= (int)$n['IsRead'] === 0 ? 'bg-light' : '' ?>">
+                <div>
+                    <h6 class="mb-1 fw-semibold <?= (int)$n['IsRead'] === 0 ? 'text-dark' : 'text-muted' ?>">
+                        <?= (int)$n['IsRead'] === 0 ? '<span class="badge bg-success rounded-circle me-1" style="font-size:.5rem;">&nbsp;</span>' : '' ?>
+                        <?= sanitize($n['Title']) ?>
+                    </h6>
+                    <p class="mb-1 text-muted" style="font-size:.85rem;"><?= sanitize($n['Message']) ?></p>
+                    <small class="text-muted"><?= date('d M Y, g:i A', strtotime($n['created_at'])) ?></small>
+                </div>
+                <?php if ((int)$n['IsRead'] === 0): ?>
+                <a href="?route=notifications/mark-read&id=<?= urlencode($n['NotificationID']) ?>" class="btn btn-sm btn-outline-secondary ms-2" title="Mark read"><i class="bi bi-check-lg"></i></a>
+                <?php endif; ?>
+            </div>
+            <?php endforeach; ?>
+        </div>
     </div>
 </div>
 <?php endif; ?>

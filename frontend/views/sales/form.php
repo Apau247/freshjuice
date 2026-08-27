@@ -4,7 +4,7 @@ $isEdit = isset($order);
 // VAT rate used on both the screen and the server (Ghana standard rate).
 const SALES_VAT_RATE = 0.15;
 ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-cart me-2"></i><?= $pageTitle ?></h5>
     <a href="?route=sales" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
 </div>
@@ -202,7 +202,7 @@ const SALES_VAT_RATE = 0.15;
 
                     <label class="form-label fw-semibold">Amount Paid (GH&#8373;)</label>
                     <input type="number" class="form-control mb-2" id="amountPaid" min="0" step="0.01" placeholder="0.00">
-                    <div class="d-flex justify-content-between align-items-center p-2 rounded mb-3" style="background:rgba(34,197,94,0.08);">
+                    <div class="d-flex justify-content-between align-items-center p-2 rounded mb-3" style="background:rgba(22,163,74,0.08);">
                         <span class="text-muted small">Change Due</span>
                         <span class="fw-bold" id="changeDue">GH&#8373; 0.00</span>
                     </div>
@@ -339,9 +339,11 @@ const SALES_VAT_RATE = 0.15;
 
     productSel.addEventListener('change', function () {
         var fg = productSel.value;
-        // Suggest the set price for this product; fall back to the last price used (POS muscle-memory).
-        var suggested = SERVER_PRICES[fg] || prices[fg];
-        if (fg && suggested && !priceInput.value) priceInput.value = suggested;
+        if (!fg) { hint.textContent = ''; priceInput.value = ''; return; }
+        var suggested = SERVER_PRICES[fg] != null ? SERVER_PRICES[fg] : (prices[fg] != null ? prices[fg] : null);
+        priceInput.value = suggested != null ? suggested : '0.00';
+        qtyInput.value = '';
+        qtyInput.focus();
         refreshStockHint();
     });
     priceInput.addEventListener('keydown', function (e) {
@@ -383,6 +385,9 @@ const SALES_VAT_RATE = 0.15;
         try { localStorage.setItem(PRICE_KEY, JSON.stringify(prices)); } catch (e) {}
 
         qtyInput.value = '';
+        priceInput.value = '';
+        productSel.value = '';
+        productSel.focus();
         refreshStockHint();
         recomputeTotals();
     });
@@ -436,6 +441,11 @@ const SALES_VAT_RATE = 0.15;
 
     /* ── Submit: serialise the cart ── */
     document.getElementById('posForm').addEventListener('submit', function (e) {
+        // Always serialise before validation so the hidden field is up-to-date.
+        hidden.value = JSON.stringify(cart.map(function (l) {
+            return { fg_id: l.fg_id, quantity: l.quantity, unit_price: l.price };
+        }));
+
         if (!cart.length) {
             e.preventDefault();
             toast('warning', 'Add at least one product to the cart.');
@@ -448,9 +458,6 @@ const SALES_VAT_RATE = 0.15;
         }, this);
         if (!ok) { e.preventDefault(); toast('warning', 'Fill in the order details first.'); return; }
 
-        hidden.value = JSON.stringify(cart.map(function (l) {
-            return { fg_id: l.fg_id, quantity: l.quantity, unit_price: l.price };
-        }));
         try { sessionStorage.removeItem(CART_KEY); } catch (e) {}
     });
 

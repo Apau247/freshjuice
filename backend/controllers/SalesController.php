@@ -120,10 +120,10 @@ class SalesController extends Controller {
             $orderDate = $this->getInput('order_date');
             $payment   = trim((string)$this->getInput('payment_method'));
             $notes     = mb_substr($this->getInput('notes'), 0, 500);
-            $cart      = $this->parseCart((string)$this->getInput('cart_items'));
+            $cart      = $this->parseCart((string)($_POST['cart_items'] ?? ''));
 
             // Legacy single-line fallback (old bookmarks / integrations).
-            if (!$cart) {
+            if (empty($cart)) {
                 $fgId  = $this->getInput('fg_id');
                 $qty   = (float)$this->getInput('quantity', '0');
                 $total = (float)$this->getInput('total_amount', '0');
@@ -159,7 +159,7 @@ class SalesController extends Controller {
                     $errors[] = 'Line ' . ($i + 1) . ': quantity is unrealistically large.';
                 }
             }
-            if (!$cart) {
+            if (empty($cart)) {
                 $errors[] = 'The order is empty — add at least one product.';
             }
 
@@ -191,7 +191,6 @@ class SalesController extends Controller {
                 $createdIds = [];
                 $n = count($cart);
                 foreach ($cart as $idx => $line) {
-                    // Unique ID even under the rare generateId() collision.
                     do { $id = generateId('ORD'); } while ($this->model->find($id));
 
                     $net = round($line['quantity'] * $line['unit_price'], 2);
@@ -201,6 +200,15 @@ class SalesController extends Controller {
                     if ($payment !== '') $lineNotes = trim($lineNotes . ' [Payment: ' . $payment . ']');
 
                     if ($status === 'Completed') {
+                        // Lock the FG row to prevent TOCTOU race conditions.
+                        $locked = $fgModel->lockForStock($line['fg_id']);
+                        if (!$locked || (float)$locked['QuantityAvailable'] < $line['quantity']) {
+                            $db->rollBack();
+                            setFlash('error', 'Insufficient stock for "' . ($locked['Flavour'] ?? $line['fg_id'])
+                                . '". Available: ' . ($locked['QuantityAvailable'] ?? 0));
+                            $this->redirect('sales/create');
+                            return;
+                        }
                         $fgModel->reduceStock($line['fg_id'], $line['quantity']);
                     }
 
@@ -277,10 +285,10 @@ class SalesController extends Controller {
                 }
 
                 if ($newStatus === 'Completed' && $newFgId) {
-                    $fg = $fgModel->find($newFgId);
-                    if ($fg && (float)$fg['QuantityAvailable'] < $qty) {
+                    $fg = $fgModel->lockForStock($newFgId);
+                    if (!$fg || (float)$fg['QuantityAvailable'] < $qty) {
                         $db->rollBack();
-                        setFlash('error', 'Insufficient finished goods stock. Available: ' . $fg['QuantityAvailable']);
+                        setFlash('error', 'Insufficient finished goods stock. Available: ' . ($fg['QuantityAvailable'] ?? 0));
                         $this->redirect('sales/edit&id=' . urlencode($id));
                         return;
                     }

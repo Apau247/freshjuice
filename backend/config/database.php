@@ -21,9 +21,14 @@ if (!defined('DB_NAME')) define('DB_NAME', 'freshjuice');
 if (!defined('DB_USER')) define('DB_USER', 'root');
 if (!defined('DB_PASS')) define('DB_PASS', '');
 if (!defined('DB_CHARSET')) define('DB_CHARSET', 'utf8mb4');
-if (!defined('APP_NAME')) define('APP_NAME', 'Fresh Fruit Juice Production Factory');
+if (!defined('APP_NAME')) define('APP_NAME', 'PROMOTORA FOODS');
+if (!defined('APP_TAGLINE')) define('APP_TAGLINE', 'We give you the true taste of the fruit');
+if (!defined('APP_ADDRESS')) define('APP_ADDRESS', 'P.O. BOX AN 6535, ACCRA - NORTH');
+if (!defined('APP_PHONE')) define('APP_PHONE', '0277 541 253 / 0208 175 593 / 0240 645 157');
+if (!defined('APP_EMAIL')) define('APP_EMAIL', 'propinefruity@gmail.com');
 if (!defined('APP_URL')) define('APP_URL', 'http://localhost/freshjuice');
 if (!defined('APP_ROOT')) define('APP_ROOT', dirname(__DIR__, 2));
+if (!defined('APP_BANK')) define('APP_BANK', 'CBG Bank — Manet Towers | GT Bank — Comm. 10 Tema');
 
 if (!defined('MAIL_HOST'))       define('MAIL_HOST', '');
 if (!defined('MAIL_USERNAME'))   define('MAIL_USERNAME', '');
@@ -33,6 +38,21 @@ if (!defined('MAIL_PORT'))       define('MAIL_PORT', '465');
 if (!defined('MAIL_FROM'))       define('MAIL_FROM', '');
 
 if (php_sapi_name() !== 'cli') {
+    // ── Production error suppression ────────────────────────────────
+    ini_set('display_errors', '0');
+    ini_set('log_errors', '1');
+    error_reporting(E_ALL);
+
+    // ── Security headers ────────────────────────────────────────────
+    if (!headers_sent()) {
+        header('X-Content-Type-Options: nosniff');
+        header('X-Frame-Options: SAMEORIGIN');
+        header('X-XSS-Protection: 1; mode=block');
+        header('Referrer-Policy: strict-origin-when-cross-origin');
+        header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+        header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:;");
+    }
+
     ini_set('session.cookie_httponly', '1');
     ini_set('session.cookie_samesite', 'Strict');
     ini_set('session.use_strict_mode', '1');
@@ -77,7 +97,7 @@ function dbConnectionFailure(): never {
         header('Content-Type: text/html; charset=UTF-8');
         header('Retry-After: 30');
     }
-    $appName = defined('APP_NAME') ? APP_NAME : 'Fresh Fruit Juice Production Factory';
+    $appName = defined('APP_NAME') ? APP_NAME : 'PROMOTORA FOODS';
     echo '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">'
        . '<meta name="viewport" content="width=device-width,initial-scale=1">'
        . '<title>Service unavailable - ' . htmlspecialchars($appName, ENT_QUOTES, 'UTF-8') . '</title>'
@@ -181,6 +201,17 @@ function logAudit(string $userId, string $action, string $module, ?string $recor
     }
 }
 
+function sendNotification(string $userId, string $title, string $message, ?string $expiresAt = null): void {
+    if ($userId === '' || $userId === null) return;
+    try {
+        $db = getDb();
+        $stmt = $db->prepare("INSERT INTO notifications (NotificationID, UserID, Title, Message, expires_at) VALUES (?,?,?,?,?)");
+        $stmt->execute([generateId('NTF'), $userId, $title, $message, $expiresAt]);
+    } catch (\Exception $e) {
+        error_log('Notification send failed: ' . $e->getMessage());
+    }
+}
+
 function jsonResponse(array $data, int $code = 200): void {
     http_response_code($code);
     header('Content-Type: application/json');
@@ -200,7 +231,9 @@ function csrfField(): string {
 }
 
 function validateCsrf(): bool {
-    $token = $_POST['csrf_token'] ?? '';
+    $token = $_POST['csrf_token']
+        ?? $_SERVER['HTTP_X_CSRF_TOKEN']
+        ?? '';
     if (empty($token) || empty($_SESSION['csrf_token'])) {
         return false;
     }
@@ -233,4 +266,20 @@ function recordLoginAttempt(string $userId): void {
 function resetLoginAttempts(string $userId): void {
     $key = 'login_attempts_' . $userId;
     unset($_SESSION[$key]);
+}
+
+// ── Global exception handler (production) ────────────────────────
+if (php_sapi_name() !== 'cli' && !defined('INTEGRATION_TEST')) {
+    set_exception_handler(function (Throwable $e): void {
+        error_log('Unhandled exception: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+        if (!headers_sent()) {
+            http_response_code(500);
+            header('Content-Type: text/html; charset=utf-8');
+        }
+        echo '<!DOCTYPE html><html><head><title>Error</title></head><body>'
+            . '<h2>Something went wrong.</h2>'
+            . '<p>Please try again. If the problem persists, contact your administrator.</p>'
+            . '</body></html>';
+        exit;
+    });
 }

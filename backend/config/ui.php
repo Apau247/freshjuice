@@ -21,6 +21,28 @@ function money(float|int|string|null $amount): string {
 }
 
 /**
+ * The real Propine Fruity product flavours (from the product labels).
+ * Single source of truth used by production, finished goods and pricing.
+ */
+function flavour_options(): array {
+    return [
+        'Pineapple',
+        'Orange',
+        'Mango',
+        'Beet Root',
+        'Ginger',
+        'Cocktail',
+        'Pineapple Ginger',
+        'Coconut',
+        'Pine-Ginger',
+        'Mango-Pine-Ginger',
+        'Beetroot-Pine-Ginger',
+        'Mango Passion',
+        'Mango Ginger',
+    ];
+}
+
+/**
  * Entity selects (machines, materials, customers, ...).
  *
  * @param array  $items       rows, e.g. machines

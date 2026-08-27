@@ -63,6 +63,46 @@ class NotificationModel extends Model
             'expiring_certs'   => can('certifications') ? $this->getExpiringCerts()      : [],
             'expiring_permits' => can('permits')        ? $this->getExpiringPermits()    : [],
             'due_maintenance'  => can('maintenance')    ? $this->getDueMaintenance()     : [],
+            'my_payments'      => $this->getMyPaymentNotifications(),
         ];
+    }
+
+    /** Salary/payment notifications for the signed-in user. Expired ones hidden. */
+    public function getMyPaymentNotifications(): array {
+        $userId = $_SESSION['user_id'] ?? null;
+        if (!$userId) return [];
+        return $this->query(
+            "SELECT NotificationID, Title, Message, IsRead, created_at
+             FROM notifications
+             WHERE UserID = ? AND (expires_at IS NULL OR expires_at > NOW())
+             ORDER BY created_at DESC LIMIT 50",
+            [$userId]
+        );
+    }
+
+    /** Unread count for the navbar badge. Expired ones excluded. */
+    public function getUnreadCount(): int {
+        $userId = $_SESSION['user_id'] ?? null;
+        if (!$userId) return 0;
+        $r = $this->queryOne(
+            "SELECT COUNT(*) AS cnt FROM notifications
+             WHERE UserID = ? AND IsRead = 0 AND (expires_at IS NULL OR expires_at > NOW())",
+            [$userId]
+        );
+        return $r ? (int)$r['cnt'] : 0;
+    }
+
+    /** Delete all expired notifications (run via cron or on page load). */
+    public function cleanupExpired(): int {
+        $stmt = $this->db->prepare(
+            "DELETE FROM notifications WHERE expires_at IS NOT NULL AND expires_at <= NOW()"
+        );
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
+
+    /** Mark one notification as read. */
+    public function markRead(string $id): bool {
+        return $this->update($id, ['IsRead' => 1]);
     }
 }

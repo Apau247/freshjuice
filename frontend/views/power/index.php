@@ -1,5 +1,5 @@
 <?php $pageTitle = 'Power Management'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-lightning me-2"></i><?= $pageTitle ?></h5>
     <div>
         <?php if (canCreate('power')): ?>
@@ -22,7 +22,7 @@
     <div class="tab-pane fade show active" id="usage">
         <div class="card border-0 shadow-sm">
             <div class="card-body">
-                <table id="dataTable" class="table table-hover align-middle">
+                <div class="table-responsive"><table id="dataTable" class="table table-hover align-middle">
                     <thead class="table-light"><tr><th>ID</th><th>Date</th><th>Source</th><th>Consumption (kWh)</th><th>Cost (GH&#8373;)</th><th>Notes</th><th>Actions</th></tr></thead>
                     <tbody>
                         <?php if (isset($usageRecords)): foreach ($usageRecords as $u): ?>
@@ -42,14 +42,14 @@
                         </tr>
                         <?php endforeach; endif; ?>
                     </tbody>
-                </table>
+                </table></div>
             </div>
         </div>
     </div>
     <div class="tab-pane fade" id="generator">
         <div class="card border-0 shadow-sm">
             <div class="card-body">
-                <table id="genDataTable" class="table table-hover align-middle">
+                <div class="table-responsive"><table id="genDataTable" class="table table-hover align-middle">
                     <thead class="table-light"><tr><th>Log ID</th><th>Date</th><th>Start</th><th>End</th><th>Runtime (hrs)</th><th>Fuel Used</th><th>Reason</th><th>Actions</th></tr></thead>
                     <tbody>
                         <?php if (isset($generatorLogs)): foreach ($generatorLogs as $l): ?>
@@ -70,7 +70,7 @@
                         </tr>
                         <?php endforeach; endif; ?>
                     </tbody>
-                </table>
+                </table></div>
             </div>
         </div>
     </div>

@@ -1,10 +1,10 @@
 <?php
 $pageTitle = 'New Payroll Run';
 $existingSet = array_flip($existing);
-$missingSalary = array_filter($staff, fn ($s) => (float)($s['MonthlySalary'] ?? 0) <= 0);
-$toGenerate = array_filter($staff, fn ($s) => (float)($s['MonthlySalary'] ?? 0) > 0 && !isset($existingSet[$s['StaffID']]));
+$missingSalary = array_filter($staff, fn ($s) => (float)($s['Pay'] ?? 0) <= 0);
+$toGenerate = array_filter($staff, fn ($s) => (float)($s['Pay'] ?? 0) > 0 && !isset($existingSet[($s['PersonType'] === 'worker' ? 'w:' : 's:') . $s['Id']]));
 ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-calendar-plus me-2"></i>New Payroll Run</h5>
     <a href="?route=payroll" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Payroll</a>
 </div>
@@ -16,7 +16,7 @@ $toGenerate = array_filter($staff, fn ($s) => (float)($s['MonthlySalary'] ?? 0) 
             <div class="row g-3 align-items-end">
                 <div class="col-md-3">
                     <label class="form-label small">Period Month</label>
-                    <select name="month" class="form-select" required>
+                    <select name="month" class="form-select wide-select" required>
                         <?php foreach (PayrollModel::MONTH_NAMES as $num => $name): ?>
                         <option value="<?= $num ?>" <?= $num === (int)$month ? 'selected' : '' ?>><?= sanitize($name) ?></option>
                         <?php endforeach; ?>
@@ -24,7 +24,7 @@ $toGenerate = array_filter($staff, fn ($s) => (float)($s['MonthlySalary'] ?? 0) 
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small">Period Year</label>
-                    <select name="year" class="form-select" required>
+                    <select name="year" class="form-select wide-select" required>
                         <?php for ($y = (int)date('Y') + 1; $y >= 2020; $y--): ?>
                         <option value="<?= $y ?>" <?= $y === (int)$year ? 'selected' : '' ?>><?= $y ?></option>
                         <?php endfor; ?>
@@ -55,28 +55,28 @@ $toGenerate = array_filter($staff, fn ($s) => (float)($s['MonthlySalary'] ?? 0) 
 <?php endif; ?>
 
 <div class="card border-0 shadow-sm">
-    <div class="card-header bg-white border-bottom-0 pt-3"><strong class="small text-muted text-uppercase">Active Staff Salaries</strong></div>
+    <div class="card-header bg-white border-bottom-0 pt-3"><strong class="small text-muted text-uppercase">Active Staff &amp; Worker Pay Rates</strong></div>
     <div class="card-body">
-        <table id="dataTable" class="table table-hover align-middle">
+        <div class="table-responsive"><table id="dataTable" class="table table-hover align-middle">
             <thead class="table-light">
-                <tr><th>ID</th><th>Name</th><th>Department</th><th>Position</th><th>Monthly Salary</th><th>This Run</th></tr>
+                <tr><th>ID</th><th>Name</th><th>Group</th><th>Position</th><th>Monthly Pay</th><th>This Run</th></tr>
             </thead>
             <tbody>
-                <?php foreach ($staff as $s): $has = isset($existingSet[$s['StaffID']]); $priced = (float)($s['MonthlySalary'] ?? 0) > 0; ?>
+                <?php foreach ($staff as $s): $has = isset($existingSet[($s['PersonType'] === 'worker' ? 'w:' : 's:') . $s['Id']]); $priced = (float)($s['Pay'] ?? 0) > 0; ?>
                 <tr>
-                    <td class="small text-muted"><?= sanitize($s['StaffID']) ?></td>
+                    <td class="small text-muted"><?= sanitize($s['Id']) ?></td>
                     <td class="fw-semibold"><?= sanitize(trim($s['FirstName'] . ' ' . $s['LastName'])) ?></td>
-                    <td><?= sanitize($s['Department'] ?? '') ?></td>
+                    <td><?= $s['PersonType'] === 'worker' ? '<span class="badge bg-dark">Worker</span>' : '<span class="badge bg-secondary">Staff</span>' ?></td>
                     <td><?= sanitize($s['Position'] ?? '') ?></td>
-                    <td><?= money($s['MonthlySalary']) ?></td>
+                    <td><?= money($s['Pay']) ?></td>
                     <td>
                         <?php if ($has): ?><span class="badge bg-secondary">Already generated</span>
-                        <?php elseif (!$priced): ?><span class="badge bg-warning text-dark">No salary set</span>
+                        <?php elseif (!$priced): ?><span class="badge bg-warning text-dark">No pay set</span>
                         <?php else: ?><span class="badge bg-success">Will be created</span><?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>

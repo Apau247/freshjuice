@@ -18,6 +18,14 @@ class RawMaterialModel extends Model {
         return $this->db->prepare("UPDATE raw_materials SET CurrentStock = CurrentStock + ? WHERE MaterialID = ?")->execute([$qty, $id]);
     }
 
+    /** Lock a raw material row and return it for atomic check-and-deduct. */
+    public function lockForStock(string $id): ?array {
+        $stmt = $this->db->prepare("SELECT * FROM raw_materials WHERE MaterialID = ? FOR UPDATE");
+        $stmt->execute([$id]);
+        $r = $stmt->fetch();
+        return $r ?: null;
+    }
+
     public function getLowStock(): array {
         return $this->query("SELECT * FROM raw_materials WHERE CurrentStock <= MinStock ORDER BY CurrentStock ASC");
     }

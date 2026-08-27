@@ -1,5 +1,5 @@
 <?php $pageTitle = 'Reports'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-file-earmark-bar-graph me-2"></i><?= $pageTitle ?></h5>
 </div>
 <p class="text-muted" style="font-size:0.85rem;">Every report supports a date-range filter and can be exported to CSV or printed / saved as PDF.</p>
@@ -20,7 +20,7 @@
            class="d-flex align-items-center gap-3 text-decoration-none h-100 card border-0 shadow-sm report-card"
            style="border-radius:14px;transition:transform .12s ease, box-shadow .12s ease;">
             <div class="card-body d-flex align-items-center gap-3 py-3">
-                <div style="width:44px;height:44px;border-radius:12px;background:var(--gradient-brand,#22c55e);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <div style="width:44px;height:44px;border-radius:12px;background:var(--gradient-brand,#16a34a);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                     <i class="bi <?= $icons[$type] ?? 'bi-table' ?> text-white"></i>
                 </div>
                 <div>

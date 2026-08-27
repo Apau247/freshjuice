@@ -76,12 +76,17 @@ $map = [
     'payroll'                   => ['pay',    'PayrollController','index'],
     'payroll/generate'          => ['pay',    'PayrollController','generate'],
     'payroll/pay'               => ['pay',    'PayrollController','pay'],
+    'payroll/pay-staff'         => ['pay',    'PayrollController','payStaff'],
     'payroll/revert'            => ['pay',    'PayrollController','revert'],
     'payroll/edit'              => ['pay',    'PayrollController','edit'],
     'payroll/delete'            => ['pay',    'PayrollController','delete'],
     'payroll/settings'          => ['pay',    'PayrollController','settings'],
     'payroll/report'            => ['pay',    'PayrollController','report'],
     'payroll/report/print'      => ['pay',    'PayrollController','printReport'],
+
+    'accounting'                => ['acct',   'AccountingController','index'],
+    'accounting/calculator'     => ['acct',   'AccountingController','calculator'],
+    'accounting/print-report'   => ['acct',   'AccountingController','printReport'],
 
     'customers'                 => ['cust',   'CustomerController','index'],
     'customers/create'          => ['cust',   'CustomerController','create'],
@@ -111,6 +116,38 @@ $map = [
     'staff/attendance/form'     => ['staff',  'StaffController','attendance'],
     'staff/attendance/edit'     => ['staff',  'StaffController','editAttendance'],
     'staff/attendance/delete'   => ['staff',  'StaffController','deleteAttendance'],
+
+    'workers'                   => ['wk',     'WorkerController','index'],
+    'workers/create'            => ['wk',     'WorkerController','create'],
+    'workers/store'             => ['wk',     'WorkerController','store'],
+    'workers/edit'              => ['wk',     'WorkerController','edit'],
+    'workers/update'            => ['wk',     'WorkerController','update'],
+    'workers/delete'            => ['wk',     'WorkerController','delete'],
+    'workers/import'            => ['wk',     'WorkerController','import'],
+    'workers/import-store'      => ['wk',     'WorkerController','importStore'],
+    'workers/template'          => ['wk',     'WorkerController','template'],
+
+    'worker-shifts'             => ['wshift', 'WorkerShiftController','index'],
+    'worker-shifts/create'      => ['wshift', 'WorkerShiftController','create'],
+    'worker-shifts/store'       => ['wshift', 'WorkerShiftController','store'],
+    'worker-shifts/edit'        => ['wshift', 'WorkerShiftController','edit'],
+    'worker-shifts/update'      => ['wshift', 'WorkerShiftController','update'],
+    'worker-shifts/delete'      => ['wshift', 'WorkerShiftController','delete'],
+    'worker-shifts/bulk'        => ['wshift', 'WorkerShiftController','bulk'],
+
+    'messages'                  => ['msg',    'MessageController','inbox'],
+    'messages/inbox'            => ['msg',    'MessageController','inbox'],
+    'messages/sent'             => ['msg',    'MessageController','sent'],
+    'messages/compose'          => ['msg',    'MessageController','compose'],
+    'messages/send'             => ['msg',    'MessageController','send'],
+    'messages/view'             => ['msg',    'MessageController','view'],
+    'messages/edit'             => ['msg',    'MessageController','edit'],
+    'messages/update'           => ['msg',    'MessageController','update'],
+    'messages/delete'           => ['msg',    'MessageController','delete'],
+    'messages/unread-count'     => ['msg/api','MessageController','unreadCount'],
+    'messages/unread-poll'      => ['msg/api','MessageController','unreadPoll'],
+    'messages/download'        => ['msg/dl', 'MessageController','download'],
+    'messages/upload-ajax'     => ['msg/api', 'MessageController','uploadAjax'],
 
     'machines'                  => ['mach',   'MachineController','index'],
     'machines/create'           => ['mach',   'MachineController','create'],
@@ -227,6 +264,7 @@ $map = [
     'fat/delete'                => ['fat',   'FatController','delete'],
 
     'notifications'             => ['notif', 'NotificationController','index'],
+    'notifications/mark-read'   => ['notif/mr','NotificationController','markRead'],
     'audit'                     => ['audit', 'AuditController','index'],
     'scan'                      => ['scan',  'ScanController','lookup'],
 ];
@@ -322,6 +360,13 @@ if (isset($map[$route])) {
         'audit'    => 'AuditController',
         'pay'      => 'PayrollController',
         'price'    => 'PricingController',
+        'wk'       => 'WorkerController',
+        'acct'     => 'AccountingController',
+        'notif/mr' => 'NotificationController',
+        'wshift'   => 'WorkerShiftController',
+        'msg'      => 'MessageController',
+        'msg/api'  => 'MessageController',
+        'msg/dl'   => 'MessageController',
     ];
     if ($prefix === 'auth') {
         require_once APP_ROOT . '/backend/auth/' . $fileMap[$prefix] . '.php';

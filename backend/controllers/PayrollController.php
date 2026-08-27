@@ -32,6 +32,16 @@ class PayrollController extends Controller {
         return PayrollModel::MONTH_NAMES[$m] ?? (string)$m;
     }
 
+    /** Notify the staff member that their salary has been paid (if they have a user account). */
+    private function notifyPayment(string $payrollId, float $amount, string $monthName, string $year, string $method): void {
+        $targetUserId = $this->model->getStaffUserId($payrollId);
+        if ($targetUserId) {
+            sendNotification($targetUserId, 'Salary Paid — ' . $monthName . " {$year}",
+                'Your salary of ' . money($amount) . ' for ' . $monthName . " {$year} has been paid via {$method}."
+                . ' Please collect your payslip from the payroll office.');
+        }
+    }
+
     /* ── Payslip list for a period ─────────────────────────────── */
 
     public function index(): void {
@@ -88,13 +98,19 @@ class PayrollController extends Controller {
 
         [$month, $year] = $this->resolvePeriod();
         $salaries = $this->model->getStaffSalaries();
+        $existingRows = $this->model->query(
+            "SELECT StaffID, WorkerID FROM payroll WHERE PeriodMonth=? AND PeriodYear=?",
+            [$month, $year]
+        );
+        $existing = [];
+        foreach ($existingRows as $e) {
+            if ($e['StaffID'])  $existing[] = 's:' . $e['StaffID'];
+            if ($e['WorkerID']) $existing[] = 'w:' . $e['WorkerID'];
+        }
         $this->render('generate', [
             'staff'    => $salaries,
-            'existing' => array_column(
-                $this->model->query("SELECT StaffID FROM payroll WHERE PeriodMonth=? AND PeriodYear=?", [$month, $year]),
-                'StaffID'
-            ),
-            'estimated' => array_sum(array_map(fn ($s) => (float)($s['MonthlySalary'] ?? 0), $salaries)),
+            'existing' => $existing,
+            'estimated' => array_sum(array_map(fn ($s) => (float)($s['Pay'] ?? 0), $salaries)),
             'month'    => $month,
             'year'     => $year,
         ]);
@@ -105,23 +121,42 @@ class PayrollController extends Controller {
     public function pay(): void {
         $this->requireCanEdit('payroll');
         $id = $this->getInput('id');
-        $slip = $this->model->find($id);
-        if (!$slip) { setFlash('error', 'Payroll record not found.'); $this->redirect('payroll'); return; }
-        if (($slip['Status'] ?? '') === 'Paid') {
-            setFlash('error', 'This payslip is already marked as paid.');
-            $this->redirect("payroll&month={$slip['PeriodMonth']}&year={$slip['PeriodYear']}");
-            return;
+        if (!$id) { setFlash('error', 'Invalid request.'); $this->redirect('payroll'); return; }
+
+        $db = getDb();
+        $db->beginTransaction();
+        try {
+            $slip = $this->model->lock($id);
+            if (!$slip) {
+                $db->rollBack();
+                setFlash('error', 'Payroll record not found.');
+                $this->redirect('payroll');
+                return;
+            }
+            if (($slip['Status'] ?? '') === 'Paid') {
+                $db->rollBack();
+                setFlash('error', 'This payslip is already marked as paid.');
+                $this->redirect("payroll&month={$slip['PeriodMonth']}&year={$slip['PeriodYear']}");
+                return;
+            }
+
+            $method = $this->getInput('payment_method', 'Cash');
+            if (!in_array($method, self::PAYMENT_METHODS, true)) $method = 'Cash';
+            $date = $this->getInput('payment_date') ?: date('Y-m-d');
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) || $date > date('Y-m-d')) $date = date('Y-m-d');
+
+            $this->model->markPaid($id, $method, $date, $_SESSION['user_id'] ?? null, $this->getInput('notes'));
+            $this->notifyPayment($id, (float)$slip['NetPay'], self::monthName((int)$slip['PeriodMonth']), (string)$slip['PeriodYear'], $method);
+            logAudit($_SESSION['user_id'] ?? null, 'PAYMENT', 'Payroll', $id,
+                "Marked payroll {$id} as PAID via {$method} on {$date}");
+
+            $db->commit();
+            setFlash('success', 'Payment recorded — payslip marked as PAID.');
+        } catch (\Exception $e) {
+            $db->rollBack();
+            error_log('Payroll pay failed: ' . $e->getMessage());
+            setFlash('error', 'Payment failed. Please try again.');
         }
-
-        $method = $this->getInput('payment_method', 'Cash');
-        if (!in_array($method, self::PAYMENT_METHODS, true)) $method = 'Cash';
-        $date = $this->getInput('payment_date') ?: date('Y-m-d');
-        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) || $date > date('Y-m-d')) $date = date('Y-m-d');
-
-        $this->model->markPaid($id, $method, $date, $_SESSION['user_id'] ?? null, $this->getInput('notes'));
-        logAudit($_SESSION['user_id'] ?? null, 'PAYMENT', 'Payroll', $id,
-            "Marked payroll {$id} as PAID via {$method} on {$date}");
-        setFlash('success', 'Payment recorded — payslip marked as PAID.');
         $this->redirect("payroll&month={$slip['PeriodMonth']}&year={$slip['PeriodYear']}");
     }
 
@@ -137,6 +172,147 @@ class PayrollController extends Controller {
         logAudit($_SESSION['user_id'] ?? null, 'UPDATE', 'Payroll', $id, "Reverted payroll {$id} to UNPAID");
         setFlash('success', 'Payslip reverted to UNPAID.');
         $this->redirect("payroll&month={$slip['PeriodMonth']}&year={$slip['PeriodYear']}");
+    }
+
+    /* ── Quick pay from Salary Settings: set the amount and pay in one go ── */
+
+    public function payStaff(): void {
+        $this->requireCanEdit('payroll');
+        // Quick-pay targets either a staff member or a worker (laborer).
+        $personType = $this->getInput('person_type', 'staff') === 'worker' ? 'worker' : 'staff';
+        $personId   = $this->getInput('person_id', $this->getInput('staff_id'));
+
+        if ($personType === 'worker') {
+            $person = $this->model->queryOne(
+                "SELECT WorkerID AS Id, FirstName, LastName, MonthlyPay AS Rate FROM workers WHERE WorkerID = ?",
+                [$personId]
+            );
+        } else {
+            $person = $this->model->queryOne(
+                "SELECT StaffID AS Id, FirstName, LastName, MonthlySalary AS Rate FROM staff WHERE StaffID = ?",
+                [$personId]
+            );
+        }
+        if (!$person) { setFlash('error', 'Person not found.'); $this->redirect('payroll/settings'); return; }
+        $personId = (string)$person['Id'];
+        $fullName = trim($person['FirstName'] . ' ' . $person['LastName']);
+
+        [$month, $year] = $this->resolvePeriod();
+        if ($year > (int)date('Y') || ($year === (int)date('Y') && $month > (int)date('n'))) {
+            setFlash('error', 'Cannot pay for a future period.');
+            $this->redirect('payroll/settings');
+            return;
+        }
+
+        $salaryRaw = trim((string)($_POST['salary'] ?? ''));
+        $amountRaw = trim((string)($_POST['amount'] ?? $_GET['amount'] ?? ''));
+
+        $newSalary = null;
+        if ($salaryRaw !== '') {
+            $candidate = (float)$salaryRaw;
+            $err = $this->checkNumber('Monthly salary', $candidate, 0, 10000000);
+            if ($err) { setFlash('error', $err . ' Nothing was saved.'); $this->redirect('payroll/settings'); return; }
+            $newSalary = round($candidate, 2);
+        }
+        $salary = $newSalary ?? round((float)$person['Rate'], 2);
+
+        if ($amountRaw === '') {
+            setFlash('error', 'Enter the amount to pay. Nothing was saved.');
+            $this->redirect('payroll/settings');
+            return;
+        }
+        $payAmount = (float)$amountRaw;
+        $err = $this->checkNumber('Amount to pay', $payAmount, 0.01, 10000000);
+        if ($err) { setFlash('error', $err . ' Nothing was saved.'); $this->redirect('payroll/settings'); return; }
+        $payAmount = round($payAmount, 2);
+
+        // The payroll column this person lives in.
+        $idCol    = $personType === 'worker' ? 'WorkerID' : 'StaffID';
+        $oldRate  = round((float)$person['Rate'], 2);
+
+        $db = getDb();
+        $db->beginTransaction();
+        try {
+            if ($slipPaidCheck = $this->model->queryOne(
+                "SELECT PayrollID, NetPay FROM payroll WHERE {$idCol} = ? AND PeriodMonth = ? AND PeriodYear = ? AND Status = 'Paid' FOR UPDATE",
+                [$personId, $month, $year]
+            )) {
+                $db->rollBack();
+                setFlash('info', "{$fullName} is already PAID for "
+                    . self::monthName($month) . " {$year} (" . money($slipPaidCheck['NetPay']) . ").");
+                $this->redirect('payroll/settings');
+                return;
+            }
+
+            if ($newSalary !== null && $newSalary !== $oldRate) {
+                if ($personType === 'worker') { $this->model->setWorkerPay($personId, $newSalary); }
+                else { $this->model->setSalary($personId, $newSalary); }
+                logAudit($_SESSION['user_id'] ?? null, 'UPDATE', 'Payroll', null,
+                    "Set monthly pay of {$fullName} ({$personId}) to {$newSalary}");
+            }
+
+            $slip = $this->model->queryOne(
+                "SELECT * FROM payroll WHERE {$idCol} = ? AND PeriodMonth = ? AND PeriodYear = ? FOR UPDATE",
+                [$personId, $month, $year]
+            );
+            if ($slip) {
+                $id = $slip['PayrollID'];
+                $allowances = (float)$slip['Allowances'];
+                $deductions = (float)$slip['Deductions'];
+                $currentNet = round(max($salary + $allowances - $deductions, 0), 2);
+                $diff = round($payAmount - $currentNet, 2);
+                if ($diff >= 0) { $allowances = round($allowances + $diff, 2); }
+                else { $deductions = round($deductions + abs($diff), 2); }
+                $this->model->update($id, [
+                    'BaseSalary' => $salary,
+                    'Allowances' => $allowances,
+                    'Deductions' => $deductions,
+                    'NetPay'     => $payAmount,
+                ]);
+            } else {
+                $id = generateId('PAY');
+                $delta = round($payAmount - $salary, 2);
+                $this->model->create([
+                    'PayrollID'   => $id,
+                    'StaffID'     => $personType === 'staff' ? $personId : null,
+                    'WorkerID'    => $personType === 'worker' ? $personId : null,
+                    'PeriodMonth' => $month,
+                    'PeriodYear'  => $year,
+                    'BaseSalary'  => $salary,
+                    'Allowances'  => $delta > 0 ? $delta : 0,
+                    'Deductions'  => $delta < 0 ? abs($delta) : 0,
+                    'NetPay'      => $payAmount,
+                    'Status'      => 'Unpaid',
+                    'ProcessedBy' => $_SESSION['user_id'] ?? null,
+                ]);
+            }
+
+            $method = $this->getInput('payment_method', 'Cash');
+            if (!in_array($method, ['Cash', 'Mobile Money', 'Bank Transfer', 'Cheque'], true)) $method = 'Cash';
+            $date = $this->getInput('payment_date') ?: date('Y-m-d');
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) || $date > date('Y-m-d')) $date = date('Y-m-d');
+
+            $this->model->markPaid($id, $method, $date, $_SESSION['user_id'] ?? null, $this->getInput('notes'));
+            $this->notifyPayment($id, $payAmount, self::monthName($month), (string)$year, $method);
+
+            $db->commit();
+
+            $detail = $payAmount === $salary
+                ? money($payAmount)
+                : money($payAmount) . ' (pay rate ' . money($salary) . ')';
+            logAudit($_SESSION['user_id'] ?? null, 'PAYMENT', 'Payroll', $id,
+                "Quick-paid {$fullName} for " . self::monthName($month)
+                . " {$year}: {$detail} via {$method} on {$date}");
+            setFlash('success', "{$fullName} PAID " . money($payAmount)
+                . ' for ' . self::monthName($month) . " {$year} via {$method}."
+                . ($newSalary !== null && $newSalary !== $oldRate
+                    ? ' Pay rate updated to ' . money($newSalary) . '.' : ''));
+        } catch (\Exception $e) {
+            $db->rollBack();
+            error_log('Payroll payStaff failed: ' . $e->getMessage());
+            setFlash('error', 'Payment failed. Please try again.');
+        }
+        $this->redirect('payroll/settings');
     }
 
     /* ── Adjust one payslip (bonus/deduction/pro-rating) ────────── */
@@ -205,24 +381,31 @@ class PayrollController extends Controller {
         $this->requireCanEdit('payroll'); // Administrator + Factory Manager only
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $amounts = json_decode($this->getInput('salaries', ''), true);
-            if (!is_array($amounts)) $amounts = [];
+            $amounts = $this->getJsonInput('salaries');
+            if ($amounts === null) $amounts = [];
 
             $updated = 0; $errors = [];
-            foreach ($amounts as $staffId => $amt) {
+            foreach ($amounts as $personKey => $amt) {
                 $amount = (float)$amt;
+                // Keys are prefixed "s:STF-xxx" (staff) or "w:WRK-xxx" (worker).
+                $type = str_starts_with((string)$personKey, 'w:') ? 'worker' : 'staff';
+                $id   = preg_replace('/^[sw]:/', '', (string)$personKey);
                 if ($amount < 0 || !is_finite($amount) || $amount > 10000000) {
-                    $errors[] = $staffId;
+                    $errors[] = $id;
                     continue;
                 }
-                $this->model->setSalary((string)$staffId, $amount);
+                if ($type === 'worker') {
+                    $this->model->setWorkerPay($id, $amount);
+                } else {
+                    $this->model->setSalary($id, $amount);
+                }
                 $updated++;
             }
-            logAudit($_SESSION['user_id'] ?? null, 'UPDATE', 'Payroll', null, "Updated salary settings for {$updated} staff");
+            logAudit($_SESSION['user_id'] ?? null, 'UPDATE', 'Payroll', null, "Updated pay settings for {$updated} people");
             if ($errors) {
-                setFlash('error', "Saved {$updated} salaries; " . count($errors) . ' value(s) were invalid and skipped.');
+                setFlash('error', "Saved {$updated} pay rate(s); " . count($errors) . ' value(s) were invalid and skipped.');
             } else {
-                setFlash('success', "Salary settings saved for {$updated} staff member(s).");
+                setFlash('success', "Pay settings saved for {$updated} staff/worker(s).");
             }
             $this->redirect('payroll/settings');
             return;

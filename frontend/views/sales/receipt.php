@@ -37,7 +37,7 @@ $subtotal = array_sum(array_column($items, 'net'));
 $totalVat = array_sum(array_column($items, 'vat'));
 $multi = count($orders) > 1;
 ?>
-<table class="doc-summary" style="margin-bottom:10px;">
+<div class="table-responsive"><table class="doc-summary" style="margin-bottom:10px;">
     <tbody>
         <tr>
             <th style="width:30%;">Receipt No</th>
@@ -63,9 +63,9 @@ $multi = count($orders) > 1;
             <td><?= sanitize((string)($orders[0]['Status'] ?? '-')) ?><?= isset($orders[0]['PaymentStatus']) ? ' &middot; ' . sanitize((string)$orders[0]['PaymentStatus']) : '' ?></td>
         </tr>
     </tbody>
-</table>
+</table></div>
 
-<table class="doc-table">
+<div class="table-responsive"><table class="doc-table">
     <thead>
         <tr>
             <th>#</th>
@@ -98,7 +98,7 @@ $multi = count($orders) > 1;
             <td><strong><?= money($totalPayable) ?></strong></td>
         </tr>
     </tbody>
-</table>
+</table></div>
 
 <?php if (!empty($orders[0]['Notes'])): ?>
 <p style="font-size:0.8rem;margin-top:10px;"><strong>Notes:</strong> <?= sanitize(preg_replace('/\[Item \d+ of \d+\]\s*/', '', (string)$orders[0]['Notes'])) ?></p>
@@ -109,3 +109,12 @@ $multi = count($orders) > 1;
 <?php endif; ?>
 
 <p class="text-center mt-4" style="font-size:0.85rem;">Thank you for your purchase!</p>
+
+<div class="row mt-4 pt-3" style="font-size:0.75rem;">
+    <div class="col-6 text-center">
+        <div style="border-top:1px solid #374151;" class="mx-3 pt-1">Seller / Signature</div>
+    </div>
+    <div class="col-6 text-center">
+        <div style="border-top:1px solid #374151;" class="mx-3 pt-1">Accountant / Issuer Stamp &amp; Signature</div>
+    </div>
+</div>

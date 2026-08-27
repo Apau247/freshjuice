@@ -1,5 +1,5 @@
 <?php $pageTitle = 'SOPs & Checklists'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-file-text me-2"></i><?= $pageTitle ?></h5>
     <div>
         <?php if (canCreate('sops')): ?>
@@ -22,7 +22,7 @@
     <div class="tab-pane fade show active" id="templates">
         <div class="card border-0 shadow-sm">
             <div class="card-body">
-                <table id="dataTable" class="table table-hover align-middle">
+                <div class="table-responsive"><table id="dataTable" class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr><th>ID</th><th>Title</th><th>Department</th><th>Version</th><th>Effective</th><th>Review</th><th>Status</th><th>Created By</th><th>Actions</th></tr>
                     </thead>
@@ -49,14 +49,14 @@
                         </tr>
                         <?php endforeach; endif; ?>
                     </tbody>
-                </table>
+                </table></div>
             </div>
         </div>
     </div>
     <div class="tab-pane fade" id="checklists">
         <div class="card border-0 shadow-sm">
             <div class="card-body">
-                <table id="checklistDataTable" class="table table-hover align-middle">
+                <div class="table-responsive"><table id="checklistDataTable" class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr><th>ID</th><th>SOP</th><th>Batch</th><th>Date</th><th>Items</th><th>Completed</th><th>Supervisor</th><th>Status</th><th>Actions</th></tr>
                     </thead>
@@ -83,7 +83,7 @@
                         </tr>
                         <?php endforeach; endif; ?>
                     </tbody>
-                </table>
+                </table></div>
             </div>
         </div>
     </div>

@@ -47,7 +47,7 @@ class EfficiencyController extends Controller
             'totalRecords' => count($efficiencies),
             'chartLabels' => $chartLabels,
             'chartData' => $chartData,
-            'chartColors' => array_fill(0, count($chartLabels), 'rgba(34,197,94,0.7)'),
+            'chartColors' => array_fill(0, count($chartLabels), 'rgba(22,163,74,0.7)'),
         ];
         $this->render('index', $data);
     }

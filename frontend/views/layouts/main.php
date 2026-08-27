@@ -1,4 +1,4 @@
-<?php $assetBase = appBaseUrl(); ?>
+<?php $assetBase = appBaseUrl(); require_once __DIR__ . '/../../../backend/models/NotificationModel.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,12 +20,7 @@
     <aside class="sidebar" id="sidebar">
         <header class="sidebar-header">
             <a href="?route=dashboard" class="header-logo">
-                <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
-                    <rect width="32" height="32" rx="10" fill="url(#brand-grad)"/>
-                    <path d="M16 6C11 6 8 10 8 15C8 20 11 26 16 26C21 26 24 20 24 15C24 10 21 6 16 6Z" fill="white" opacity="0.9"/>
-                    <path d="M13 14C13 14 14.5 18 16 18C17.5 18 19 14 19 14" stroke="url(#brand-grad)" stroke-width="1.5" stroke-linecap="round"/>
-                    <defs><linearGradient id="brand-grad" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#22c55e"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
-                </svg>
+                <img src="<?= appBaseUrl() ?>/frontend/assets/img/pf-logo.jpg" alt="Propine Fruity" style="width:40px;height:40px;object-fit:contain;border-radius:8px;background:#fff;">
             </a>
             <button class="toggler sidebar-toggler"><i class="bi bi-chevron-left"></i></button>
             <button class="toggler menu-toggler"><i class="bi bi-list"></i></button>
@@ -104,11 +99,15 @@
                     ],
                     'payroll' => [
                         'label' => 'Payroll', 'icon' => 'bi-cash-coin',
-                        'show' => can('payroll'),
+                        'show' => can('payroll') || can('workers') || can('accounting') || can('worker_shifts'),
                         'items' => [
-                            ['href' => 'payroll',          'label' => 'Payslips & Payments', 'icon' => 'bi-cash-stack',        'show' => true,             'on' => fn () => $on('payroll') && !$on('payroll/settings') && !$on('payroll/report')],
-                            ['href' => 'payroll/report',   'label' => 'Payment Report',      'icon' => 'bi-file-earmark-bar-graph', 'show' => true,        'on' => fn () => $on('payroll/report')],
+                            ['href' => 'payroll',          'label' => 'Payslips & Payments', 'icon' => 'bi-cash-stack',        'show' => can('payroll'),   'on' => fn () => $on('payroll') && !$on('payroll/settings') && !$on('payroll/report')],
+                            ['href' => 'payroll/report',   'label' => 'Payment Report',      'icon' => 'bi-file-earmark-bar-graph', 'show' => can('payroll'),   'on' => fn () => $on('payroll/report')],
                             ['href' => 'payroll/settings', 'label' => 'Salary Settings',     'icon' => 'bi-sliders',           'show' => canEdit('payroll'), 'on' => fn () => $on('payroll/settings') || $on('payroll/generate')],
+                            ['href' => 'workers',          'label' => 'Workers',             'icon' => 'bi-people',            'show' => can('workers'),   'on' => fn () => $on('workers') && !$on('worker-shifts')],
+                            ['href' => 'worker-shifts',    'label' => 'Worker Shifts',       'icon' => 'bi-clock-history',     'show' => can('worker_shifts'), 'on' => fn () => $on('worker-shifts')],
+                            ['href' => 'accounting',       'label' => 'Accounting',          'icon' => 'bi-calculator',        'show' => can('accounting'),'on' => fn () => $on('accounting') && !$on('accounting/calculator')],
+                            ['href' => 'accounting/calculator','label' => 'Calculator',         'icon' => 'bi-calculator',        'show' => can('accounting'),'on' => fn () => $on('accounting/calculator')],
                         ],
                     ],
                     'sales' => [
@@ -185,13 +184,38 @@
                     <span class="nav-tooltip">Dashboard</span>
                 </li>
                 <?php endif; ?>
+                <?php
+                $unreadCount = 0;
+                if (class_exists('NotificationModel')) {
+                    try { $unreadCount = (new NotificationModel())->getUnreadCount(); } catch (\Exception $e) {}
+                }
+                $msgUnread = 0;
+                if (class_exists('MessageModel')) {
+                    try { $msgUnread = (new MessageModel())->getUnreadCount($_SESSION['user_id'] ?? ''); } catch (\Exception $e) {}
+                }
+                ?>
                 <li class="nav-item">
                     <a href="?route=notifications" class="nav-link<?= str_starts_with($currentRoute, 'notifications') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-bell"></i>
+                        <i class="nav-icon bi bi-bell<?= $unreadCount > 0 ? '-fill text-warning' : '' ?>"></i>
+                        <?php if ($unreadCount > 0): ?>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:.6rem"><?= $unreadCount > 9 ? '9+' : $unreadCount ?></span>
+                        <?php endif; ?>
                         <span class="nav-label">Notifications</span>
                     </a>
                     <span class="nav-tooltip">Notifications</span>
                 </li>
+                <?php if (can('messages')): ?>
+                <li class="nav-item">
+                    <a href="?route=messages/inbox" class="nav-link<?= str_starts_with($currentRoute, 'messages') ? ' active' : '' ?>">
+                        <i class="nav-icon bi bi-envelope<?= $msgUnread > 0 ? '-fill text-success' : '' ?>"></i>
+                        <?php if ($msgUnread > 0): ?>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success" style="font-size:.6rem" id="msgBadge"><?= $msgUnread > 9 ? '9+' : $msgUnread ?></span>
+                        <?php endif; ?>
+                        <span class="nav-label">Messages</span>
+                    </a>
+                    <span class="nav-tooltip">Messages</span>
+                </li>
+                <?php endif; ?>
 
                 <?php foreach ($groups as $gKey => $group):
                     $gItems = array_values(array_filter($group['items'], fn ($it) => $it['show']));
@@ -316,6 +340,46 @@
             }
         }
     });
+</script>
+<script>
+(function() {
+    let lastCount = <?= $msgUnread ?? 0 ?>;
+    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVggoKIeGBGPnuqy8+tfGNUXX6QjH1dREB2pcrRrnpaU2B/kY+DX0c+c6DH0a93V1Jgf5KQhF5GPXOex9Cwd1hSYH+TkoZeRj1ynMbQsHhZU2GAk5OGX0Y9cZvFz7F4W1VigJOUh2BHPXGaxc+yeF1WY4CUlYhgRz5vmcTOs3pgWWSBlJaJYUg+b5fCzbN7YlpigpWYi2JJQG6WwcuyfGRcZIOXmYxjSkBtk7/IsH1mX2aFmZuOZExBa5K9xbB+aGBphpqdkWZNQmmQusOuf21ja4qbn5RoUEJnjbW9qoBwZm6NnqGVa1JDZIuxuKaCc2tykKKmlm1VRGGHrLOkhHVud5akp5lwW0hghKiso4Z4cHmdpKiad2FJX4CnqaSGe3l8o6erm3tjS159o6Oih318f6Spq558ZUxdera+uJV7d4Cnr66jgWpUUHOvwLqaiH+Bh6uxr6iLbFpIaq3MwZyRhYeLmbK0r6aQc2BHZZ7Ry6OOhIaLm7O1saqWd2NHZZ3Rx5+Lg4aLm7S2s6yYeGRIZp3Rx52IgYWLm7W3tK2ZemVJZ57SypyHgISLm7a4ta2ae2dKaJ/TypqFf4KKnLi5t6+bfWlLaaHTzJuEfYCKnLm6ubGcgGlNaaLTzJuEfICKnLm6ubGcgWpOaqPTzZyEe3+JnLm7ubGdgmtPa6TUzpyEe3+JnLm7ubKeg2xQa6TUz5yEe3+JnLm8ubOehG1Ra6XV0J2Ee3+JnLm8ubOehW5Sa6XV0Z6Ee3+JnLm8ubOehm9Ta6bW0p6Ee3+JnLm8ubOeh3BUa6fX05+Ee3+JnLm8ubOeh3BUa6fX05+Ee3+JnLm8ubOeh3BUa6fX05+EgH+JnLm8ubOeh3BUa6fX05+EgH+JnLm8ubOeh3BUa6fX05+DgH+JnLm8ubOeh3BUa6fX05+DgH+JnLm8ubOeh3BUa6fX05+DgH+JnLm8ubOeh3BUa6fX05+DgH+JnLm8ubOeh3BUa6fX05+DgH+JnLm8ubOeh3BUa6fX05+DgH+JnLm8ubOeh3BUa6fX05+DgH+JnLm8ubOeh3BUa6fX05+DgH8=');
+    let newMsgAlerted = false;
+
+    function pollMessages() {
+        fetch('?route=messages/unread-poll')
+            .then(r => r.json())
+            .then(msgs => {
+                const badge = document.getElementById('msgBadge');
+                if (msgs.length > 0 && msgs.length > lastCount) {
+                    if (!newMsgAlerted) {
+                        audio.currentTime = 0;
+                        audio.play().catch(() => {});
+                        newMsgAlerted = true;
+                    }
+                    if (badge) {
+                        badge.textContent = msgs.length > 9 ? '9+' : msgs.length;
+                        badge.style.display = '';
+                    } else {
+                        const navLink = document.querySelector('a[href*="messages/inbox"]');
+                        if (navLink) {
+                            const span = document.createElement('span');
+                            span.id = 'msgBadge';
+                            span.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success';
+                            span.style.cssText = 'font-size:.6rem;';
+                            span.textContent = msgs.length > 9 ? '9+' : msgs.length;
+                            navLink.appendChild(span);
+                        }
+                    }
+                }
+                lastCount = msgs.length;
+                if (msgs.length === 0) newMsgAlerted = false;
+            })
+            .catch(() => {});
+    }
+    setInterval(pollMessages, 15000);
+})();
 </script>
 </body>
 </html>

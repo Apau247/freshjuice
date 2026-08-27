@@ -1,7 +1,7 @@
 <?php
 $pageTitle = 'Product Prices';
 ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-tags me-2"></i>Product Prices</h5>
     <?php if ($canEdit): ?>
     <button type="submit" form="priceForm" class="btn btn-primary btn-sm"><i class="bi bi-save me-1"></i>Save All Prices</button>
@@ -17,9 +17,12 @@ $pageTitle = 'Product Prices';
 <form method="post" action="?route=prices/save" id="priceForm">
     <?= csrfField() ?>
     <input type="hidden" name="prices" id="pricesJson">
+    <?php if (!$catalogue): ?>
+    <div class="alert alert-info shadow-sm"><i class="bi bi-info-circle me-2"></i>No products yet &mdash; finished goods appear here automatically once production completes.</div>
+    <?php else: ?>
     <div class="card border-0 shadow-sm">
         <div class="card-body">
-            <table id="dataTable" class="table table-hover align-middle">
+            <div class="table-responsive"><table id="dataTable" class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr><th>Product (Flavour)</th><th>Unit</th><th>Stock Available</th><th style="width:230px">Selling Price</th><th>Last Updated</th></tr>
                 </thead>
@@ -49,13 +52,11 @@ $pageTitle = 'Product Prices';
                         </td>
                     </tr>
                     <?php endforeach; ?>
-                    <?php if (!$catalogue): ?>
-                    <tr><td colspan="5" class="text-center text-muted py-4">No products yet &mdash; finished goods appear here automatically.</td></tr>
-                    <?php endif; ?>
                 </tbody>
-            </table>
+            </table></div>
         </div>
     </div>
+    <?php endif; ?>
 </form>
 
 <?php if ($canEdit): ?>

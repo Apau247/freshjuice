@@ -56,10 +56,10 @@ class ProductionController extends Controller {
             try {
                 if ($rawMat && $status !== 'Cancelled') {
                     $rmModel = new RawMaterialModel();
-                    $rm = $rmModel->find($rawMat);
-                    if ($rm && $rm['CurrentStock'] < $qty) {
+                    $rm = $rmModel->lockForStock($rawMat);
+                    if (!$rm || $rm['CurrentStock'] < $qty) {
                         $db->rollBack();
-                        setFlash('error', 'Insufficient raw material stock. Available: ' . $rm['CurrentStock']);
+                        setFlash('error', 'Insufficient raw material stock. Available: ' . ($rm['CurrentStock'] ?? 0));
                         $this->redirect('production');
                         return;
                     }
@@ -67,10 +67,10 @@ class ProductionController extends Controller {
                 }
                 if ($pkgMat && $status !== 'Cancelled') {
                     $pkgModel = new PackagingMaterialModel();
-                    $pkg = $pkgModel->find($pkgMat);
-                    if ($pkg && $pkg['CurrentStock'] < $qty) {
+                    $pkg = $pkgModel->lockForStock($pkgMat);
+                    if (!$pkg || $pkg['CurrentStock'] < $qty) {
                         $db->rollBack();
-                        setFlash('error', 'Insufficient packaging material stock. Available: ' . $pkg['CurrentStock']);
+                        setFlash('error', 'Insufficient packaging material stock. Available: ' . ($pkg['CurrentStock'] ?? 0));
                         $this->redirect('production');
                         return;
                     }
@@ -296,7 +296,7 @@ class ProductionController extends Controller {
     body { font-family: Inter, Arial, sans-serif; background: #f1f5f9; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 32px 16px; margin: 0; }
     .label { background: #fff; border: 2px solid #0f172a; border-radius: 12px; padding: 20px 26px; width: 380px; }
     .label h1 { font-size: 1.05rem; margin: 0 0 2px; display: flex; align-items: center; gap: 8px; }
-    .brand-dot { width: 14px; height: 14px; border-radius: 4px; background: linear-gradient(135deg, #22c55e, #06b6d4); display: inline-block; }
+    .brand-dot { width: 14px; height: 14px; border-radius: 4px; background: linear-gradient(135deg, #16a34a, #d97706); display: inline-block; }
     .flavour { font-size: 1.3rem; font-weight: 800; margin: 6px 0 10px; }
     table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
     td { padding: 3px 0; vertical-align: top; }

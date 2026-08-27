@@ -1,5 +1,5 @@
 <?php $pageTitle = 'Shifts'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-clock me-2"></i><?= $pageTitle ?></h5>
     <a href="?route=staff" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back to Staff</a>
 </div>
@@ -32,7 +32,7 @@
             </div>
         </form>
         <?php endif; ?>
-        <table id="dataTable" class="table table-hover align-middle">
+        <div class="table-responsive"><table id="dataTable" class="table table-hover align-middle">
             <thead class="table-light"><tr><th>ID</th><th>Shift Name</th><th>Start</th><th>End</th><th>Description</th><th>Actions</th></tr></thead>
             <tbody>
                 <?php if (isset($shifts)): foreach ($shifts as $sh): ?>
@@ -51,6 +51,6 @@
                 </tr>
                 <?php endforeach; endif; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>

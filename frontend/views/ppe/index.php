@@ -1,6 +1,6 @@
 <?php $pageTitle = 'PPE Tracking'; ?>
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <h4><i class="bi bi-hard-hat me-2"></i>PPE Tracking</h4>
         <?php if (canCreate('ppe')): ?>
         <a href="?route=ppe/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Issue PPE</a>
@@ -44,7 +44,7 @@
 
     <div class="card">
         <div class="card-body">
-            <table id="dataTable" class="table table-striped table-hover">
+            <div class="table-responsive"><table id="dataTable" class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>PPE_ID</th>
@@ -85,7 +85,7 @@
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
-            </table>
+            </table></div>
         </div>
     </div>
 </div>

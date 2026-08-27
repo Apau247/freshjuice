@@ -1,6 +1,6 @@
 <?php $pageTitle = 'Hazard Register'; ?>
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <h4><i class="bi bi-exclamation-triangle me-2"></i>Hazard Register</h4>
         <?php if (canCreate('hazards')): ?>
         <a href="?route=safety/hazards/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Hazard</a>
@@ -13,7 +13,7 @@
             <i class="bi bi-exclamation-octagon me-1"></i>HIGH RISK Hazards - Immediate Attention Required
         </div>
         <div class="card-body p-0">
-            <table class="table table-striped table-hover mb-0">
+            <div class="table-responsive"><table class="table table-striped table-hover mb-0">
                 <thead class="table-danger">
                     <tr>
                         <th>HazardID</th>
@@ -44,7 +44,7 @@
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
-            </table>
+            </table></div>
         </div>
     </div>
     <?php endif; ?>
@@ -52,7 +52,7 @@
     <div class="card">
         <div class="card-header">All Hazards</div>
         <div class="card-body">
-            <table id="dataTable" class="table table-striped table-hover">
+            <div class="table-responsive"><table id="dataTable" class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>HazardID</th>
@@ -103,7 +103,7 @@
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
-            </table>
+            </table></div>
         </div>
     </div>
 </div>

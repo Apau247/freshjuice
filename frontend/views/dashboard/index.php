@@ -25,8 +25,8 @@ $user = currentUser();
     Factory Management System Dashboard — Scoped Styles
    ═══════════════════════════════════════════════════════════ */
 :root {
-    --dj-accent: #22c55e;
-    --dj-accent-alt: #06b6d4;
+    --dj-accent: #16a34a;
+    --dj-accent-alt: #d97706;
     --dj-radius: 16px;
     --dj-radius-sm: 10px;
     --dj-glass: rgba(255,255,255,0.78);
@@ -36,8 +36,8 @@ $user = currentUser();
     --dj-shadow-hover: 0 14px 44px rgba(0,0,0,0.1);
     --dj-text: #0f172a;
     --dj-muted: #94a3b8;
-    --dj-green: #22c55e;
-    --dj-cyan: #06b6d4;
+    --dj-green: #16a34a;
+    --dj-amber: #d97706;
     --dj-blue: #2563eb;
     --dj-indigo: #6366f1;
     --dj-violet: #8b5cf6;
@@ -51,7 +51,7 @@ $user = currentUser();
     margin-bottom: 1.75rem;
     padding: 2.5rem 2.25rem;
     border-radius: var(--dj-radius);
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0f766e 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #14532d 100%);
     position: relative;
     overflow: hidden;
     box-shadow: 0 12px 48px rgba(15, 23, 42, 0.4);
@@ -64,7 +64,7 @@ $user = currentUser();
     width: 450px;
     height: 450px;
     border-radius: 50%;
-    background: rgba(34,197,94,0.12);
+    background: rgba(22,163,74,0.12);
     filter: blur(80px);
     pointer-events: none;
 }
@@ -76,7 +76,7 @@ $user = currentUser();
     width: 350px;
     height: 350px;
     border-radius: 50%;
-    background: rgba(6,182,212,0.09);
+    background: rgba(217,119,6,0.09);
     filter: blur(60px);
     pointer-events: none;
 }
@@ -319,7 +319,7 @@ $user = currentUser();
     vertical-align: middle;
 }
 .dash-tbl tbody tr { transition: background 0.15s ease; }
-.dash-tbl tbody tr:hover td { background: rgba(34,197,94,0.025); }
+.dash-tbl tbody tr:hover td { background: rgba(217,119,6,0.025); }
 .dash-tbl tbody tr:last-child td { border-bottom: none; }
 
 /* ── Empty States ── */
@@ -392,18 +392,8 @@ $user = currentUser();
     <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
         <div>
             <div class="dash-hero-brand">
-                <svg width="36" height="36" viewBox="0 0 32 32" fill="none">
-                    <rect width="32" height="32" rx="10" fill="url(#hero-grad)"/>
-                    <path d="M16 6C11 6 8 10 8 15C8 20 11 26 16 26C21 26 24 20 24 15C24 10 21 6 16 6Z" fill="white" opacity="0.9"/>
-                    <path d="M13 14C13 14 14.5 18 16 18C17.5 18 19 14 19 14" stroke="url(#hero-grad)" stroke-width="1.5" stroke-linecap="round"/>
-                    <defs>
-                        <linearGradient id="hero-grad" x1="0" y1="0" x2="32" y2="32">
-                            <stop stop-color="#22c55e"/>
-                            <stop offset="1" stop-color="#06b6d4"/>
-                        </linearGradient>
-                    </defs>
-                </svg>
-                <span class="dash-hero-brand-name">Fresh Fruit Juice Production Factory</span>
+                <img src="<?= appBaseUrl() ?>/frontend/assets/img/pf-logo.jpg" alt="Propine Fruity" style="width:40px;height:40px;object-fit:contain;border-radius:8px;background:#fff;">
+                <span class="dash-hero-brand-name"><?= sanitize(APP_NAME) ?></span>
             </div>
             <h1 class="dash-hero-greeting"><?= $greeting ?>, <?= sanitize($user['name']) ?></h1>
             <div class="dash-hero-date"><i class="bi bi-calendar3 me-1"></i><?= $today ?></div>
@@ -433,7 +423,7 @@ $user = currentUser();
 <div class="dash-kpi-grid">
     <!-- M1: Supplier Management -->
     <?php if (can('suppliers')): ?>
-    <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#22c55e,#16a34a);">
+    <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#16a34a,#15803d);">
         <div class="dash-kpi-icon"><i class="bi bi-truck"></i></div>
         <div class="dash-kpi-value"><?= $stats['totalSuppliers'] ?? 0 ?></div>
         <div class="dash-kpi-label">Total Suppliers</div>
@@ -442,14 +432,14 @@ $user = currentUser();
     <?php endif; ?>
     <!-- M2: Raw Material Inventory -->
     <?php if (can('materials')): ?>
-    <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#22c55e,#06b6d4);">
+    <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#16a34a,#d97706);">
         <div class="dash-kpi-icon"><i class="bi bi-box-seam"></i></div>
         <div class="dash-kpi-value"><?= number_format($stats['rawStock'] ?? 0, 1) ?></div>
         <div class="dash-kpi-label">Raw Stock (kg)</div>
         <div class="dash-kpi-trend neutral"><i class="bi bi-database"></i> <?= $stats['rmCount'] ?? 0 ?> items</div>
     </div>
     <!-- M3: Packaging Inventory -->
-    <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#06b6d4,#0891b2);">
+    <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#d97706,#b45309);">
         <div class="dash-kpi-icon"><i class="bi bi-archive"></i></div>
         <div class="dash-kpi-value"><?= number_format($stats['pkgStock'] ?? 0, 0) ?></div>
         <div class="dash-kpi-label">Packaging Stock</div>
@@ -607,7 +597,7 @@ $user = currentUser();
     <?php endif; ?>
     <!-- M11: Water Management -->
     <?php if (can('water')): ?>
-    <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#22c55e,#06b6d4);">
+    <div class="dash-kpi" style="--kpi-c:linear-gradient(135deg,#16a34a,#d97706);">
         <div class="dash-kpi-icon"><i class="bi bi-droplet"></i></div>
         <div class="dash-kpi-value"><?= number_format($stats['waterTotal'] ?? 0, 0) ?>L</div>
         <div class="dash-kpi-label">Water (Monthly)</div>
@@ -665,7 +655,7 @@ $user = currentUser();
     <div class="col-lg-3 col-md-6">
         <div class="dash-chart-card">
             <div class="card-header">
-                <span class="dash-dot" style="background:linear-gradient(135deg,#22c55e,#4ade80);"></span>
+                <span class="dash-dot" style="background:linear-gradient(135deg,#16a34a,#4ade80);"></span>
                 Production by Flavour
             </div>
             <div class="card-body">
@@ -749,11 +739,11 @@ $user = currentUser();
     <div class="col-lg-6">
         <div class="dash-data-card">
             <div class="card-header">
-                <span><i class="bi bi-gear-wide-connected me-2" style="color:#22c55e;"></i>Recent Batches</span>
+                <span><i class="bi bi-gear-wide-connected me-2" style="color:#16a34a;"></i>Recent Batches</span>
                 <a href="?route=production" class="dash-view-all">View All</a>
             </div>
             <div class="card-body no-datatable">
-                <table class="dash-tbl">
+                <div class="table-responsive"><table class="dash-tbl">
                     <thead><tr><th>Batch</th><th>Flavour</th><th>Qty</th><th>Status</th><th>Date</th></tr></thead>
                     <tbody>
                         <?php if (!empty($recentBatches)): ?>
@@ -773,7 +763,7 @@ $user = currentUser();
                             <tr><td colspan="5"><div class="dash-empty"><i class="bi bi-gear"></i>No batches yet</div></td></tr>
                         <?php endif; ?>
                     </tbody>
-                </table>
+                </table></div>
             </div>
         </div>
     </div>
@@ -786,7 +776,7 @@ $user = currentUser();
                 <a href="?route=sales" class="dash-view-all">View All</a>
             </div>
             <div class="card-body no-datatable">
-                <table class="dash-tbl">
+                <div class="table-responsive"><table class="dash-tbl">
                     <thead><tr><th>Order#</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
                     <tbody>
                         <?php if (!empty($recentOrders)): ?>
@@ -806,7 +796,7 @@ $user = currentUser();
                             <tr><td colspan="5"><div class="dash-empty"><i class="bi bi-cart"></i>No orders yet</div></td></tr>
                         <?php endif; ?>
                     </tbody>
-                </table>
+                </table></div>
             </div>
         </div>
     </div>
@@ -828,7 +818,7 @@ $user = currentUser();
                 <a href="?route=safety" class="dash-view-all">View All</a>
             </div>
             <div class="card-body no-datatable">
-                <table class="dash-tbl">
+                <div class="table-responsive"><table class="dash-tbl">
                     <thead><tr><th>Date</th><th>Area</th><th>Type</th><th>Level</th><th>Status</th></tr></thead>
                     <tbody>
                         <?php if (!empty($recentSafetyInspections)): ?>
@@ -851,7 +841,7 @@ $user = currentUser();
                             <tr><td colspan="5"><div class="dash-empty"><i class="bi bi-shield-check"></i>No inspections yet</div></td></tr>
                         <?php endif; ?>
                     </tbody>
-                </table>
+                </table></div>
             </div>
         </div>
     </div>
@@ -860,11 +850,11 @@ $user = currentUser();
     <div class="col-lg-6">
         <div class="dash-data-card">
             <div class="card-header">
-                <span><i class="bi bi-lightbulb me-2" style="color:#06b6d4;"></i>Open CAPA Initiatives</span>
+                <span><i class="bi bi-lightbulb me-2" style="color:#d97706;"></i>Open CAPA Initiatives</span>
                 <a href="?route=improvement" class="dash-view-all">View All</a>
             </div>
             <div class="card-body no-datatable">
-                <table class="dash-tbl">
+                <div class="table-responsive"><table class="dash-tbl">
                     <thead><tr><th>Title</th><th>Category</th><th>Target</th><th>Status</th></tr></thead>
                     <tbody>
                         <?php if (!empty($recentImprovements)): ?>
@@ -883,7 +873,7 @@ $user = currentUser();
                             <tr><td colspan="4"><div class="dash-empty"><i class="bi bi-lightbulb"></i>No initiatives yet</div></td></tr>
                         <?php endif; ?>
                     </tbody>
-                </table>
+                </table></div>
             </div>
         </div>
     </div>
@@ -937,7 +927,7 @@ document.addEventListener('DOMContentLoaded', function() {
     Chart.defaults.animation.duration = 800;
     Chart.defaults.animation.easing = 'easeOutQuart';
 
-    var colors = ['#22c55e','#06b6d4','#f59e0b','#ef4444','#8b5cf6','#ec4899','#14b8a6','#f97316'];
+    var colors = ['#16a34a','#d97706','#059669','#2563eb','#d946ef','#ef4444','#0891b2','#8b5cf6'];
     var grid   = { color: 'rgba(0,0,0,0.04)' };
     var noGrid = { display: false };
 
@@ -1007,7 +997,7 @@ document.addEventListener('DOMContentLoaded', function() {
             labels: [<?php foreach ($wasteData as $w): ?><?= json_encode($w['WasteType']) ?>,<?php endforeach; ?>],
             datasets: [{
                 data: [<?php foreach ($wasteData as $w): ?><?= $w['Total'] ?>,<?php endforeach; ?>],
-                backgroundColor: ['#ef4444','#f97316','#f59e0b','#22c55e','#06b6d4','#8b5cf6'],
+                backgroundColor: ['#ef4444','#f97316','#f59e0b','#16a34a','#d97706','#8b5cf6'],
                 borderWidth: 0,
                 spacing: 3,
                 borderRadius: 4

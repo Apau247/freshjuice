@@ -9,7 +9,7 @@
 </div>
 
 <?php if (!empty($summary)): ?>
-<table class="doc-summary">
+<div class="table-responsive"><table class="doc-summary">
     <thead><tr><th colspan="2">Summary</th></tr></thead>
     <tbody>
         <?php foreach ($summary as $label => $value): ?>
@@ -19,13 +19,13 @@
         </tr>
         <?php endforeach; ?>
     </tbody>
-</table>
+</table></div>
 <?php endif; ?>
 
 <?php if (empty($rows)): ?>
 <p class="text-center my-4">No data for the selected period.</p>
 <?php else: ?>
-<table class="doc-table">
+<div class="table-responsive"><table class="doc-table">
     <thead>
         <tr><?php foreach ($headers as $h): ?><th><?= sanitize((string)$h) ?></th><?php endforeach; ?></tr>
     </thead>
@@ -34,5 +34,5 @@
         <tr><?php foreach ($row as $cell): ?><td><?= sanitize((string)$cell) ?></td><?php endforeach; ?></tr>
         <?php endforeach; ?>
     </tbody>
-</table>
+</table></div>
 <?php endif; ?>

@@ -1,5 +1,5 @@
 <?php $pageTitle = 'Backup & Restore'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-cloud-arrow-down me-2"></i><?= $pageTitle ?></h5>
 </div>
 
@@ -50,7 +50,7 @@
 <div class="card border-0 shadow-sm mt-3">
     <div class="card-body">
         <h6 class="fw-bold mb-3"><i class="bi bi-database me-2 text-secondary"></i>Database Tables</h6>
-        <table id="dataTable" class="table table-hover table-sm align-middle">
+        <div class="table-responsive"><table id="dataTable" class="table table-hover table-sm align-middle">
             <thead class="table-light">
                 <tr><th>Table</th><th style="width:140px;">Rows</th></tr>
             </thead>
@@ -62,6 +62,6 @@
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>

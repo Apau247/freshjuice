@@ -1,5 +1,5 @@
 <?php $pageTitle = 'Attendance'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-calendar-check me-2"></i><?= $pageTitle ?></h5>
     <a href="?route=staff" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back to Staff</a>
 </div>
@@ -26,7 +26,7 @@
 
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <table id="dataTable" class="table table-hover align-middle">
+        <div class="table-responsive"><table id="dataTable" class="table table-hover align-middle">
             <thead class="table-light"><tr><th>Staff</th><th>Date</th><th>Shift</th><th>Clock In</th><th>Clock Out</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody>
                 <?php if (isset($attendanceRecords)): foreach ($attendanceRecords as $a): ?>
@@ -49,6 +49,6 @@
                 </tr>
                 <?php endforeach; endif; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>

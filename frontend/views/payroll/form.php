@@ -2,7 +2,7 @@
 $pageTitle = 'Adjust Payslip';
 $isPaid = ($slip['Status'] ?? '') === 'Unpaid' ? false : true;
 ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-receipt me-2"></i>Adjust Payslip &mdash; <?= sanitize(trim($slip['FirstName'] . ' ' . $slip['LastName'])) ?></h5>
     <a href="?route=payroll&month=<?= (int)$slip['PeriodMonth'] ?>&year=<?= (int)$slip['PeriodYear'] ?>" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Payroll</a>
 </div>

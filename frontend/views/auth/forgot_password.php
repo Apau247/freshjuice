@@ -13,16 +13,16 @@
         body {
             font-family:'Inter',system-ui,sans-serif;
             min-height:100vh; display:flex; align-items:center; justify-content:center;
-            background:linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f766e 100%);
+            background:linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #14532d 100%);
             position:relative; overflow:hidden; padding:1.5rem;
         }
         body::before {
             content:''; position:absolute; top:-20%; right:-10%; width:600px; height:600px;
-            border-radius:50%; background:rgba(34,197,94,0.08); filter:blur(80px);
+            border-radius:50%; background:rgba(22,163,74,0.08); filter:blur(80px);
         }
         body::after {
             content:''; position:absolute; bottom:-20%; left:-5%; width:500px; height:500px;
-            border-radius:50%; background:rgba(6,182,212,0.06); filter:blur(60px);
+            border-radius:50%; background:rgba(217,119,6,0.06); filter:blur(60px);
         }
         .login-card {
             width:100%; max-width:400px; position:relative; z-index:1;
@@ -35,9 +35,9 @@
         .login-brand { text-align:center; margin-bottom:2rem; }
         .login-brand-icon {
             width:56px; height:56px; border-radius:16px;
-            background:linear-gradient(135deg, #22c55e 0%, #06b6d4 100%);
+            background:linear-gradient(135deg, #16a34a 0%, #d97706 100%);
             display:inline-flex; align-items:center; justify-content:center;
-            margin-bottom:0.75rem; box-shadow:0 8px 24px rgba(34,197,94,0.3);
+            margin-bottom:0.75rem; box-shadow:0 8px 24px rgba(22,163,74,0.3);
         }
         .login-brand-icon i { font-size:1.6rem; color:white; }
         .login-brand h3 { color:white; font-size:1.3rem; font-weight:800; letter-spacing:-0.03em; }
@@ -53,18 +53,18 @@
             background:rgba(255,255,255,0.06); transition:all .15s;
         }
         .form-input::placeholder { color:rgba(255,255,255,0.3); }
-        .form-input:focus { outline:none; border-color:#22c55e; box-shadow:0 0 0 3px rgba(34,197,94,0.2); background:rgba(255,255,255,0.1); }
+        .form-input:focus { outline:none; border-color:#16a34a; box-shadow:0 0 0 3px rgba(22,163,74,0.2); background:rgba(255,255,255,0.1); }
         .input-icon { position:relative; }
         .input-icon i { position:absolute; right:0.85rem; top:50%; transform:translateY(-50%); color:rgba(255,255,255,0.3); font-size:1rem; pointer-events:none; }
         .input-icon .form-input { padding-right:2.5rem; }
         .login-btn {
             width:100%; padding:0.72rem; border:none; border-radius:10px;
-            background:linear-gradient(135deg, #22c55e 0%, #06b6d4 100%);
+            background:linear-gradient(135deg, #16a34a 0%, #d97706 100%);
             color:white; font-size:0.85rem; font-weight:700; cursor:pointer;
-            transition:all .2s; box-shadow:0 4px 16px rgba(34,197,94,0.3);
+            transition:all .2s; box-shadow:0 4px 16px rgba(22,163,74,0.3);
             margin-top:0.5rem; font-family:inherit;
         }
-        .login-btn:hover { box-shadow:0 8px 24px rgba(34,197,94,0.4); transform:translateY(-1px); }
+        .login-btn:hover { box-shadow:0 8px 24px rgba(22,163,74,0.4); transform:translateY(-1px); }
         .login-btn:active { transform:translateY(0); }
         .login-error {
             background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.2);
@@ -72,13 +72,13 @@
             font-size:0.8rem; margin-bottom:1rem;
         }
         .login-success {
-            background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.2);
+            background:rgba(22,163,74,0.12); border:1px solid rgba(22,163,74,0.2);
             color:#86efac; border-radius:10px; padding:0.6rem 0.8rem;
             font-size:0.8rem; margin-bottom:1rem;
         }
         .login-footer { text-align:center; margin-top:1.5rem; }
         .login-footer a { color:rgba(255,255,255,0.45); font-size:0.78rem; text-decoration:none; transition:color .15s; }
-        .login-footer a:hover { color:#22c55e; }
+        .login-footer a:hover { color:#16a34a; }
     </style>
 </head>
 <body>

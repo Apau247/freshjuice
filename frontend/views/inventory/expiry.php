@@ -1,5 +1,5 @@
 <?php $pageTitle = 'Expiry Alerts'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-hourglass-split me-2"></i><?= $pageTitle ?></h5>
 </div>
 
@@ -25,7 +25,7 @@ $daysLeft = static fn(?string $date): int => $date ? max(0, (int)ceil((strtotime
             <i class="bi bi-x-octagon-fill text-danger me-2"></i>Expired Finished Goods
             <span class="badge bg-danger ms-2"><?= count($expiredGoods) ?></span>
         </h6>
-        <table class="table table-hover align-middle mb-0">
+        <div class="table-responsive"><table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr><th>FG ID</th><th>Flavour</th><th>Batch</th><th>Expiry Date</th><th>Expired For</th><th>Qty On Hand</th></tr>
             </thead>
@@ -41,7 +41,7 @@ $daysLeft = static fn(?string $date): int => $date ? max(0, (int)ceil((strtotime
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>
 <?php endif; ?>
@@ -53,7 +53,7 @@ $daysLeft = static fn(?string $date): int => $date ? max(0, (int)ceil((strtotime
             <i class="bi bi-cup-straw text-warning me-2"></i>Finished Goods Expiring Within 30 Days
             <span class="badge bg-warning text-dark ms-2"><?= count($expiringGoods) ?></span>
         </h6>
-        <table class="table table-hover align-middle mb-0">
+        <div class="table-responsive"><table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr><th>FG ID</th><th>Flavour</th><th>Batch</th><th>Expiry Date</th><th>Days Left</th><th>Qty On Hand</th></tr>
             </thead>
@@ -69,7 +69,7 @@ $daysLeft = static fn(?string $date): int => $date ? max(0, (int)ceil((strtotime
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>
 <?php endif; ?>
@@ -81,7 +81,7 @@ $daysLeft = static fn(?string $date): int => $date ? max(0, (int)ceil((strtotime
             <i class="bi bi-award text-danger me-2"></i>Expired Certifications
             <span class="badge bg-danger ms-2"><?= count($expiredCerts) ?></span>
         </h6>
-        <table class="table table-hover align-middle mb-0">
+        <div class="table-responsive"><table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr><th>Certificate</th><th>Type</th><th>Authority</th><th>Expiry Date</th><th>Status</th><th></th></tr>
             </thead>
@@ -101,7 +101,7 @@ $daysLeft = static fn(?string $date): int => $date ? max(0, (int)ceil((strtotime
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>
 <?php endif; ?>
@@ -113,7 +113,7 @@ $daysLeft = static fn(?string $date): int => $date ? max(0, (int)ceil((strtotime
             <i class="bi bi-award text-warning me-2"></i>Certifications Expiring Within 90 Days
             <span class="badge bg-warning text-dark ms-2"><?= count($expiringCerts) ?></span>
         </h6>
-        <table class="table table-hover align-middle mb-0">
+        <div class="table-responsive"><table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr><th>Certificate</th><th>Type</th><th>Authority</th><th>Expiry Date</th><th>Days Left</th><th>Status</th><th></th></tr>
             </thead>
@@ -134,7 +134,7 @@ $daysLeft = static fn(?string $date): int => $date ? max(0, (int)ceil((strtotime
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>
 <?php endif; ?>
@@ -146,7 +146,7 @@ $daysLeft = static fn(?string $date): int => $date ? max(0, (int)ceil((strtotime
             <i class="bi bi-file-earmark-check text-warning me-2"></i>Permits Expiring Within 60 Days
             <span class="badge bg-warning text-dark ms-2"><?= count($expiringPermits) ?></span>
         </h6>
-        <table class="table table-hover align-middle mb-0">
+        <div class="table-responsive"><table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr><th>Permit</th><th>Expiry Date</th><th>Days Left</th><th>Status</th><th></th></tr>
             </thead>
@@ -165,7 +165,7 @@ $daysLeft = static fn(?string $date): int => $date ? max(0, (int)ceil((strtotime
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>
 <?php endif; ?>

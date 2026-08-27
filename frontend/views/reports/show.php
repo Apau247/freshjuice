@@ -58,7 +58,7 @@
             <p class="mt-2 mb-0">No data for the selected period.</p>
         </div>
         <?php else: ?>
-        <table id="dataTable" class="table table-hover align-middle">
+        <div class="table-responsive"><table id="dataTable" class="table table-hover align-middle">
             <thead class="table-light">
                 <tr><?php foreach ($headers as $h): ?><th><?= sanitize((string)$h) ?></th><?php endforeach; ?></tr>
             </thead>
@@ -67,7 +67,7 @@
                 <tr><?php foreach ($row as $cell): ?><td><?= sanitize((string)$cell) ?></td><?php endforeach; ?></tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
         <?php endif; ?>
     </div>
 </div>

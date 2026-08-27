@@ -15,11 +15,11 @@ $statusBadge = ['Paid' => 'success', 'Unpaid' => 'danger'];
 </div>
 
 <?php /* Period filter */ ?>
-<form method="get" action="" class="row g-2 align-items-end mb-3">
+<form method="get" action="" class="period-filter row g-2 align-items-end mb-3">
     <input type="hidden" name="route" value="payroll">
     <div class="col-auto">
         <label class="form-label small text-muted mb-1">Month</label>
-        <select name="month" class="form-select form-select-sm">
+        <select name="month" class="form-select form-select-sm wide-select">
             <?php foreach (PayrollModel::MONTH_NAMES as $num => $name): ?>
             <option value="<?= $num ?>" <?= $num === (int)$month ? 'selected' : '' ?>><?= sanitize($name) ?></option>
             <?php endforeach; ?>
@@ -27,7 +27,7 @@ $statusBadge = ['Paid' => 'success', 'Unpaid' => 'danger'];
     </div>
     <div class="col-auto">
         <label class="form-label small text-muted mb-1">Year</label>
-        <select name="year" class="form-select form-select-sm">
+        <select name="year" class="form-select form-select-sm wide-select">
             <?php for ($y = (int)date('Y') + 1; $y >= 2020; $y--): ?>
             <option value="<?= $y ?>" <?= $y === (int)$year ? 'selected' : '' ?>><?= $y ?></option>
             <?php endfor; ?>
@@ -69,9 +69,15 @@ $statusBadge = ['Paid' => 'success', 'Unpaid' => 'danger'];
     </div>
 </div>
 
+<?php if (!$records): ?>
+<div class="alert alert-info shadow-sm">
+    <i class="bi bi-info-circle me-2"></i>No payroll records for <?= sanitize(PayrollController::monthName((int)$month)) ?> <?= $year ?>.
+    <?php if ($canEdit): ?><a href="?route=payroll/generate&month=<?= $month ?>&year=<?= $year ?>">Generate this period's payslips</a>.<?php endif; ?>
+</div>
+<?php else: ?>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <table id="dataTable" class="table table-hover align-middle">
+        <div class="table-responsive"><table id="dataTable" class="table table-hover align-middle">
             <thead class="table-light">
                 <tr>
                     <th>Payslip</th><th>Staff</th><th>Department</th><th>Base Salary</th><th>Allowances</th>
@@ -116,13 +122,11 @@ $statusBadge = ['Paid' => 'success', 'Unpaid' => 'danger'];
                     </td>
                 </tr>
                 <?php endforeach; ?>
-                <?php if (!$records): ?>
-                <tr><td colspan="10" class="text-center text-muted py-4">No payroll records for <?= sanitize(PayrollController::monthName((int)$month)) ?> <?= $year ?>.</td></tr>
-                <?php endif; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>
+<?php endif; ?>
 
 <?php if ($canEdit): ?>
 <?php /* Mark-as-paid modal */ ?>

@@ -1,6 +1,6 @@
 <?php $pageTitle = 'Safety Inspections'; ?>
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <h4><i class="bi bi-shield-check me-2"></i>Safety Inspections</h4>
         <?php if (canCreate('safety')): ?>
         <a href="?route=safety/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>New Inspection</a>
@@ -44,7 +44,7 @@
 
     <div class="card">
         <div class="card-body">
-            <table id="dataTable" class="table table-striped table-hover">
+            <div class="table-responsive"><table id="dataTable" class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>SafetyID</th>
@@ -94,7 +94,7 @@
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
-            </table>
+            </table></div>
         </div>
     </div>
 </div>

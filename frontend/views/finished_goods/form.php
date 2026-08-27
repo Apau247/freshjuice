@@ -1,5 +1,5 @@
 <?php $pageTitle = isset($good) ? 'Edit Finished Good' : 'New Finished Good'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-cup-straw me-2"></i><?= $pageTitle ?></h5>
     <a href="?route=finished-goods" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
 </div>
@@ -20,13 +20,9 @@
                 <label class="form-label fw-semibold">Flavour <span class="text-danger">*</span></label>
                 <select name="flavour" class="form-select" required>
                     <option value="">Select Flavour</option>
-                    <option value="Orange" <?= (isset($good) && ($good['Flavour'] ?? '') === 'Orange') ? 'selected' : '' ?>>Orange</option>
-                    <option value="Apple" <?= (isset($good) && ($good['Flavour'] ?? '') === 'Apple') ? 'selected' : '' ?>>Apple</option>
-                    <option value="Mango" <?= (isset($good) && ($good['Flavour'] ?? '') === 'Mango') ? 'selected' : '' ?>>Mango</option>
-                    <option value="Grape" <?= (isset($good) && ($good['Flavour'] ?? '') === 'Grape') ? 'selected' : '' ?>>Grape</option>
-                    <option value="Mixed Fruit" <?= (isset($good) && ($good['Flavour'] ?? '') === 'Mixed Fruit') ? 'selected' : '' ?>>Mixed Fruit</option>
-                    <option value="Lemon" <?= (isset($good) && ($good['Flavour'] ?? '') === 'Lemon') ? 'selected' : '' ?>>Lemon</option>
-                    <option value="Pineapple" <?= (isset($good) && ($good['Flavour'] ?? '') === 'Pineapple') ? 'selected' : '' ?>>Pineapple</option>
+                    <?php foreach (flavour_options() as $f): ?>
+                    <option value="<?= sanitize($f) ?>" <?= (isset($good) && ($good['Flavour'] ?? '') === $f) ? 'selected' : '' ?>><?= sanitize($f) ?></option>
+                    <?php endforeach; ?>
                 </select>
             </div>
             <div class="col-md-4">

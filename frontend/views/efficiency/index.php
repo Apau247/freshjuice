@@ -1,6 +1,6 @@
 <?php $pageTitle = 'OEE Dashboard'; ?>
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <h4><i class="bi bi-graph-up me-2"></i>OEE Dashboard</h4>
         <?php if (canCreate('efficiency')): ?>
         <a href="?route=efficiency/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Record Data</a>
@@ -52,7 +52,7 @@
     <div class="card">
         <div class="card-header">Efficiency Records</div>
         <div class="card-body">
-            <table id="dataTable" class="table table-striped table-hover">
+            <div class="table-responsive"><table id="dataTable" class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>EfficiencyID</th>
@@ -92,7 +92,7 @@
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
-            </table>
+            </table></div>
         </div>
     </div>
 </div>

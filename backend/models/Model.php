@@ -19,14 +19,23 @@ abstract class Model
         return $this->db;
     }
 
-    public function all(): array
+    public function all(int $limit = 500): array
     {
-        return $this->db->query("SELECT * FROM {$this->table} ORDER BY {$this->primaryKey} DESC")->fetchAll();
+        return $this->db->query("SELECT * FROM {$this->table} ORDER BY {$this->primaryKey} DESC LIMIT " . (int)$limit)->fetchAll();
     }
 
     public function find(string $id): ?array
     {
         $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE {$this->primaryKey} = ?");
+        $stmt->execute([$id]);
+        $r = $stmt->fetch();
+        return $r ?: null;
+    }
+
+    /** SELECT ... FOR UPDATE — locks the row to prevent race conditions. */
+    public function lock(string $id): ?array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE {$this->primaryKey} = ? FOR UPDATE");
         $stmt->execute([$id]);
         $r = $stmt->fetch();
         return $r ?: null;

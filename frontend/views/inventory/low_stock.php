@@ -1,5 +1,5 @@
 <?php $pageTitle = 'Low Stock Alerts'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-exclamation-octagon me-2"></i><?= $pageTitle ?></h5>
 </div>
 
@@ -27,7 +27,7 @@
             <i class="bi bi-bar-chart-steps text-danger me-2"></i>Raw Materials
             <span class="badge bg-danger ms-2"><?= count($rawMaterials) ?></span>
         </h6>
-        <table id="dataTable" class="table table-hover align-middle mb-0">
+        <div class="table-responsive"><table id="dataTable" class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr><th>ID</th><th>Material</th><th>Type</th><th>Current Stock</th><th>Min Stock</th><th>Suggested Reorder</th><th>Supplier</th><th></th></tr>
             </thead>
@@ -49,7 +49,7 @@
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>
 <?php endif; ?>
@@ -61,7 +61,7 @@
             <i class="bi bi-box text-warning me-2"></i>Packaging Materials
             <span class="badge bg-warning text-dark ms-2"><?= count($packaging) ?></span>
         </h6>
-        <table id="dataTable2" class="table table-hover align-middle mb-0">
+        <div class="table-responsive"><table id="dataTable2" class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr><th>ID</th><th>Material</th><th>Type</th><th>Current Stock</th><th>Min Stock</th><th>Suggested Reorder</th><th></th></tr>
             </thead>
@@ -82,7 +82,7 @@
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>
 <?php endif; ?>

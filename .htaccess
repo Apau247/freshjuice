@@ -1,4 +1,11 @@
 RewriteEngine On
+
+# ── Block sensitive directories ──────────────────────────────────
+RewriteRule ^backend/ - [F,L,NC]
+RewriteRule ^database/ - [F,L,NC]
+RewriteRule ^uploads/ - [F,L,NC]
+RewriteRule ^\.env$ - [F,L]
+
+# ── Route everything else to the front controller ───────────────
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ public/index.php [QSA,L]

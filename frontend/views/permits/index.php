@@ -1,6 +1,6 @@
 <?php $pageTitle = 'Permits & Licenses'; ?>
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <h4><i class="bi bi-award me-2"></i>Permits & Licenses</h4>
         <?php if (canCreate('permits')): ?>
         <a href="?route=permits/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Permit</a>
@@ -44,7 +44,7 @@
 
     <div class="card">
         <div class="card-body">
-            <table id="dataTable" class="table table-striped table-hover">
+            <div class="table-responsive"><table id="dataTable" class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>PermitID</th>
@@ -87,7 +87,7 @@
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
-            </table>
+            </table></div>
         </div>
     </div>
 </div>

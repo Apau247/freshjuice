@@ -1,6 +1,6 @@
 <?php $pageTitle = 'Supplier Evaluations'; ?>
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <h4><i class="bi bi-star me-2"></i>Supplier Evaluations</h4>
         <?php if (canCreate('supplier_eval')): ?>
         <a href="?route=supplier-evaluations/create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>New Evaluation</a>
@@ -9,7 +9,7 @@
 
     <div class="card">
         <div class="card-body">
-            <table id="dataTable" class="table table-striped table-hover">
+            <div class="table-responsive"><table id="dataTable" class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>EvaluationID</th>
@@ -53,7 +53,7 @@
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
-            </table>
+            </table></div>
         </div>
     </div>
 </div>

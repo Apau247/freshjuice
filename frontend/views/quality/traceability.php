@@ -1,5 +1,5 @@
 <?php $pageTitle = 'Traceability Logs'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-diagram-3 me-2"></i><?= $pageTitle ?></h5>
     <span class="text-muted" style="font-size:0.8rem;">Full chain: fruit supplier &rarr; materials &rarr; production &rarr; inspections &rarr; finished goods &rarr; sales</span>
 </div>
@@ -12,7 +12,7 @@
             <p class="mt-2 mb-0">No batches recorded yet.</p>
         </div>
         <?php else: ?>
-        <table id="dataTable" class="table table-hover align-middle">
+        <div class="table-responsive"><table id="dataTable" class="table table-hover align-middle">
             <thead class="table-light">
                 <tr>
                     <th>Batch</th><th>Date</th><th>Flavour</th><th>Qty</th>
@@ -68,7 +68,7 @@
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
         <?php endif; ?>
     </div>
 </div>

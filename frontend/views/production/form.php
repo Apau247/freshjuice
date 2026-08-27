@@ -1,5 +1,5 @@
 <?php $pageTitle = isset($batch) ? 'Edit Production Batch' : 'New Production Batch'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-gear me-2"></i><?= $pageTitle ?></h5>
     <a href="?route=production" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back</a>
 </div>
@@ -24,7 +24,7 @@
                 <label class="form-label fw-semibold">Flavour <span class="text-danger">*</span></label>
                 <select name="flavour" class="form-select" required>
                     <?= trending_value_options(
-                        ['Orange', 'Apple', 'Mango', 'Grape', 'Mixed Fruit', 'Lemon', 'Pineapple'],
+                        flavour_options(),
                         $trends['flavour'] ?? null,
                         isset($batch) ? ($batch['Flavour'] ?? null) : null,
                         'Select Flavour'

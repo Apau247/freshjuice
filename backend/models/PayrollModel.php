@@ -12,26 +12,41 @@ class PayrollModel extends Model {
         9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December',
     ];
 
-    /** All payslips for a period, joined with staff details. */
+    /**
+     * All payslips for a period. A payslip belongs to either a staff member
+     * or a worker (laborer) — the LEFT JOINs + COALESCE handle both.
+     */
     public function getForPeriod(int $month, int $year): array {
         return $this->query(
-            "SELECT p.*, s.FirstName, s.LastName, s.Department, s.Position,
-                    s.StaffID AS StaffCode, u.Name AS ProcessedByName
+            "SELECT p.*,
+                    COALESCE(s.FirstName, w.FirstName)  AS FirstName,
+                    COALESCE(s.LastName,  w.LastName)   AS LastName,
+                    COALESCE(s.Department, 'Workers')   AS Department,
+                    COALESCE(s.Position,  w.Position)   AS Position,
+                    p.StaffID  AS StaffCode,
+                    p.WorkerID AS WorkerCode,
+                    u.Name AS ProcessedByName
              FROM payroll p
-             JOIN staff s ON p.StaffID = s.StaffID
+             LEFT JOIN staff   s ON p.StaffID  = s.StaffID
+             LEFT JOIN workers w ON p.WorkerID = w.WorkerID
              LEFT JOIN users u ON p.ProcessedBy = u.UserID
              WHERE p.PeriodMonth = ? AND p.PeriodYear = ?
-             ORDER BY s.Department, s.FirstName",
+             ORDER BY Department, FirstName",
             [$month, $year]
         );
     }
 
-    /** One payslip with staff context (edit screen). */
+    /** One payslip with person context (edit screen). */
     public function findDetailed(string $id): ?array {
         return $this->queryOne(
-            "SELECT p.*, s.FirstName, s.LastName, s.Department, s.Position
+            "SELECT p.*,
+                    COALESCE(s.FirstName, w.FirstName) AS FirstName,
+                    COALESCE(s.LastName,  w.LastName)  AS LastName,
+                    COALESCE(s.Department, 'Workers')  AS Department,
+                    COALESCE(s.Position,  w.Position)  AS Position
              FROM payroll p
-             JOIN staff s ON p.StaffID = s.StaffID
+             LEFT JOIN staff   s ON p.StaffID  = s.StaffID
+             LEFT JOIN workers w ON p.WorkerID = w.WorkerID
              WHERE p.PayrollID = ?",
             [$id]
         );
@@ -39,41 +54,53 @@ class PayrollModel extends Model {
 
     /**
      * Generate Unpaid payslips for a period from each active staff member's
-     * MonthlySalary. Existing slips for the period are never duplicated.
-     * Returns ['created' => n, 'skipped' => n, 'no_salary' => names...].
+     * MonthlySalary AND each active worker's MonthlyPay. Existing slips for
+     * the period are never duplicated.
      */
     public function generateForPeriod(int $month, int $year, ?string $userId): array {
-        $staff = $this->query(
-            "SELECT StaffID, FirstName, LastName, MonthlySalary
-             FROM staff
-             WHERE Status IN ('Active','On Leave')
-             ORDER BY FirstName"
-        );
+        $people = [];
+
+        foreach ($this->query(
+            "SELECT StaffID AS Id, FirstName, LastName, MonthlySalary AS Pay
+             FROM staff WHERE Status IN ('Active','On Leave')"
+        ) as $s) {
+            $people[] = ['id' => (string)$s['Id'], 'name' => trim($s['FirstName'] . ' ' . $s['LastName']),
+                         'pay' => (float)$s['Pay'], 'type' => 'staff'];
+        }
+        foreach ($this->query(
+            "SELECT WorkerID AS Id, FirstName, LastName, MonthlyPay AS Pay
+             FROM workers WHERE Status IN ('Active','On Leave')"
+        ) as $w) {
+            $people[] = ['id' => (string)$w['Id'], 'name' => trim($w['FirstName'] . ' ' . $w['LastName']),
+                         'pay' => (float)$w['Pay'], 'type' => 'worker'];
+        }
 
         $existing = $this->query(
-            "SELECT StaffID FROM payroll WHERE PeriodMonth = ? AND PeriodYear = ?",
+            "SELECT StaffID, WorkerID FROM payroll WHERE PeriodMonth = ? AND PeriodYear = ?",
             [$month, $year]
         );
         $have = [];
-        foreach ($existing as $e) { $have[(string)$e['StaffID']] = true; }
+        foreach ($existing as $e) {
+            if ($e['StaffID'])  $have['s:' . (string)$e['StaffID']]  = true;
+            if ($e['WorkerID']) $have['w:' . (string)$e['WorkerID']] = true;
+        }
 
         $result = ['created' => 0, 'skipped' => 0, 'no_salary' => []];
-        foreach ($staff as $s) {
-            if (isset($have[(string)$s['StaffID']])) { $result['skipped']++; continue; }
-            $base = (float)($s['MonthlySalary'] ?? 0);
-            if ($base <= 0) {
-                $result['no_salary'][] = trim($s['FirstName'] . ' ' . $s['LastName']);
-                continue;
-            }
+        foreach ($people as $p) {
+            $key = ($p['type'] === 'staff' ? 's:' : 'w:') . $p['id'];
+            if (isset($have[$key])) { $result['skipped']++; continue; }
+            if ($p['pay'] <= 0) { $result['no_salary'][] = $p['name']; continue; }
+
             $this->create([
                 'PayrollID'   => generateId('PAY'),
-                'StaffID'     => $s['StaffID'],
+                'StaffID'     => $p['type'] === 'staff' ? $p['id'] : null,
+                'WorkerID'    => $p['type'] === 'worker' ? $p['id'] : null,
                 'PeriodMonth' => $month,
                 'PeriodYear'  => $year,
-                'BaseSalary'  => $base,
+                'BaseSalary'  => $p['pay'],
                 'Allowances'  => 0,
                 'Deductions'  => 0,
-                'NetPay'      => round($base, 2),
+                'NetPay'      => round($p['pay'], 2),
                 'Status'      => 'Unpaid',
                 'ProcessedBy' => $userId,
             ]);
@@ -91,6 +118,19 @@ class PayrollModel extends Model {
             'Notes'         => $notes !== '' ? $notes : null,
             'ProcessedBy'   => $userId,
         ]);
+    }
+
+    /**
+     * The login account to notify about a payment. Staff may have one;
+     * workers never do (they are notified physically by the office).
+     */
+    public function getStaffUserId(string $payrollId): ?string {
+        $r = $this->queryOne(
+            "SELECT s.UserID FROM payroll p JOIN staff s ON p.StaffID = s.StaffID
+             WHERE p.PayrollID = ? AND s.UserID IS NOT NULL",
+            [$payrollId]
+        );
+        return $r ? (string)$r['UserID'] : null;
     }
 
     /** Revert a mistaken payment back to Unpaid. */
@@ -132,20 +172,34 @@ class PayrollModel extends Model {
         return $summary;
     }
 
-    /** Active/on-leave staff with their configured salaries (settings + generate preview). */
+    /** Staff AND workers with their configured pay (settings + generate preview). */
     public function getStaffSalaries(): array {
-        return $this->query(
-            "SELECT s.StaffID, s.FirstName, s.LastName, s.Department, s.Position,
-                    s.MonthlySalary, s.Status
+        $out = [];
+        foreach ($this->query(
+            "SELECT s.StaffID AS Id, s.FirstName, s.LastName, s.Department, s.Position,
+                    s.MonthlySalary AS Pay, s.Status, 'staff' AS PersonType
              FROM staff s
-             WHERE s.Status IN ('Active','On Leave')
-             ORDER BY s.Department, s.FirstName"
-        );
+             WHERE s.Status IN ('Active','On Leave')"
+        ) as $r) { $out[] = $r; }
+        foreach ($this->query(
+            "SELECT w.WorkerID AS Id, w.FirstName, w.LastName, 'Workers' AS Department, w.Position,
+                    w.MonthlyPay AS Pay, w.Status, 'worker' AS PersonType
+             FROM workers w
+             WHERE w.Status IN ('Active','On Leave')"
+        ) as $r) { $out[] = $r; }
+        return $out;
     }
 
+    /** Update a staff member's monthly salary. */
     public function setSalary(string $staffId, float $amount): bool {
         return $this->db->prepare("UPDATE staff SET MonthlySalary = ? WHERE StaffID = ?")
             ->execute([round($amount, 2), $staffId]);
+    }
+
+    /** Update a worker's monthly pay. */
+    public function setWorkerPay(string $workerId, float $amount): bool {
+        return $this->db->prepare("UPDATE workers SET MonthlyPay = ? WHERE WorkerID = ?")
+            ->execute([round($amount, 2), $workerId]);
     }
 
     /** Which periods already have payroll runs? (period picker suggestions) */

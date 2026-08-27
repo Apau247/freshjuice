@@ -1,5 +1,5 @@
 <?php $pageTitle = 'Certifications'; ?>
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h5 class="fw-bold mb-0"><i class="bi bi-award me-2"></i><?= $pageTitle ?></h5>
     <?php if (canCreate('certifications')): ?>
     <a href="?route=certifications/create" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> New Certification</a>
@@ -7,7 +7,7 @@
 </div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
-        <table id="dataTable" class="table table-hover align-middle">
+        <div class="table-responsive"><table id="dataTable" class="table table-hover align-middle">
             <thead class="table-light">
                 <tr><th>ID</th><th>Name</th><th>Type</th><th>Authority</th><th>Issue Date</th><th>Expiry</th><th>Status</th><th>Days Left</th><th>Actions</th></tr>
             </thead>
@@ -46,6 +46,6 @@
                 </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
     </div>
 </div>

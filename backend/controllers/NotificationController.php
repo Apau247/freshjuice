@@ -14,8 +14,18 @@ class NotificationController extends Controller
     public function index(): void
     {
         $model = new NotificationModel();
+        $model->cleanupExpired();
         $this->render('index', [
             'notifications' => $model->getAll(),
         ]);
+    }
+
+    public function markRead(): void
+    {
+        $id = $this->getInput('id');
+        if ($id) {
+            (new NotificationModel())->markRead($id);
+        }
+        $this->redirect('notifications');
     }
 }
