@@ -1,4 +1,4 @@
-<?php $assetBase = appBaseUrl(); require_once __DIR__ . '/../../../backend/models/NotificationModel.php'; ?>
+﻿<?php $assetBase = appBaseUrl(); require_once __DIR__ . '/../../../backend/models/NotificationModel.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -189,10 +189,6 @@
                 if (class_exists('NotificationModel')) {
                     try { $unreadCount = (new NotificationModel())->getUnreadCount(); } catch (\Exception $e) {}
                 }
-                $msgUnread = 0;
-                if (class_exists('MessageModel')) {
-                    try { $msgUnread = (new MessageModel())->getUnreadCount($_SESSION['user_id'] ?? ''); } catch (\Exception $e) {}
-                }
                 ?>
                 <li class="nav-item">
                     <a href="?route=notifications" class="nav-link<?= str_starts_with($currentRoute, 'notifications') ? ' active' : '' ?>">
@@ -204,18 +200,6 @@
                     </a>
                     <span class="nav-tooltip">Notifications</span>
                 </li>
-                <?php if (can('messages')): ?>
-                <li class="nav-item">
-                    <a href="?route=messages/inbox" class="nav-link<?= str_starts_with($currentRoute, 'messages') ? ' active' : '' ?>">
-                        <i class="nav-icon bi bi-envelope<?= $msgUnread > 0 ? '-fill text-success' : '' ?>"></i>
-                        <?php if ($msgUnread > 0): ?>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success" style="font-size:.6rem" id="msgBadge"><?= $msgUnread > 9 ? '9+' : $msgUnread ?></span>
-                        <?php endif; ?>
-                        <span class="nav-label">Messages</span>
-                    </a>
-                    <span class="nav-tooltip">Messages</span>
-                </li>
-                <?php endif; ?>
 
                 <?php foreach ($groups as $gKey => $group):
                     $gItems = array_values(array_filter($group['items'], fn ($it) => $it['show']));
@@ -340,46 +324,6 @@
             }
         }
     });
-</script>
-<script>
-(function() {
-    let lastCount = <?= $msgUnread ?? 0 ?>;
-    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVggoKIeGBGPnuqy8+tfGNUXX6QjH1dREB2pcrRrnpaU2B/kY+DX0c+c6DH0a93V1Jgf5KQhF5GPXOex9Cwd1hSYH+TkoZeRj1ynMbQsHhZU2GAk5OGX0Y9cZvFz7F4W1VigJOUh2BHPXGaxc+yeF1WY4CUlYhgRz5vmcTOs3pgWWSBlJaJYUg+b5fCzbN7YlpigpWYi2JJQG6WwcuyfGRcZIOXmYxjSkBtk7/IsH1mX2aFmZuOZExBa5K9xbB+aGBphpqdkWZNQmmQusOuf21ja4qbn5RoUEJnjbW9qoBwZm6NnqGVa1JDZIuxuKaCc2tykKKmlm1VRGGHrLOkhHVud5akp5lwW0hghKiso4Z4cHmdpKiad2FJX4CnqaSGe3l8o6erm3tjS159o6Oih318f6Spq558ZUxdera+uJV7d4Cnr66jgWpUUHOvwLqaiH+Bh6uxr6iLbFpIaq3MwZyRhYeLmbK0r6aQc2BHZZ7Ry6OOhIaLm7O1saqWd2NHZZ3Rx5+Lg4aLm7S2s6yYeGRIZp3Rx52IgYWLm7W3tK2ZemVJZ57SypyHgISLm7a4ta2ae2dKaJ/TypqFf4KKnLi5t6+bfWlLaaHTzJuEfYCKnLm6ubGcgGlNaaLTzJuEfICKnLm6ubGcgWpOaqPTzZyEe3+JnLm7ubGdgmtPa6TUzpyEe3+JnLm7ubKeg2xQa6TUz5yEe3+JnLm8ubOehG1Ra6XV0J2Ee3+JnLm8ubOehW5Sa6XV0Z6Ee3+JnLm8ubOehm9Ta6bW0p6Ee3+JnLm8ubOeh3BUa6fX05+Ee3+JnLm8ubOeh3BUa6fX05+Ee3+JnLm8ubOeh3BUa6fX05+EgH+JnLm8ubOeh3BUa6fX05+EgH+JnLm8ubOeh3BUa6fX05+DgH+JnLm8ubOeh3BUa6fX05+DgH+JnLm8ubOeh3BUa6fX05+DgH+JnLm8ubOeh3BUa6fX05+DgH+JnLm8ubOeh3BUa6fX05+DgH+JnLm8ubOeh3BUa6fX05+DgH+JnLm8ubOeh3BUa6fX05+DgH+JnLm8ubOeh3BUa6fX05+DgH8=');
-    let newMsgAlerted = false;
-
-    function pollMessages() {
-        fetch('?route=messages/unread-poll')
-            .then(r => r.json())
-            .then(msgs => {
-                const badge = document.getElementById('msgBadge');
-                if (msgs.length > 0 && msgs.length > lastCount) {
-                    if (!newMsgAlerted) {
-                        audio.currentTime = 0;
-                        audio.play().catch(() => {});
-                        newMsgAlerted = true;
-                    }
-                    if (badge) {
-                        badge.textContent = msgs.length > 9 ? '9+' : msgs.length;
-                        badge.style.display = '';
-                    } else {
-                        const navLink = document.querySelector('a[href*="messages/inbox"]');
-                        if (navLink) {
-                            const span = document.createElement('span');
-                            span.id = 'msgBadge';
-                            span.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success';
-                            span.style.cssText = 'font-size:.6rem;';
-                            span.textContent = msgs.length > 9 ? '9+' : msgs.length;
-                            navLink.appendChild(span);
-                        }
-                    }
-                }
-                lastCount = msgs.length;
-                if (msgs.length === 0) newMsgAlerted = false;
-            })
-            .catch(() => {});
-    }
-    setInterval(pollMessages, 15000);
-})();
 </script>
 </body>
 </html>

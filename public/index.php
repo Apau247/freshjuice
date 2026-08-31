@@ -135,20 +135,6 @@ $map = [
     'worker-shifts/delete'      => ['wshift', 'WorkerShiftController','delete'],
     'worker-shifts/bulk'        => ['wshift', 'WorkerShiftController','bulk'],
 
-    'messages'                  => ['msg',    'MessageController','inbox'],
-    'messages/inbox'            => ['msg',    'MessageController','inbox'],
-    'messages/sent'             => ['msg',    'MessageController','sent'],
-    'messages/compose'          => ['msg',    'MessageController','compose'],
-    'messages/send'             => ['msg',    'MessageController','send'],
-    'messages/view'             => ['msg',    'MessageController','view'],
-    'messages/edit'             => ['msg',    'MessageController','edit'],
-    'messages/update'           => ['msg',    'MessageController','update'],
-    'messages/delete'           => ['msg',    'MessageController','delete'],
-    'messages/unread-count'     => ['msg/api','MessageController','unreadCount'],
-    'messages/unread-poll'      => ['msg/api','MessageController','unreadPoll'],
-    'messages/download'        => ['msg/dl', 'MessageController','download'],
-    'messages/upload-ajax'     => ['msg/api', 'MessageController','uploadAjax'],
-
     'machines'                  => ['mach',   'MachineController','index'],
     'machines/create'           => ['mach',   'MachineController','create'],
     'machines/edit'             => ['mach',   'MachineController','edit'],
@@ -364,9 +350,6 @@ if (isset($map[$route])) {
         'acct'     => 'AccountingController',
         'notif/mr' => 'NotificationController',
         'wshift'   => 'WorkerShiftController',
-        'msg'      => 'MessageController',
-        'msg/api'  => 'MessageController',
-        'msg/dl'   => 'MessageController',
     ];
     if ($prefix === 'auth') {
         require_once APP_ROOT . '/backend/auth/' . $fileMap[$prefix] . '.php';

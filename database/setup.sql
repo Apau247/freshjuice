@@ -1102,11 +1102,7 @@ INSERT INTO fat_records (FAT_ID, MachineID, TestDate, TestType, ExpectedResult, 
 
 
 -- ================================================================
--- MIGRATION: Worker-Shift Assignments + Internal Messaging + Notification Expiry
--- ================================================================
-
--- ================================================================
--- Migration: Worker Shift Assignments + Internal Messaging + Notification Expiry
+-- MIGRATION: Worker-Shift Assignments + Notification Expiry
 -- ================================================================
 
 -- 1. Worker-Shift Assignments pivot table
@@ -1125,54 +1121,8 @@ CREATE TABLE IF NOT EXISTS worker_shift_assignments (
     INDEX idx_shift_id (ShiftID)
 ) ENGINE=InnoDB;
 
--- 2. Internal Messages
-CREATE TABLE IF NOT EXISTS messages (
-    MessageID       VARCHAR(50)  PRIMARY KEY,
-    SenderID        VARCHAR(50)  NOT NULL,
-    ReceiverID      VARCHAR(50)  NOT NULL,
-    Subject         VARCHAR(200) NOT NULL,
-    Body            TEXT         NOT NULL,
-    IsRead          TINYINT(1)   DEFAULT 0,
-    ReadAt          DATETIME     DEFAULT NULL,
-    IsDeletedSender TINYINT(1)   DEFAULT 0,
-    IsDeletedReceiver TINYINT(1) DEFAULT 0,
-    IsEdited        TINYINT(1)   DEFAULT 0,
-    EditedAt        DATETIME     DEFAULT NULL,
-    ParentMessageID VARCHAR(50)  DEFAULT NULL,
-    created_at      TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (SenderID)   REFERENCES users(UserID) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (ReceiverID) REFERENCES users(UserID) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (ParentMessageID) REFERENCES messages(MessageID) ON UPDATE CASCADE ON DELETE SET NULL,
-    INDEX idx_msg_receiver (ReceiverID, IsRead, IsDeletedReceiver),
-    INDEX idx_msg_sender (SenderID, IsDeletedSender),
-    INDEX idx_msg_created (created_at)
-) ENGINE=InnoDB;
-
--- 3. Add expires_at to notifications for auto-expiry
+-- 2. Add expires_at to notifications for auto-expiry
 SET @nx = (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='notifications' AND COLUMN_NAME='expires_at'); SET @d2 = IF(@nx=0,'ALTER TABLE notifications ADD COLUMN expires_at DATETIME DEFAULT NULL AFTER created_at, ADD INDEX idx_notif_expires (expires_at)','SELECT 1'); PREPARE p2 FROM @d2; EXECUTE p2; DEALLOCATE PREPARE p2;
-
-
--- ================================================================
--- MIGRATION: Message Attachments
--- ================================================================
-
--- ================================================================
--- Migration: Message Attachments
--- ================================================================
-
-CREATE TABLE IF NOT EXISTS message_attachments (
-    AttachmentID VARCHAR(50)  PRIMARY KEY,
-    MessageID    VARCHAR(50)  NOT NULL,
-    FileName     VARCHAR(255) NOT NULL,
-    FilePath     VARCHAR(500) NOT NULL,
-    FileType     VARCHAR(50)  NOT NULL DEFAULT 'file',
-    FileSize     INT UNSIGNED DEFAULT 0,
-    MimeType     VARCHAR(100) DEFAULT NULL,
-    Duration     INT UNSIGNED DEFAULT NULL,
-    created_at   TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (MessageID) REFERENCES messages(MessageID) ON UPDATE CASCADE ON DELETE CASCADE,
-    INDEX idx_attach_msg (MessageID)
-) ENGINE=InnoDB;
 
 
 -- ================================================================

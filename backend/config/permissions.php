@@ -75,20 +75,6 @@ $MODULE_ROUTES = [
     'worker-shifts/delete'          => 'worker_shifts',
     'worker-shifts/bulk'            => 'worker_shifts',
 
-    'messages'                      => 'messages',
-    'messages/inbox'                => 'messages',
-    'messages/sent'                 => 'messages',
-    'messages/compose'              => 'messages',
-    'messages/send'                 => 'messages',
-    'messages/view'                 => 'messages',
-    'messages/edit'                 => 'messages',
-    'messages/update'               => 'messages',
-    'messages/delete'               => 'messages',
-    'messages/unread-count'         => 'messages',
-    'messages/unread-poll'          => 'messages',
-    'messages/download'             => 'messages',
-    'messages/upload-ajax'          => 'messages',
-
     'accounting'                    => 'accounting',
     'accounting/print-report'       => 'accounting',
 
@@ -231,7 +217,7 @@ $MODULE_ROUTES = [
 $ROLE_PERMISSIONS = [
     'ROLE-001' => [
         'payroll'         => 'full', 'pricing'       => 'full', 'workers' => 'full', 'accounting' => 'full',
-        'worker_shifts'   => 'full', 'messages'      => 'full',
+        'worker_shifts'   => 'full',
         'dashboard'       => 'full', 'inventory_alerts'=> 'full', 'reports'       => 'full',
         'backup'          => 'full', 'suppliers'     => 'full', 'materials'     => 'full',
         'production'      => 'full', 'finished_goods'=> 'full', 'quality'       => 'full',
@@ -247,7 +233,7 @@ $ROLE_PERMISSIONS = [
     ],
     'ROLE-002' => [
         'payroll'         => 'full', 'pricing'       => 'full', 'workers' => 'full', 'accounting' => 'full',
-        'worker_shifts'   => 'full', 'messages'      => 'full',
+        'worker_shifts'   => 'full',
         'dashboard'       => 'full', 'inventory_alerts'=> 'full', 'reports'       => 'view',
         'backup'          => 'no',   'suppliers'     => 'full', 'materials'     => 'full',
         'production'      => 'full', 'finished_goods'=> 'full', 'quality'       => 'full',
@@ -263,7 +249,7 @@ $ROLE_PERMISSIONS = [
     ],
     'ROLE-003' => [
         'payroll'         => 'no',   'pricing'       => 'no',   'workers' => 'no',   'accounting' => 'no',
-        'worker_shifts'   => 'full', 'messages'      => 'full',
+        'worker_shifts'   => 'full',
         'dashboard'       => 'full', 'inventory_alerts'=> 'full', 'reports'       => 'view',
         'backup'          => 'no',   'suppliers'     => 'view', 'materials'     => 'full',
         'production'      => 'full', 'finished_goods'=> 'full', 'quality'       => 'view',
@@ -279,7 +265,7 @@ $ROLE_PERMISSIONS = [
     ],
     'ROLE-004' => [
         'payroll'         => 'no',   'pricing'       => 'no',   'workers' => 'no',   'accounting' => 'no',
-        'worker_shifts'   => 'view', 'messages'      => 'full',
+        'worker_shifts'   => 'view',
         'dashboard'       => 'full', 'inventory_alerts'=> 'full', 'reports'       => 'view',
         'backup'          => 'no',   'suppliers'     => 'full', 'materials'     => 'full',
         'production'      => 'view', 'finished_goods'=> 'full', 'quality'       => 'no',
@@ -295,7 +281,7 @@ $ROLE_PERMISSIONS = [
     ],
     'ROLE-005' => [
         'payroll'         => 'no',   'pricing'       => 'no',   'workers' => 'no',   'accounting' => 'no',
-        'worker_shifts'   => 'view', 'messages'      => 'full',
+        'worker_shifts'   => 'view',
         'dashboard'       => 'full', 'inventory_alerts'=> 'view', 'reports'       => 'view',
         'backup'          => 'no',   'suppliers'     => 'view', 'materials'     => 'no',
         'production'      => 'view', 'finished_goods'=> 'view', 'quality'       => 'full',
@@ -311,7 +297,7 @@ $ROLE_PERMISSIONS = [
     ],
     'ROLE-006' => [
         'payroll'         => 'no',   'pricing'       => 'full', 'workers' => 'no',   'accounting' => 'no',
-        'worker_shifts'   => 'no',   'messages'      => 'full',
+        'worker_shifts'   => 'no',
         'dashboard'       => 'full', 'inventory_alerts'=> 'view', 'reports'       => 'view',
         'backup'          => 'no',   'suppliers'     => 'no',   'materials'     => 'no',
         'production'      => 'no',   'finished_goods'=> 'view', 'quality'       => 'no',
@@ -327,7 +313,7 @@ $ROLE_PERMISSIONS = [
     ],
     'ROLE-007' => [
         'payroll'         => 'full', 'pricing'       => 'no',   'workers' => 'full', 'accounting' => 'full',
-        'worker_shifts'   => 'view', 'messages'      => 'full',
+        'worker_shifts'   => 'view',
         'dashboard'       => 'full', 'inventory_alerts'=> 'view', 'reports'       => 'view',
         'backup'          => 'no',   'suppliers'     => 'view', 'materials'     => 'view',
         'production'      => 'no',   'finished_goods'=> 'view', 'quality'       => 'no',
@@ -343,7 +329,7 @@ $ROLE_PERMISSIONS = [
     ],
     'ROLE-008' => [
         'payroll'         => 'no',   'pricing'       => 'no',   'workers' => 'no',   'accounting' => 'no',
-        'worker_shifts'   => 'no',   'messages'      => 'full',
+        'worker_shifts'   => 'no',
         'dashboard'       => 'full', 'inventory_alerts'=> 'view', 'reports'       => 'view',
         'backup'          => 'no',   'suppliers'     => 'no',   'materials'     => 'no',
         'production'      => 'view', 'finished_goods'=> 'no',   'quality'       => 'no',
